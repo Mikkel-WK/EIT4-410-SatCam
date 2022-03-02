@@ -1,0 +1,8 @@
+12:43:36 **** Clean-only build of configuration Debug for project freertos_app_system ****
+make clean 
+rm -rf ./_sds
+rm -rf package
+rm -f system.bif
+
+12:43:37 Build Finished (took 183ms)
+

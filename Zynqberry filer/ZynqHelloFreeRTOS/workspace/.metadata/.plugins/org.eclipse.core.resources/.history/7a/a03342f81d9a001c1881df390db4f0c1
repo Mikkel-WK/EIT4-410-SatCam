@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="freertos_app" location="C:/School/Vivado/ZynqHelloFreeRTOS/workspace/freertos_app" platform="C:/School/Vivado/ZynqHelloFreeRTOS/workspace/freerots/export/freerots/freerots.xpfm" platformUID="xilinx:te0726_10_1c::0.0(custom)" systemProject="freertos_app_system" sysConfig="freerots" runtime="C/C++" cpu="freertos10_xilinx_domain" cpuInstance="ps7_cortexa9_0" os="freertos10_xilinx" mssSignature="34434aa7712646d1d2bf0b6d8b219fd7">
+  <configuration name="Debug" id="xilinx.gnu.armv7.exe.debug.1570119054">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.armv7.exe.release.1492949684" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="freertos_hello_world"/>
+</sdkproject:SdkProject>

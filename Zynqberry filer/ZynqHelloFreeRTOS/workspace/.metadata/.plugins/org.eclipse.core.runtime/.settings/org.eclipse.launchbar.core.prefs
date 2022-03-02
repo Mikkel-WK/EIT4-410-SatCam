@@ -1,0 +1,9 @@
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:FullSystem_Debug
+eclipse.preferences.version=1
+org.eclipse.launchbar.core.descriptorType.default\:FullSystem_Debug/activeLaunchMode=run
+org.eclipse.launchbar.core.descriptorType.default\:FullSystem_Debug/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
+org.eclipse.launchbar.core.descriptorType.default\:SystemDebugger_freertos_app_system/activeLaunchMode=run
+org.eclipse.launchbar.core.descriptorType.default\:SystemDebugger_freertos_app_system/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
