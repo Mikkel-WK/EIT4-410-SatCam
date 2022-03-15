@@ -1,0 +1,30 @@
+From 6f2bfc2ad7963d163a859ddf58e514cf127fdaa0 Mon Sep 17 00:00:00 2001
+From: StephanAAU <slarse10@student.aau.dk>
+Date: Thu, 24 Feb 2022 12:17:22 +0100
+Subject: [PATCH] QSPI fix test
+
+---
+ drivers/mtd/spi-nor/spansion.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 6bab0ca..d9c52d1 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -203,11 +203,9 @@ static struct flash_info spansion_parts[] = {
+ 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128,
+ 			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl128s0", INFO6(0x012018, 0x4d0080, 256 * 1024, 64,
+-			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			      USE_CLSR | SPI_NOR_HAS_LOCK) },
++				SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256,
+-			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			      USE_CLSR | SPI_NOR_HAS_LOCK) },
++				SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25fl256s0", INFO6(0x010219, 0x4d0080, 256 * 1024, 128,
+ 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			      USE_CLSR) },
+-- 
+2.7.4
+

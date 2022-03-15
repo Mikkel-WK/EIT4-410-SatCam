@@ -1,0 +1,17 @@
+#-----------------------------------------------------------
+# Vivado v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:48:09 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Sat Mar  5 17:48:54 2022
+# Process ID: 15084
+# Current directory: C:/Users/Bruger/AppData/Roaming/Xilinx/Vivado
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent15428
+# Log file: C:/Users/Bruger/AppData/Roaming/Xilinx/Vivado/vivado.log
+# Journal file: C:/Users/Bruger/AppData/Roaming/Xilinx/Vivado\vivado.jou
+# Running On: DESKTOP-LNVH2M6, OS: Windows, CPU Frequency: 2304 MHz, CPU Physical cores: 4, Host memory: 16966 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/School/zynqberrydemo1/vivado/zynqberrydemo1.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/School/zynqberrydemo1/vivado/zynqberrydemo1.srcs/sources_1/bd/zsys/zsys.bd}
+archive_project C:/School/zynqberrydemo1/zynqberrydemo1.xpr.zip -temp_dir C:/Users/Bruger/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-15084-DESKTOP-LNVH2M6 -force -exclude_run_results -include_config_settings

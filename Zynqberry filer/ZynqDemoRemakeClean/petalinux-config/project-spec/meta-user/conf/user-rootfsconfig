@@ -1,0 +1,12 @@
+#Note: Mention Each package in individual line
+#These packages will get added into rootfs menu entry
+
+CONFIG_gpio-demo
+CONFIG_peekpoke
+CONFIG_startup
+CONFIG_rpicam
+CONFIG_fbgrab
+CONFIG_webfwu
+CONFIG_te-audio-codec
+CONFIG_ffmpeg
+CONFIG_te-audio-codec

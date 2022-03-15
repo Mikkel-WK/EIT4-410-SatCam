@@ -1,0 +1,26 @@
+2022-03-15T13:28:23.237004300255-13:28:23 **** Clean-only build of project ZynqDemoRemake2 ****
+000-buildplatform.bat 53537 ZynqDemoRemake2 clean 
+000-XSDB Server Channel: tcfchan#2
+000-Cleaning the zynq_fsbl application.
+000-rm -rf  sd.o  nand.o  image_mover.o  md5.o  fsbl_hooks.o  main.o  rsa.o  nor.o  te_vdma.o  qspi.o  te_fsbl_hooks_te0726_d1.o  p
+000-s7_init.o  te_fsbl_hooks.o  pcap.o  fsbl_handoff.o zynq_fsbl_bsp/ps7_cortexa9_0/lib/libxil.a fsbl.elf *.o
+000-
+000-rm: kan ikke tage status (lstat) på '*.o': Invalid argument
+000/ZynqDemoRemake20-1-1make: *** [Makefile:42: clean] Error 12-make: *** [Makefile:42: clean] Error 1
+000-Failed to do platform clean.
+000-    invoked from within
+000-"::tcf::eval -progress {apply {{msg} {puts $msg}}} {tcf_send_command tcfchan#0 xsdb eval s es {{platform active ZynqDemoRemake2; platform clean}}}"
+000-    (procedure "::tcf::send_command" line 4)
+000-    invoked from within
+000-"tcf send_command $::xsdb::curchan xsdb eval s es [list "platform active $PLATFORM_NAME; platform clean"]"
+000-    invoked from within
+000-"if { $iswindows == 1 } {    
+000-
+000-    set XSDB_PORT [lindex $argv 0]
+000-    set PLATFORM_NAME [lindex $argv 1]
+000-    set arglen [llength $argv]
+000-    set lastind..."
+000-    (file "C:/Xilinx/Vitis/2021.2\scripts\vitis\util\buildplatform.tcl" line 11)
+00255-
+13:28:25 Build Finished (took 2s.254ms)
+

@@ -1,0 +1,19 @@
+TRACE::2022-03-06.03:12:46::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/qemu/
+TRACE::2022-03-06.03:12:46::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/linux/qemu/
+TRACE::2022-03-06.03:12:46::SCWLinux:: Copying the user libraries. 
+TRACE::2022-03-06.03:12:46::SCWLinux::Skipping the Petalinux build as image is already given.
+TRACE::2022-03-07.19:42:58::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/qemu/
+TRACE::2022-03-07.19:42:58::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/linux/qemu/
+TRACE::2022-03-07.19:42:58::SCWLinux:: Copying the user libraries. 
+TRACE::2022-03-07.19:42:58::SCWLinux::Skipping the Petalinux build as image is already given.
+TRACE::2022-03-07.19:44:34::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/linux/qemu/
+TRACE::2022-03-07.19:44:34::SCWLinux:: Copying the user libraries. 
+TRACE::2022-03-07.19:44:34::SCWLinux::Skipping the Petalinux build as image is already given.
+TRACE::2022-03-10.12:17:36::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/qemu/
+TRACE::2022-03-10.12:17:36::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/linux/qemu/
+TRACE::2022-03-10.12:17:36::SCWLinux:: Copying the user libraries. 
+TRACE::2022-03-10.12:17:36::SCWLinux::Skipping the Petalinux build as image is already given.
+TRACE::2022-03-10.12:22:18::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/qemu/
+TRACE::2022-03-10.12:22:18::SCWLinux::Copying the qemu file from  C:/Xilinx/Vitis/2021.2/data/emulation/platforms/zynq/sw/a9_linux/qemu/qemu_args.txt To C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/sw/ZynqDemoRemake2/linux/qemu/
+TRACE::2022-03-10.12:22:18::SCWLinux:: Copying the user libraries. 
+TRACE::2022-03-10.12:22:18::SCWLinux::Skipping the Petalinux build as image is already given.

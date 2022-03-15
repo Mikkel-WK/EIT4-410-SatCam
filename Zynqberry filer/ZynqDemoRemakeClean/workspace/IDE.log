@@ -1,0 +1,377 @@
+17:03:56 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+17:03:56 INFO  : Registering command handlers for Vitis TCF services
+17:03:56 INFO  : Platform repository initialization has completed.
+17:04:00 INFO  : XSCT server has started successfully.
+17:04:00 INFO  : plnx-install-location is set to ''
+17:04:03 INFO  : Successfully done setting XSCT server connection channel  
+17:04:03 INFO  : Successfully done query RDI_DATADIR 
+17:04:03 INFO  : Successfully done setting workspace for the tool. 
+17:09:49 INFO  : No changes in MSS file content so sources will not be generated.
+17:17:51 INFO  : Result from executing command 'getProjects': ZynqDemoRemake
+17:17:51 INFO  : Result from executing command 'getPlatforms': 
+17:21:30 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images/BOOT.bin
+17:21:30 INFO  : Creating new bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images\bootgen.bif
+17:21:32 INFO  : Bootgen command execution is done.
+17:25:39 INFO  : No changes in MSS file content so sources will not be generated.
+17:37:27 INFO  : Result from executing command 'removePlatformRepo': 
+17:38:55 INFO  : Result from executing command 'getProjects': ZynqDemoRemake
+17:38:55 INFO  : Result from executing command 'getPlatforms': 
+17:45:34 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images/BOOT.bin -w on
+17:45:34 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images\bootgen.bif
+17:45:35 INFO  : Bootgen command execution is done.
+17:47:19 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+17:47:21 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+17:53:02 INFO  : Result from executing command 'getProjects': ZynqDemoRemake
+17:53:02 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+17:53:46 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images/BOOT.bin -w on
+17:53:46 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images\bootgen.bif
+17:53:48 INFO  : Bootgen command execution is done.
+17:56:12 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+19:36:58 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+19:36:59 INFO  : 'targets -set -filter {jtag_cable_name =~ "JTAG-ONB4 2516330075ADA" && level==0 && jtag_device_ctx=="jsn-JTAG-ONB4-2516330075ADA-13722093-0"}' command is executed.
+19:36:59 INFO  : Device configured successfully with "C:/School/Vivado/ZynqDemoRemake/workspace/app/_ide/bitstream/zynqberrydemo1_r_128MB.bit"
+19:41:32 ERROR : (XSDB Server)unexpected arguments: arm hew
+
+19:41:34 ERROR : (XSDB Server)unexpected arguments: arm hw
+
+19:41:41 ERROR : (XSDB Server)unexpected arguments: arm
+
+19:42:07 ERROR : (XSDB Server)wrong # args: should be "source ?-encoding name? fileName"
+
+19:42:13 ERROR : (XSDB Server)couldn't read file "ps7_init.tcl": no such file or directory
+
+19:44:02 ERROR : (XSDB Server)couldn't read file "ps7_init.tcl": no such file or directory
+
+19:44:18 ERROR : (XSDB Server)wrong # args: should be "source ?-encoding name? fileName"
+
+19:44:41 ERROR : (XSDB Server)couldn't read file "ps7_init.tcl": no such file or directory
+
+19:44:57 ERROR : (XSDB Server)couldn't read file "ps7_init.tcl": no such file or directory
+
+19:45:01 ERROR : (XSDB Server)couldn't read file "c:ps7_init.tcl": no such file or directory
+
+19:46:42 ERROR : (XSDB Server)ambiguous command name "petalinux": petalinux-boot petalinux-build petalinux-config petalinux-create petalinux-install-path petalinux-package petalinux-util
+
+19:46:48 ERROR : (XSDB Server)Petalinux commands are supported only on Linux platform
+
+19:46:52 ERROR : (XSDB Server)wrong # args: should be "jtag subcommand ?argument ...?"
+
+19:46:54 ERROR : (XSDB Server)unknown or ambiguous subcommand "help": must be claim, device_properties, disclaim, frequency, lock, sequence, servers, skew, targets, or unlock
+
+19:47:12 ERROR : (XSDB Server)invalid command name "download"
+
+19:47:14 ERROR : (XSDB Server)invalid command name "download"
+
+19:47:18 ERROR : (XSDB Server)wrong # args: should be "device subcommand ?argument ...?"
+
+19:47:20 ERROR : (XSDB Server)unknown or ambiguous subcommand "#": must be authjtag, program, secdebug, or status
+
+20:25:36 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+20:25:38 INFO  : Registering command handlers for Vitis TCF services
+20:25:38 INFO  : Platform repository initialization has completed.
+20:25:40 INFO  : XSCT server has started successfully.
+20:25:42 INFO  : Successfully done setting XSCT server connection channel  
+20:25:42 INFO  : plnx-install-location is set to ''
+20:25:42 INFO  : Successfully done query RDI_DATADIR 
+20:25:42 INFO  : Successfully done setting workspace for the tool. 
+20:27:20 ERROR : (XSDB Server)ERROR: [Hsi 55-1571] The design file C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/hw/zynqberrydemo1_r_128MB.xsa is already opened
+
+20:27:20 INFO  : Generated template bif file for app_system
+22:00:52 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+22:00:55 INFO  : Registering command handlers for Vitis TCF services
+22:00:55 INFO  : Platform repository initialization has completed.
+22:00:56 INFO  : XSCT server has started successfully.
+22:00:59 INFO  : plnx-install-location is set to ''
+22:00:59 INFO  : Successfully done setting XSCT server connection channel  
+22:00:59 INFO  : Successfully done query RDI_DATADIR 
+22:00:59 INFO  : Successfully done setting workspace for the tool. 
+22:02:58 INFO  : Result from executing command 'getProjects': ZynqDemoRemake;ZynqDemoRemake2
+22:02:58 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+22:03:16 INFO  : No changes in MSS file content so sources will not be generated.
+22:03:23 INFO  : No changes in MSS file content so sources will not be generated.
+22:07:36 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+22:07:39 INFO  : XSCT server has started successfully.
+22:07:39 INFO  : Successfully done setting XSCT server connection channel  
+22:07:39 INFO  : plnx-install-location is set to ''
+22:07:39 INFO  : Successfully done setting workspace for the tool. 
+22:07:40 INFO  : Platform repository initialization has completed.
+22:07:40 INFO  : Registering command handlers for Vitis TCF services
+22:07:43 INFO  : Successfully done query RDI_DATADIR 
+22:14:57 INFO  : Result from executing command 'removePlatformRepo': 
+22:18:49 INFO  : Result from executing command 'removePlatformRepo': 
+22:19:21 ERROR : Error from executing command 'removePlatformRepo': ERROR: No valid directory exists at given path.
+22:20:44 INFO  : Result from executing command 'removePlatformRepo': 
+22:25:20 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+22:25:24 INFO  : XSCT server has started successfully.
+22:25:24 INFO  : plnx-install-location is set to ''
+22:25:24 INFO  : Successfully done setting XSCT server connection channel  
+22:25:24 INFO  : Successfully done setting workspace for the tool. 
+22:25:24 INFO  : Platform repository initialization has completed.
+22:25:24 INFO  : Registering command handlers for Vitis TCF services
+22:25:24 INFO  : Successfully done query RDI_DATADIR 
+22:32:24 INFO  : Result from executing command 'getProjects': ZynqDemoRemake2
+22:32:24 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+22:33:43 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin
+22:33:43 INFO  : Creating new bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+22:33:45 INFO  : Bootgen command execution is done.
+22:36:13 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+02:28:23 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+02:28:27 INFO  : Registering command handlers for Vitis TCF services
+02:28:27 INFO  : Platform repository initialization has completed.
+02:28:28 INFO  : XSCT server has started successfully.
+02:28:28 INFO  : plnx-install-location is set to ''
+02:28:28 INFO  : Successfully done setting XSCT server connection channel  
+02:28:28 INFO  : Successfully done query RDI_DATADIR 
+02:28:28 INFO  : Successfully done setting workspace for the tool. 
+02:30:43 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+02:30:43 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+02:30:44 INFO  : Bootgen command execution is done.
+02:31:22 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+03:10:24 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+03:10:27 INFO  : Registering command handlers for Vitis TCF services
+03:10:27 INFO  : Platform repository initialization has completed.
+03:10:28 INFO  : XSCT server has started successfully.
+03:10:28 INFO  : Successfully done setting XSCT server connection channel  
+03:10:28 INFO  : plnx-install-location is set to ''
+03:10:28 INFO  : Successfully done setting workspace for the tool. 
+03:10:28 INFO  : Successfully done query RDI_DATADIR 
+03:12:52 INFO  : Result from executing command 'getProjects': ZynqDemoRemake2
+03:12:52 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake2|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/ZynqDemoRemake2.xpfm;ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+03:13:46 ERROR : device_tree is not part of the Repository. Please add the repository having device_tree.
+03:13:55 ERROR : Error occurred while generating the device tree.
+03:14:13 INFO  : Saving repository preferences.
+03:14:13 INFO  : Reading in cores from local repositories: 
+		 C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\device-tree
+03:14:13 INFO  : Cleaning BSP projects in the workspace.
+03:14:13 INFO  : plnx-install-location is set to ''
+03:14:22 ERROR : Error occurred while generating the device tree.
+03:14:55 ERROR : Error occurred while generating the device tree.
+03:15:24 ERROR : Error occurred while generating the device tree.
+03:16:46 INFO  : Saving repository preferences.
+03:16:46 INFO  : Reading in cores from local repositories: 
+		 C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\device_tree
+03:16:46 INFO  : Cleaning BSP projects in the workspace.
+03:16:57 ERROR : Error occurred while generating the device tree.
+03:17:52 INFO  : Saving repository preferences.
+03:17:59 ERROR : Error occurred while generating the device tree.
+03:18:17 INFO  : Saving repository preferences.
+03:18:21 ERROR : Error occurred while generating the device tree.
+03:19:06 INFO  : Saving repository preferences.
+03:19:06 INFO  : Reading in cores from local repositories: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+03:19:06 INFO  : Cleaning BSP projects in the workspace.
+03:19:21 INFO  : Device tree generated successfully at  'C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/device_tree'.
+15:38:27 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+15:38:27 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+15:38:29 INFO  : Bootgen command execution is done.
+15:58:40 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+15:58:44 INFO  : Registering command handlers for Vitis TCF services
+15:58:44 INFO  : Platform repository initialization has completed.
+15:58:44 INFO  : XSCT server has started successfully.
+15:58:44 INFO  : plnx-install-location is set to ''
+15:58:48 INFO  : Successfully done setting XSCT server connection channel  
+15:58:48 INFO  : Successfully done query RDI_DATADIR 
+15:58:48 INFO  : Successfully done setting workspace for the tool. 
+15:58:48 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+16:53:30 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+16:53:30 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+16:53:31 INFO  : Bootgen command execution is done.
+16:54:46 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+18:24:02 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+18:24:05 INFO  : Registering command handlers for Vitis TCF services
+18:24:05 INFO  : Platform repository initialization has completed.
+18:24:06 INFO  : XSCT server has started successfully.
+18:24:09 INFO  : plnx-install-location is set to ''
+18:24:09 INFO  : Successfully done setting XSCT server connection channel  
+18:24:09 INFO  : Successfully done query RDI_DATADIR 
+18:24:09 INFO  : Successfully done setting workspace for the tool. 
+18:24:09 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+18:26:23 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+18:26:23 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+18:26:25 INFO  : Bootgen command execution is done.
+19:40:18 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+19:40:21 INFO  : Registering command handlers for Vitis TCF services
+19:40:21 INFO  : Platform repository initialization has completed.
+19:40:22 INFO  : XSCT server has started successfully.
+19:40:25 INFO  : Successfully done setting XSCT server connection channel  
+19:40:25 INFO  : plnx-install-location is set to ''
+19:40:25 INFO  : Successfully done query RDI_DATADIR 
+19:40:25 INFO  : Successfully done setting workspace for the tool. 
+19:40:25 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+19:44:52 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+19:44:55 INFO  : Registering command handlers for Vitis TCF services
+19:44:55 INFO  : Platform repository initialization has completed.
+19:44:55 INFO  : XSCT server has started successfully.
+19:44:56 INFO  : plnx-install-location is set to ''
+19:44:56 INFO  : Successfully done setting XSCT server connection channel  
+19:44:56 INFO  : Successfully done query RDI_DATADIR 
+19:44:56 INFO  : Successfully done setting workspace for the tool. 
+19:44:56 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+19:45:50 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+19:45:50 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+19:45:52 INFO  : Bootgen command execution is done.
+19:47:12 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+16:29:07 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+16:29:10 INFO  : Registering command handlers for Vitis TCF services
+16:29:10 INFO  : Platform repository initialization has completed.
+16:29:11 INFO  : XSCT server has started successfully.
+16:29:11 INFO  : Successfully done setting XSCT server connection channel  
+16:29:11 INFO  : plnx-install-location is set to ''
+16:29:14 INFO  : Successfully done setting workspace for the tool. 
+16:29:14 INFO  : Successfully done query RDI_DATADIR 
+16:29:14 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+16:30:47 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+16:31:37 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+16:31:37 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+16:31:39 INFO  : Bootgen command execution is done.
+16:33:59 ERROR : (XSDB Server)no channel specified
+
+16:38:04 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+16:38:06 INFO  : Registering command handlers for Vitis TCF services
+16:38:06 INFO  : Platform repository initialization has completed.
+16:38:07 INFO  : XSCT server has started successfully.
+16:38:07 INFO  : plnx-install-location is set to ''
+16:38:07 INFO  : Successfully done setting XSCT server connection channel  
+16:38:07 INFO  : Successfully done query RDI_DATADIR 
+16:38:07 INFO  : Successfully done setting workspace for the tool. 
+16:38:07 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+16:38:12 ERROR : (XSDB Server)Invalid target. Use "connect" command to connect to hw_server/TCF agent
+
+17:51:22 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+17:51:22 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+17:51:24 INFO  : Bootgen command execution is done.
+19:44:40 INFO  : Result from executing command 'getProjects': ZynqDemoRemake2
+19:44:40 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake2|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/ZynqDemoRemake2.xpfm;ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+19:47:53 INFO  : Invoking Bootgen: bootgen -image bootgen.bif -arch zynq -o C:/School/Vivado/ZynqDemoRemake/os/vitis-images2/BOOT.bin -w on
+19:47:53 INFO  : Overwriting existing bif file C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\bootgen.bif
+19:47:55 INFO  : Bootgen command execution is done.
+16:58:50 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+16:58:54 INFO  : Registering command handlers for Vitis TCF services
+16:58:55 INFO  : Platform repository initialization has completed.
+16:58:55 INFO  : XSCT server has started successfully.
+16:58:59 INFO  : plnx-install-location is set to ''
+16:58:59 INFO  : Successfully done setting XSCT server connection channel  
+16:58:59 INFO  : Successfully done query RDI_DATADIR 
+16:58:59 INFO  : Successfully done setting workspace for the tool. 
+16:58:59 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+10:19:19 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+10:19:22 INFO  : Registering command handlers for Vitis TCF services
+10:19:22 INFO  : Platform repository initialization has completed.
+10:19:23 INFO  : XSCT server has started successfully.
+10:19:23 INFO  : plnx-install-location is set to ''
+10:19:27 INFO  : Successfully done setting XSCT server connection channel  
+10:19:27 INFO  : Successfully done query RDI_DATADIR 
+10:19:27 INFO  : Successfully done setting workspace for the tool. 
+10:19:27 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+13:07:12 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+13:07:16 INFO  : Registering command handlers for Vitis TCF services
+13:07:17 INFO  : XSCT server has started successfully.
+13:07:17 INFO  : Successfully done setting XSCT server connection channel  
+13:07:17 INFO  : plnx-install-location is set to ''
+13:07:17 INFO  : Platform repository initialization has completed.
+13:07:20 INFO  : Successfully done setting workspace for the tool. 
+13:07:20 INFO  : Successfully done query RDI_DATADIR 
+13:07:20 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+10:59:20 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+10:59:23 INFO  : Registering command handlers for Vitis TCF services
+10:59:24 INFO  : Platform repository initialization has completed.
+10:59:25 INFO  : XSCT server has started successfully.
+10:59:25 INFO  : Successfully done setting XSCT server connection channel  
+10:59:28 INFO  : plnx-install-location is set to ''
+10:59:28 INFO  : Successfully done setting workspace for the tool. 
+10:59:28 INFO  : Successfully done query RDI_DATADIR 
+10:59:28 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+12:17:36 INFO  : Result from executing command 'getProjects': ZynqDemoRemake2
+12:17:36 INFO  : Result from executing command 'getPlatforms': ZynqDemoRemake2|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/ZynqDemoRemake2.xpfm;ZynqDemoRemake|C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake/export/ZynqDemoRemake/ZynqDemoRemake.xpfm
+12:17:50 INFO  : No changes in MSS file content so sources will not be generated.
+12:21:15 ERROR : An unexpected exception occurred in the module 'platform project logging'
+12:22:29 INFO  : Checking for BSP changes to sync application flags for project 'vdma_rtos'...
+12:22:29 INFO  : Result from executing command 'getProjects': RemoteSystemsTempFiles;ZynqDemoRemake2;vdma_rtos;vdma_rtos_system
+12:22:29 WARN  : Failed to closehw "C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa"
+Reason: C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa is not available in the current workspace
+use 'getprojects' command to see list of available projects in current workspace
+12:22:29 INFO  : Result from executing command 'getProjects': RemoteSystemsTempFiles;ZynqDemoRemake2;vdma_rtos;vdma_rtos_system
+12:22:29 ERROR : Failed to openhw "C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa"
+Reason: C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa is not available in the current workspace
+use 'getprojects' command to see list of available projects in current workspace
+12:22:29 ERROR : Failed to update application flags from BSP for 'vdma_rtos'. Reason: null
+java.lang.NullPointerException
+	at com.xilinx.sdx.sw.internal.SDxSwPlatform.<init>(SDxSwPlatform.java:305)
+	at com.xilinx.sdx.sw.internal.SDxSwPlatform.create(SDxSwPlatform.java:214)
+	at com.xilinx.sdx.sdk.core.util.SdkPlatformHelper.getSwPlatform(SdkPlatformHelper.java:61)
+	at com.xilinx.sdx.sdk.core.build.SdkMakefileGenerationListener.getSwPlatform(SdkMakefileGenerationListener.java:160)
+	at com.xilinx.sdx.sdk.core.build.SdkMakefileGenerationListener.syncAppFlags(SdkMakefileGenerationListener.java:78)
+	at com.xilinx.sdx.sdk.core.build.SdkMakefileGenerationListener.preMakefileGeneration(SdkMakefileGenerationListener.java:48)
+	at com.xilinx.sdk.managedbuilder.XilinxGnuMakefileGenerator.notifyPreMakefileGenerationListeners(XilinxGnuMakefileGenerator.java:91)
+	at com.xilinx.sdk.managedbuilder.XilinxGnuMakefileGenerator.regenerateMakefiles(XilinxGnuMakefileGenerator.java:75)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.performMakefileGeneration(CommonBuilder.java:1006)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.performPrebuildGeneration(CommonBuilder.java:873)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:748)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:513)
+	at org.eclipse.cdt.managedbuilder.internal.core.CommonBuilder.build(CommonBuilder.java:459)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:832)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:220)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:263)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:316)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:319)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:371)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:392)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:515)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:412)
+	at org.eclipse.ui.actions.BuildAction$1.runInWorkspace(BuildAction.java:291)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:42)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+12:22:29 ERROR : Failed to compute checksum of hardware specification file used by project 'vdma_rtos'
+12:22:29 INFO  : Result from executing command 'getProjects': RemoteSystemsTempFiles;ZynqDemoRemake2;vdma_rtos;vdma_rtos_system
+12:22:29 ERROR : Failed to openhw "C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa"
+Reason: C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa is not available in the current workspace
+use 'getprojects' command to see list of available projects in current workspace
+12:22:29 INFO  : Result from executing command 'getProjects': RemoteSystemsTempFiles;ZynqDemoRemake2;vdma_rtos;vdma_rtos_system
+12:22:29 ERROR : Failed to openhw "C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa"
+Reason: C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa is not available in the current workspace
+use 'getprojects' command to see list of available projects in current workspace
+12:22:29 INFO  : Result from executing command 'getProjects': RemoteSystemsTempFiles;ZynqDemoRemake2;vdma_rtos;vdma_rtos_system
+12:22:29 ERROR : Failed to openhw "C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa"
+Reason: C:/School/Vivado/ZynqDemoRemake/workspace/ZynqDemoRemake2/export/ZynqDemoRemake2/hw/ZynqDemoRemake.xsa is not available in the current workspace
+use 'getprojects' command to see list of available projects in current workspace
+12:29:16 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemake\workspace\temp_xsdb_launch_script.tcl
+12:29:23 INFO  : Registering command handlers for Vitis TCF services
+12:29:24 INFO  : Platform repository initialization has completed.
+12:29:25 INFO  : XSCT server has started successfully.
+12:29:28 INFO  : Successfully done setting XSCT server connection channel  
+12:29:28 INFO  : plnx-install-location is set to ''
+12:29:28 INFO  : Successfully done query RDI_DATADIR 
+12:29:28 INFO  : Successfully done setting workspace for the tool. 
+12:29:29 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+13:28:01 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\School\Vivado\ZynqDemoRemakeClean\workspace\temp_xsdb_launch_script.tcl
+13:28:06 INFO  : Registering command handlers for Vitis TCF services
+13:28:07 INFO  : Platform repository initialization has completed.
+13:28:07 INFO  : XSCT server has started successfully.
+13:28:07 INFO  : Successfully done setting XSCT server connection channel  
+13:28:10 INFO  : plnx-install-location is set to ''
+13:28:10 INFO  : Successfully done setting workspace for the tool. 
+13:28:10 INFO  : Successfully done query RDI_DATADIR 
+13:28:10 INFO  : Restoring local repository preferences: 
+		 C:\Users\Bruger\Documents\GitHub\device-tree-xlnx
+13:28:16 INFO  : Result from executing command 'removePlatformRepo': 
+13:28:25 ERROR : Error from executing command 'removePlatformRepo': ERROR: No valid directory exists at given path.

@@ -1,0 +1,8 @@
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader]C:\School\Vivado\ZynqDemoRemake\workspace\ZynqDemoRemake2\zynq_fsbl\fsbl.elf
+	C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2\system.bit
+	C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2\u-boot.elf
+	[load = 0x00100000]C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2\system.dtb
+}

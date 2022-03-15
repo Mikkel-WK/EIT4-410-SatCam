@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="app_system-bitFile" value="${project_loc:app}/_ide/bitstream/zynqberrydemo1_r_128MB.bit"/>
+	<item key="app_system-bmmFile" value=""/>
+	<item key="app_system-target" value="Local"/>
+	<item key="app_system-device" value="Auto Detect"/>
+	<item key="app_system-partial_bit" value="false"/>
+	<item key="app_system-skip_rev_check" value="false"/>
+	<item key="programfpga.sdxproject" value="app_system"/>
+	<item key="devices_info_Local" value="{&quot;cables&quot;:[{&quot;name&quot;:&quot;JTAG-ONB4 2516330075ADA&quot;,&quot;indexContextMap&quot;:{&quot;2&quot;:&quot;jsn-JTAG-ONB4-2516330075ADA-4ba00477-0&quot;,&quot;3&quot;:&quot;jsn-JTAG-ONB4-2516330075ADA-13722093-0&quot;}}]}"/>
+</section>

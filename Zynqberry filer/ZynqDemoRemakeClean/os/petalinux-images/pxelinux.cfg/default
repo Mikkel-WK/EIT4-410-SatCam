@@ -1,0 +1,4 @@
+LABEL Linux
+KERNEL zImage
+FDT system.dtb
+INITRD rootfs.cpio.gz.u-boot

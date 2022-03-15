@@ -1,0 +1,7 @@
+the_ROM_image:
+{
+	[bootloader] /home/stephan/petalinux/projects/demoremake/images/linux/zynq_fsbl.elf
+	/home/stephan/petalinux/projects/demoremake/images/linux/system.bit
+	/home/stephan/petalinux/projects/demoremake/images/linux/u-boot.elf
+	[load=0x00100000] /home/stephan/petalinux/projects/demoremake/images/linux/system.dtb
+}

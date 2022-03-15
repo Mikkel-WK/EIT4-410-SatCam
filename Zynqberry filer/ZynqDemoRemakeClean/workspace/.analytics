@@ -1,0 +1,100 @@
+timestamp=[2022-03-05 17:03:54], mode=WORKBENCH_START, duration=0:00:07.919, duration_ms=7919, data={}
+timestamp=[2022-03-05 17:03:54], mode=WORKBENCH_UI_INIT, duration=0:00:00.608, duration_ms=608, data={editors_count=0, platform_editors_count=0, projects_count=0, platform_projects_count=0, active_platform_editor=false, projects=}
+timestamp=[2022-03-05 17:03:56], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.090, duration_ms=90, data={}
+timestamp=[2022-03-05 17:04:56], mode=PLATFORM_CREATION, duration=0:00:21.860, duration_ms=21860, data={platform_source=dsa, os=linux, processor=ps7_cortexa9, platform=null}
+timestamp=[2022-03-05 17:10:01], mode=PLATFORM_GENERATION, duration=0:00:06.876, duration_ms=6876, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:17:01], mode=PLATFORM_GENERATION, duration=0:00:06.063, duration_ms=6063, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:17:51], mode=PLATFORM_GENERATION, duration=0:00:11.989, duration_ms=11989, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:37:30], mode=PLATFORM_GENERATION, duration=0:00:04.672, duration_ms=4672, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:37:47], mode=PLATFORM_GENERATION, duration=0:00:13.204, duration_ms=13204, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:38:56], mode=PLATFORM_GENERATION, duration=0:00:08.873, duration_ms=8873, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:53:03], mode=PLATFORM_GENERATION, duration=0:00:07.917, duration_ms=7917, data={name=ZynqDemoRemake}
+timestamp=[2022-03-05 17:55:40], mode=APP_CREATION, duration=0:00:03.630, duration_ms=3630, data={name=app, project_type=sdk, os=linux, processor=cortex-a9, runtime=C/C++, platform=ZynqDemoRemake, application_type=application}
+timestamp=[2022-03-05 20:25:37], mode=WORKBENCH_START, duration=0:00:06.643, duration_ms=6643, data={}
+timestamp=[2022-03-05 20:25:37], mode=WORKBENCH_UI_INIT, duration=0:00:00.449, duration_ms=449, data={editors_count=4, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake,app,app_system}
+timestamp=[2022-03-05 20:25:38], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.069, duration_ms=69, data={}
+timestamp=[2022-03-05 20:27:22], mode=MISC, duration=0:00:02.134, duration_ms=2134, data={name=app_system, type=bif_creation}
+timestamp=[2022-03-05 22:00:54], mode=WORKBENCH_START, duration=0:00:06.662, duration_ms=6662, data={}
+timestamp=[2022-03-05 22:00:54], mode=WORKBENCH_UI_INIT, duration=0:00:00.408, duration_ms=408, data={editors_count=4, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake,app,app_system}
+timestamp=[2022-03-05 22:00:55], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.063, duration_ms=63, data={}
+timestamp=[2022-03-05 22:02:58], mode=PLATFORM_CREATION, duration=0:00:20.002, duration_ms=20002, data={platform_source=dsa, os=standalone, processor=ps7_cortexa9, platform=null}
+timestamp=[2022-03-05 22:03:52], mode=PLATFORM_GENERATION, duration=0:00:13.505, duration_ms=13505, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:07:39], mode=WORKBENCH_START, duration=0:00:08.071, duration_ms=8071, data={}
+timestamp=[2022-03-05 22:07:40], mode=WORKBENCH_UI_INIT, duration=0:00:01.202, duration_ms=1202, data={editors_count=2, platform_editors_count=2, projects_count=5, platform_projects_count=2, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-05 22:07:40], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.046, duration_ms=46, data={}
+timestamp=[2022-03-05 22:08:38], mode=PLATFORM_GENERATION, duration=0:00:16.514, duration_ms=16514, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:11:17], mode=PLATFORM_GENERATION, duration=0:00:09.174, duration_ms=9174, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:11:59], mode=PLATFORM_GENERATION, duration=0:00:07.285, duration_ms=7285, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:12:33], mode=PLATFORM_GENERATION, duration=0:00:07.417, duration_ms=7417, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:13:52], mode=PLATFORM_GENERATION, duration=0:00:07.339, duration_ms=7339, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:14:52], mode=PLATFORM_GENERATION, duration=0:00:07.360, duration_ms=7360, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:14:59], mode=PLATFORM_GENERATION, duration=0:00:04.511, duration_ms=4511, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:15:17], mode=PLATFORM_GENERATION, duration=0:00:14.460, duration_ms=14460, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:17:18], mode=PLATFORM_GENERATION, duration=0:00:04.855, duration_ms=4855, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:18:27], mode=PLATFORM_GENERATION, duration=0:00:04.941, duration_ms=4941, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:18:52], mode=PLATFORM_GENERATION, duration=0:00:04.368, duration_ms=4368, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:19:21], mode=PLATFORM_GENERATION, duration=0:00:01.802, duration_ms=1802, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:19:38], mode=PLATFORM_GENERATION, duration=0:00:14.856, duration_ms=14856, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:20:46], mode=PLATFORM_GENERATION, duration=0:00:04.441, duration_ms=4441, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:22:06], mode=PLATFORM_GENERATION, duration=0:00:15.080, duration_ms=15080, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:22:45], mode=PLATFORM_GENERATION, duration=0:00:07.664, duration_ms=7664, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:25:23], mode=WORKBENCH_START, duration=0:00:07.034, duration_ms=7034, data={}
+timestamp=[2022-03-05 22:25:24], mode=WORKBENCH_UI_INIT, duration=0:00:00.864, duration_ms=864, data={editors_count=1, platform_editors_count=1, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-05 22:25:24], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.130, duration_ms=130, data={}
+timestamp=[2022-03-05 22:26:34], mode=PLATFORM_GENERATION, duration=0:00:10.259, duration_ms=10259, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:28:18], mode=PLATFORM_GENERATION, duration=0:00:07.713, duration_ms=7713, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:29:54], mode=PLATFORM_GENERATION, duration=0:00:07.686, duration_ms=7686, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:31:10], mode=PLATFORM_GENERATION, duration=0:00:07.496, duration_ms=7496, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-05 22:32:24], mode=PLATFORM_GENERATION, duration=0:00:17.907, duration_ms=17907, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-06 02:28:25], mode=WORKBENCH_START, duration=0:00:07.787, duration_ms=7787, data={}
+timestamp=[2022-03-06 02:28:26], mode=WORKBENCH_UI_INIT, duration=0:00:01.024, duration_ms=1024, data={editors_count=5, platform_editors_count=5, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 02:28:27], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.339, duration_ms=339, data={}
+timestamp=[2022-03-06 03:10:25], mode=WORKBENCH_START, duration=0:00:07.471, duration_ms=7471, data={}
+timestamp=[2022-03-06 03:10:26], mode=WORKBENCH_UI_INIT, duration=0:00:00.540, duration_ms=540, data={editors_count=5, platform_editors_count=5, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 03:10:27], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.342, duration_ms=342, data={}
+timestamp=[2022-03-06 03:12:52], mode=PLATFORM_GENERATION, duration=0:00:15.308, duration_ms=15308, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-06 15:58:42], mode=WORKBENCH_START, duration=0:00:07.168, duration_ms=7168, data={}
+timestamp=[2022-03-06 15:58:43], mode=WORKBENCH_UI_INIT, duration=0:00:00.783, duration_ms=783, data={editors_count=6, platform_editors_count=6, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 15:58:44], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.475, duration_ms=475, data={}
+timestamp=[2022-03-06 18:24:04], mode=WORKBENCH_START, duration=0:00:07.382, duration_ms=7382, data={}
+timestamp=[2022-03-06 18:24:04], mode=WORKBENCH_UI_INIT, duration=0:00:00.512, duration_ms=512, data={editors_count=7, platform_editors_count=7, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 18:24:05], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.403, duration_ms=403, data={}
+timestamp=[2022-03-06 19:40:19], mode=WORKBENCH_START, duration=0:00:07.660, duration_ms=7660, data={}
+timestamp=[2022-03-06 19:40:20], mode=WORKBENCH_UI_INIT, duration=0:00:00.516, duration_ms=516, data={editors_count=7, platform_editors_count=7, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 19:40:21], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.399, duration_ms=399, data={}
+timestamp=[2022-03-06 19:44:53], mode=WORKBENCH_START, duration=0:00:06.012, duration_ms=6012, data={}
+timestamp=[2022-03-06 19:44:54], mode=WORKBENCH_UI_INIT, duration=0:00:00.503, duration_ms=503, data={editors_count=7, platform_editors_count=7, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-06 19:44:55], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.171, duration_ms=171, data={}
+timestamp=[2022-03-07 16:29:08], mode=WORKBENCH_START, duration=0:00:06.707, duration_ms=6707, data={}
+timestamp=[2022-03-07 16:29:09], mode=WORKBENCH_UI_INIT, duration=0:00:00.527, duration_ms=527, data={editors_count=7, platform_editors_count=7, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-07 16:29:10], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.375, duration_ms=375, data={}
+timestamp=[2022-03-07 16:38:05], mode=WORKBENCH_START, duration=0:00:06.289, duration_ms=6289, data={}
+timestamp=[2022-03-07 16:38:05], mode=WORKBENCH_UI_INIT, duration=0:00:00.421, duration_ms=421, data={editors_count=2, platform_editors_count=2, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-07 16:38:06], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.207, duration_ms=207, data={}
+timestamp=[2022-03-07 19:43:04], mode=PLATFORM_GENERATION, duration=0:00:17.524, duration_ms=17524, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-07 19:44:40], mode=PLATFORM_GENERATION, duration=0:00:12.657, duration_ms=12657, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-08 16:58:51], mode=WORKBENCH_START, duration=0:00:08.095, duration_ms=8095, data={}
+timestamp=[2022-03-08 16:58:52], mode=WORKBENCH_UI_INIT, duration=0:00:00.491, duration_ms=491, data={editors_count=4, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-08 16:58:55], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.514, duration_ms=514, data={}
+timestamp=[2022-03-09 10:19:21], mode=WORKBENCH_START, duration=0:00:07.075, duration_ms=7075, data={}
+timestamp=[2022-03-09 10:19:21], mode=WORKBENCH_UI_INIT, duration=0:00:00.547, duration_ms=547, data={editors_count=6, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-09 10:19:22], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.391, duration_ms=391, data={}
+timestamp=[2022-03-09 13:07:15], mode=WORKBENCH_START, duration=0:00:08.096, duration_ms=8096, data={}
+timestamp=[2022-03-09 13:07:15], mode=WORKBENCH_UI_INIT, duration=0:00:00.681, duration_ms=681, data={editors_count=6, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-09 13:07:17], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.422, duration_ms=422, data={}
+timestamp=[2022-03-10 10:59:22], mode=WORKBENCH_START, duration=0:00:08.018, duration_ms=8018, data={}
+timestamp=[2022-03-10 10:59:23], mode=WORKBENCH_UI_INIT, duration=0:00:00.988, duration_ms=988, data={editors_count=6, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2,app,app_system}
+timestamp=[2022-03-10 10:59:24], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.506, duration_ms=506, data={}
+timestamp=[2022-03-10 12:16:59], mode=APP_CREATION, duration=0:00:08.095, duration_ms=8095, data={name=vdma_rtos, project_type=sdk, os=standalone, processor=cortex-a9, runtime=C/C++, platform=ZynqDemoRemake2, application_type=application}
+timestamp=[2022-03-10 12:18:28], mode=APP_CREATION, duration=0:00:07.041, duration_ms=7041, data={name=vdma_rtos, project_type=sdk, os=freertos10_xilinx, processor=cortex-a9, runtime=C/C++, platform=ZynqDemoRemake2, application_type=application}
+timestamp=[2022-03-10 12:20:43], mode=PLATFORM_CREATION, duration=0:00:03.163, duration_ms=3163, data={platform_source=platform, os=null, processor=null, platform=custom}
+timestamp=[2022-03-10 12:22:28], mode=PLATFORM_GENERATION, duration=0:00:19.427, duration_ms=19427, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-10 12:22:29], mode=BUILD, duration=0:00:00.322, duration_ms=322, data={name=vdma_rtos, configuration=Debug, clean_build=false}
+timestamp=[2022-03-15 12:29:20], mode=WORKBENCH_START, duration=0:00:11.612, duration_ms=11612, data={}
+timestamp=[2022-03-15 12:29:22], mode=WORKBENCH_UI_INIT, duration=0:00:01.220, duration_ms=1220, data={editors_count=6, platform_editors_count=6, projects_count=2, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2}
+timestamp=[2022-03-15 12:29:24], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.647, duration_ms=647, data={}
+timestamp=[2022-03-15 13:28:04], mode=WORKBENCH_START, duration=0:00:08.783, duration_ms=8783, data={}
+timestamp=[2022-03-15 13:28:05], mode=WORKBENCH_UI_INIT, duration=0:00:01.392, duration_ms=1392, data={editors_count=6, platform_editors_count=6, projects_count=2, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,ZynqDemoRemake2}
+timestamp=[2022-03-15 13:28:07], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.421, duration_ms=421, data={}
+timestamp=[2022-03-15 13:28:23], mode=PLATFORM_GENERATION, duration=0:00:12.846, duration_ms=12846, data={name=ZynqDemoRemake2}
+timestamp=[2022-03-15 13:28:25], mode=PLATFORM_GENERATION, duration=0:00:02.479, duration_ms=2479, data={name=ZynqDemoRemake2}

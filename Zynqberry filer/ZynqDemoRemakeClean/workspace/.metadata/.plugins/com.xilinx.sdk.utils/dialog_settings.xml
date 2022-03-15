@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="scw_hwspec" value="C:\School\Vivado\ZynqDemoRemake"/>
+	<item key="bif_file" value="C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2"/>
+	<item key="platform_editor" value="C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2"/>
+	<item key="bootgen_files_selection" value="C:\School\Vivado\ZynqDemoRemake\os\vitis-images2"/>
+	<item key="npw_add_domain" value="C:\School\Vivado\ZynqDemoRemake\os\petalinux-images"/>
+	<item key="soc_flash_files_selection" value="C:\School\zynq_test_board\_binaries_TE0726-03-41C74-R\boot_hello_te0726"/>
+	<item key="boot_components_directory" value="C:\School\Vivado\ZynqDemoRemake\os\vitis-images2"/>
+	<item key="linux_rootfs" value="C:\School\Vivado\ZynqDemoRemake\os\petalinux-images2"/>
+	<item key="hwspec_file_selection" value="C:\School\Vivado\ZynqDemoRemake"/>
+	<item key="dtoutput" value="C:\School\Vivado\ZynqDemoRemake\os\vitis-images2\device_tree"/>
+</section>

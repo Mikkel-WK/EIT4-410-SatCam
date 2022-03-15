@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="&lt;None&gt;-imgFile" value=""/>
+	<item key="&lt;None&gt;-offSet" value=""/>
+	<item key="&lt;None&gt;-initFile" value=""/>
+	<item key="&lt;None&gt;-verifyFlash" value="false"/>
+	<item key="&lt;None&gt;-blankCheck" value="false"/>
+	<item key="&lt;None&gt;-device" value="Auto Detect"/>
+	<item key="&lt;None&gt;-target" value="Local"/>
+	<item key="programflash.hwplatform" value="app_system"/>
+	<item key="app_system-imgFile" value="C:\School\zynq_test_board\_binaries_TE0726-03-41C74-R\boot_hello_te0726\BOOT.bin"/>
+	<item key="app_system-offSet" value=""/>
+	<item key="app_system-initFile" value="C:\School\zynq_test_board\_binaries_TE0726-03-41C74-R\res_elf\fsbl_flash.elf"/>
+	<item key="app_system-flashType" value="qspi-x4-single"/>
+	<item key="app_system-verifyFlash" value="false"/>
+	<item key="app_system-blankCheck" value="false"/>
+	<item key="app_system-device" value="Auto Detect"/>
+	<item key="app_system-target" value="Local"/>
+</section>
