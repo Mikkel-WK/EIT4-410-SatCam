@@ -24,14 +24,26 @@
 #define DCT short
 
 /* Define variables to use during data reading */
-extern size_t xRes; // Horizontal resolution
-extern size_t yRes; // Vertical resolution
-extern size_t dataLen; // Length of data in RAM (Resolution * 4)
+/*
+ * Big resolution: 21MP
+ * Mid resolution: Full HD
+*/
+#define BIGXRES 5344
+#define BIGYRES 4016
+#define BIGRESLEN 21461504
+
+#define MIDXRES 1920
+#define MIDYRES 1080
+#define MIDRESLEN 2073600
 
 /* Define buffers to use for compression */
-// extern BYTE pixelBuffer[]; // Pixel buffer (Resolution * 3)
-// extern BYTE dctBuffer[]; // Buffer for quantization and DCT
-extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
+// extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
+
+/* Define buffers to use for compression */
+SBYTE yccBuffer[BIGRESLEN];
+DCT dctYBuffer[BIGRESLEN];
+DCT dctCbBuffer[BIGRESLEN];
+DCT dctCrBuffer[BIGRESLEN];
 
 /* Markers for JPEG creation */
 extern BYTE SOI[2], SOS[2], EOI[2];
@@ -76,6 +88,9 @@ BYTE* RGBToYCBCR(BYTE* pixelArr, size_t arrLen);
 BYTE* YCBCRToRGB(BYTE* yccArr, size_t arrLen);
 
 SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen);
+
+SBYTE* YBuffer(SBYTE* arr, size_t arrLen);
+
 
 BYTE* QuantToBuffer();
 BYTE* HuffmanToBuffer();

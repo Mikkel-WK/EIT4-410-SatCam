@@ -183,7 +183,6 @@ SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen) {
     return shiftedBuffer;
 }
 
-
 BYTE* QuantToBuffer() {
     BYTE* quantBuffer = malloc(1);
 
