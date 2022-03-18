@@ -18,8 +18,10 @@
 #include <stdint.h>
 #include <string.h>
 
-/* Define unsigned char as BYTE for ease of use */
+/* Define data types for ease of use */
 #define BYTE unsigned char
+#define SBYTE signed char 
+#define DCT short
 
 /* Define variables to use during data reading */
 extern size_t xRes; // Horizontal resolution
@@ -68,10 +70,12 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr);
 /* Functions specifically for testing purposes */
 int TestInput();
 
-/* Functions are written with ints to return potential errors */
+/* Some functions are written with ints to return potential errors */
 BYTE* ReadDataToBuffer(long* dataAddr, size_t datalen, size_t pixelLen);
 BYTE* RGBToYCBCR(BYTE* pixelArr, size_t arrLen);
 BYTE* YCBCRToRGB(BYTE* yccArr, size_t arrLen);
+
+SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen);
 
 BYTE* QuantToBuffer();
 BYTE* HuffmanToBuffer();

@@ -173,6 +173,17 @@ BYTE* YCBCRToRGB(BYTE* yccArr, size_t arrLen) {
     return rgbBuffer;
 }
 
+SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen) {
+    SBYTE* shiftedBuffer = malloc(arrLen);
+
+    for(unsigned int i = 0; i < arrLen; i++) {
+        *(shiftedBuffer + i) = *(arr + i) - 128;
+    }
+
+    return shiftedBuffer;
+}
+
+
 BYTE* QuantToBuffer() {
     BYTE* quantBuffer = malloc(1);
 
