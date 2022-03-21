@@ -40,7 +40,7 @@
 // extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
 
 /* Define buffers to use for compression */
-SBYTE yccBuffer[BIGRESLEN];
+SBYTE yccBuffer[BIGRESLEN*3];
 DCT dctYBuffer[BIGRESLEN];
 DCT dctCbBuffer[BIGRESLEN];
 DCT dctCrBuffer[BIGRESLEN];
@@ -83,17 +83,12 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr);
 int TestInput();
 
 /* Some functions are written with ints to return potential errors */
-BYTE* ReadDataToBuffer(long* dataAddr, size_t datalen, size_t pixelLen);
-BYTE* RGBToYCBCR(BYTE* pixelArr, size_t arrLen);
-BYTE* YCBCRToRGB(BYTE* yccArr, size_t arrLen);
-
-SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen);
-
-SBYTE* YBuffer(SBYTE* arr, size_t arrLen);
+int ReadDataToBuffer(long* dataAddr, size_t res);
+int DCTToBuffers(size_t res);
 
 
-BYTE* QuantToBuffer();
-BYTE* HuffmanToBuffer();
+int QuantBuffer();
+int HuffmanBuffer();
 int WriteToJPEG();
 
 #endif

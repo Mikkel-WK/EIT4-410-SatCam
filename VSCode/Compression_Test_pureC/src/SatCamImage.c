@@ -73,122 +73,75 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
 /*
  * Function: ReadDataToBuffer
  * Purpose: Read data from RAM, sanitise (remove alpha data)
- * Input: Address in RAM of data, length of data, amount of pixels
- * Output: Byte array with pixel data, no alpha
+ * Input: Address in RAM of data, resolution (is multiplied by 4 during function)
+ * Output: Error code
 */
-BYTE* ReadDataToBuffer(long* dataAddr, size_t dataLen, size_t pixelLen) {
-    BYTE* pixelBuffer = malloc(pixelLen);
-    
-    for(unsigned int i = 0; i < dataLen; i++) {
-        if(i % 4 == 0) {
-            continue;
-        }
-
-        *(pixelBuffer + i) = *(dataAddr + i);
-    }
-
-    return pixelBuffer;
-}
-
-BYTE* RGBToYCBCR(BYTE* pixelArr, size_t arrLen) {
-    BYTE* yccBuffer = malloc(arrLen);
+int ReadDataToBuffer(long* dataAddr, size_t res) {
+    // Counter going through DataBuffer
+    size_t byteNum = 0;
 
     BYTE r, g, b;
-    BYTE y, cb, cr;
-
-    /*
-    double transMatrix[] = 
-    {
-        46.742, 157.243, 15.874,
-        -25.765, -86.674, 112.439,
-        112.439, -102.129, -10.310
-    };
-    */
-
-   // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
-   // Using BT.709 standard
-   int transMatrix[] = 
-   {
-       47, 157, 16,
-       -26, -87, 112,
-       112, -102, -10
-   };
-
-    for(unsigned int i = 0; i < arrLen; i + 3) {
-        b = *(pixelArr + i);
-        g = *(pixelArr + (i + 1));
-        r = *(pixelArr + (i + 2));
-
-        // Note: var >> 8 is the same as var/256
-        y = 16 + (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8);
-        cb = 128 + (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8);
-        cr = 128 + (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8);
-
-        *(yccBuffer + i) = y;
-        *(yccBuffer + (i + 1)) = cb;
-        *(yccBuffer + (i + 2)) = cr;
-    }
-
-    return yccBuffer;
-}
-
-BYTE* YCBCRToRGB(BYTE* yccArr, size_t arrLen) {
-    BYTE* rgbBuffer = malloc(arrLen);
-
-    BYTE r, g, b;
-    BYTE y, cb, cr;
-
-    /*
-    double transMatrix[] = 
-    {
-        298.082, 0, 458.942,
-        298.082, -54.592, -136.425,
-        298.082, 540.775, 0
-    };
-    */
 
     // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
     // Using BT.709 standard
-    int transMatrix[] =
+    int transMatrix[] = 
     {
-        298, 0, 459,
-        298, -55, -136,
-        298, 541, 0
+        47, 157, 16,
+        -26, -87, 112,
+        112, -102, -10
     };
 
-    for(unsigned int i = 0; i < arrLen; i + 3) {
-        y = *(yccArr + i);
-        cb = *(yccArr + (i + 1));
-        cr = *(yccArr + (i + 2));
+    for(size_t i = 0; i < (res * 4); i + 4) {
+        // Order is abgr
+        b = *(dataAddr + (i + 1));
+        g = *(dataAddr + (i + 2));
+        r = *(dataAddr + (i + 3));
 
-        r = (transMatrix[0]*(y-16) + transMatrix[1]*(cb-128) + transMatrix[2]*(cr-128)) >> 8;
-        g = (transMatrix[3]*(y-16) + transMatrix[4]*(cb-128) + transMatrix[5]*(cr-128)) >> 8;
-        b = (transMatrix[6]*(y-16) + transMatrix[7]*(cb-128) + transMatrix[8]*(cr-128)) >> 8;
+        // Note: var >> 8 is the same as var/256
+        // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
+        // They all have -128 to level shift
+        yccBuffer[byteNum] = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112;
+        yccBuffer[byteNum + 1] = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8);
+        yccBuffer[byteNum + 2] = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8);
 
-        *(rgbBuffer + i) = b;
-        *(rgbBuffer + (i + 1)) = g;
-        *(rgbBuffer + (i + 2)) = r;
+        byteNum = byteNum + 3;
     }
 
-    return rgbBuffer;
+    return 1;
 }
 
-SBYTE* LevelShiftArr(BYTE* arr, size_t arrLen) {
-    SBYTE* shiftedBuffer = malloc(arrLen);
+/*
+ * Function: DCTToBuffers
+ * Purpose: Perform DCT on YCbCr data, split into 3 separate buffers
+ * Input: Resolution
+ * Output: Error code
+*/
+int DCTToBuffers(size_t res) {
 
-    for(unsigned int i = 0; i < arrLen; i++) {
-        *(shiftedBuffer + i) = *(arr + i) - 128;
-    }
-
-    return shiftedBuffer;
+    return 1;
 }
 
-BYTE* QuantToBuffer() {
-    BYTE* quantBuffer = malloc(1);
+/*
+ * Function: QuantBuffer
+ * Purpose: Apply quantization table to a buffer
+ * Input: 
+ * Output: Error code
+*/
+int QuantBuffer() {
 
-    
+    return 1;
+}
 
-    return quantBuffer;
+/*
+ * Function: HuffmanBuffer
+ * Purpose: Apply Huffman coding to buffers
+ * Input: 
+ * Output: Error code
+*/
+int HuffmanBuffer() {
+
+
+    return 1;
 }
 
 int WriteToJPEG() {
