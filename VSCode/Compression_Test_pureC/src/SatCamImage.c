@@ -100,9 +100,9 @@ int ReadDataToBuffer(long* dataAddr, size_t res) {
         // Note: var >> 8 is the same as var/256
         // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
         // They all have -128 to level shift
-        yccBuffer[byteNum] = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112;
-        yccBuffer[byteNum + 1] = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8);
-        yccBuffer[byteNum + 2] = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8);
+        yccBuffer[byteNum] = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112; // Y
+        yccBuffer[byteNum + 1] = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8); // Cb
+        yccBuffer[byteNum + 2] = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8); // Cr
 
         byteNum = byteNum + 3;
     }
@@ -113,23 +113,57 @@ int ReadDataToBuffer(long* dataAddr, size_t res) {
 /*
  * Function: DCTToBuffers
  * Purpose: Perform DCT on YCbCr data, split into 3 separate buffers
- * Input: Resolution
+ * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int DCTToBuffers(size_t res) {
+int DCTToBuffers(int mode, size_t res) {
 
     return 1;
 }
 
 /*
- * Function: QuantBuffer
- * Purpose: Apply quantization table to a buffer
- * Input: 
+ * Function: QuantBuffers
+ * Purpose: Apply quantization table to DCT buffers in 8x8 blocks
+ * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int QuantBuffer() {
+int QuantBuffers(int resMode, size_t res) {
+    int xRes = 0;
+    int yRes = 0;
+
+    if(resMode == 0) {
+        xRes = 5344;
+        yRes = 4016;
+    }
+    else if(resMode == 1) {
+        xRes = 1920;
+        yRes = 1080;
+    }
+    else return 0;
+
+    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t xIndex = x + (xBlock * 8);
+                    size_t yIndex = (y * xRes) + (yBlock * xRes * 8);
+    
+                    size_t indexToEdit = xIndex + yIndex;
+                    size_t indexInTable = x*y;
+
+                    dctYBuffer[indexToEdit]/lumiQuantTable[indexInTable];
+                    dctCbBuffer[indexToEdit]/chromiQuantTable[indexInTable];
+                    dctCrBuffer[indexToEdit]/chromiQuantTable[indexInTable];
+                }
+            }
+        }
+    }
 
     return 1;
+}
+
+int DiffDCBuffer(size_t res) {
+
 }
 
 /*
