@@ -111,7 +111,7 @@ int TestInput();
 int ReadDataToBuffer(long* dataAddr, size_t res);
 int DCTToBuffers(int mode, size_t res);
 int QuantBuffers(int mode, size_t res);
-int DiffDCBuffer(size_t res);
+int DiffDCBuffers(int mode, size_t res);
 
 int HuffmanBuffer();
 int WriteToJPEG();

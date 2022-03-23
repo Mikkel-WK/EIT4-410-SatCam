@@ -162,8 +162,67 @@ int QuantBuffers(int resMode, size_t res) {
     return 1;
 }
 
-int DiffDCBuffer(size_t res) {
+int DiffDCBuffers(int resMode, size_t res) {
+    int xRes = 0;
+    int yRes = 0;
 
+    if(resMode == 0) {
+        xRes = 5344;
+        yRes = 4016;
+    }
+    else if(resMode == 1) {
+        xRes = 1920;
+        yRes = 1080;
+    }
+    else return 0;
+
+    int oldValue = 0;
+    int newValue = 0;
+
+    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
+        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
+            size_t xIndex = (xDC * 8);
+            size_t yIndex = (yDC * xRes * 8);
+    
+            size_t indexToEdit = xIndex + yIndex;
+
+            newValue = dctYBuffer[indexToEdit];
+            dctYBuffer[indexToEdit] = dctYBuffer[indexToEdit] - oldValue;
+            oldValue = newValue;
+        }
+    }
+
+    oldValue = 0;
+    newValue = 0;
+    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
+        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
+            size_t xIndex = (xDC * 8);
+            size_t yIndex = (yDC * xRes * 8);
+    
+            size_t indexToEdit = xIndex + yIndex;
+
+            newValue = dctCbBuffer[indexToEdit];
+            dctCbBuffer[indexToEdit] = dctCbBuffer[indexToEdit] - oldValue;
+            oldValue = newValue;
+        }
+    }
+
+    oldValue = 0;
+    newValue = 0;
+    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
+        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
+            size_t xIndex = (xDC * 8);
+            size_t yIndex = (yDC * xRes * 8);
+    
+            size_t indexToEdit = xIndex + yIndex;
+
+            newValue = dctCrBuffer[indexToEdit];
+            dctCrBuffer[indexToEdit] = dctCrBuffer[indexToEdit] - oldValue;
+            oldValue = newValue;
+        }
+    }
+
+    return 1;
 }
 
 /*
