@@ -1,6 +1,11 @@
 # Zynqberry TE0726
 Forskellige demo projekter til brug på Zynqberry TE0726 board.
 
+## Obs!
+- Der må ikke være mellemrum i fil- og stinavne.
+- Det kan være nødvendigt at opdatere Zynq PS ip'en for at kunne synthesere.
+- Det kan være nødvendigt at resette BSP i Vitis for at kunne compile kode.
+
 ## ZynqHelloStandalone
 Eksempel projekt til at køre et standalone program på ARM CPU og den nødvendige opsætning af FPGA'en så CPU'en kan køre med en extern timer.
 
