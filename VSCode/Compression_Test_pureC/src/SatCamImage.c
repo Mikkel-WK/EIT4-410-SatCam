@@ -157,7 +157,7 @@ int ReadDataToBuffer(char* dataAddr, size_t res) {
  * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int DCTToBuffers(int mode, size_t res) {
+int DCTToBuffers(int mode) {
 
     return 1;
 }
@@ -168,7 +168,7 @@ int DCTToBuffers(int mode, size_t res) {
  * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int QuantBuffers(int resMode, size_t res) {
+int QuantBuffers(int resMode) {
     /* Quantization tables */
     const int lumiQuantTable[] = 
     {
@@ -232,7 +232,7 @@ int QuantBuffers(int resMode, size_t res) {
     return 1;
 }
 
-int DiffDCBuffers(int resMode, size_t res) {
+int DiffDCBuffers(int resMode) {
     int xRes = 0;
     int yRes = 0;
 

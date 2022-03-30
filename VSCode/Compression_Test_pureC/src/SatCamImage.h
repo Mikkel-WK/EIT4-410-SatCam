@@ -88,9 +88,9 @@ int TestInput();
 
 /* Some functions are written with ints to return potential errors */
 int ReadDataToBuffer(char* dataAddr, size_t res);
-int DCTToBuffers(int mode, size_t res);
-int QuantBuffers(int mode, size_t res);
-int DiffDCBuffers(int mode, size_t res);
+int DCTToBuffers(int mode);
+int QuantBuffers(int mode);
+int DiffDCBuffers(int mode);
 
 int ZigzagBuffers();
 int RunLengthBuffers();
