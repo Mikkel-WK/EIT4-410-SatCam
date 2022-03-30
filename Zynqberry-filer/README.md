@@ -2,6 +2,7 @@
 Forskellige demo projekter til brug på Zynqberry TE0726 board.
 
 ## Obs!
+- Filerne er lavet i 2021.2, det frarådes at bruge nyere (fx. 2021.2.1) eller ældre versioner (2020.2).
 - Der må ikke være mellemrum i fil- og stinavne.
 - Det kan være nødvendigt at opdatere Zynq PS ip'en for at kunne synthesere.
 - Det kan være nødvendigt at resette BSP i Vitis for at kunne compile kode.
