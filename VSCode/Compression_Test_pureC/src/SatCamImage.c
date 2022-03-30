@@ -132,11 +132,11 @@ int ReadDataToBuffer(char* dataAddr, size_t res) {
         112, -102, -10
     };
 
-    for(size_t i = 0; i < (res * 4); i + 4) {
-        // Order is abgr
-        b = *(dataAddr + (i + 1));
-        g = *(dataAddr + (i + 2));
-        r = *(dataAddr + (i + 3));
+    for(size_t i = 0; i < (res * 4); i = i + 4) {
+        // Order is rgba
+        b = *(dataAddr + (i + 2));
+        g = *(dataAddr + (i + 1));
+        r = *(dataAddr + (i));
 
         // Note: var >> 8 is the same as var/256
         // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
@@ -169,16 +169,45 @@ int DCTToBuffers(int mode, size_t res) {
  * Output: Error code
 */
 int QuantBuffers(int resMode, size_t res) {
+    /* Quantization tables */
+    const int lumiQuantTable[] = 
+    {
+        16, 11, 10, 16, 24, 40, 51, 61,
+        12, 12, 14, 19, 26, 58, 60, 55,
+        14, 13, 16, 24, 40, 57, 69, 56,
+        14, 17, 22, 29, 51, 87, 80, 62,
+        18, 22, 37, 56, 68, 109, 103, 77,
+        24, 35, 55, 64, 81, 104, 113, 92,
+        49, 64, 78, 87, 103, 121, 120, 101,
+        72, 92, 95, 98, 112, 100, 103, 99
+    };
+
+    const int chromiQuantTable[] = 
+    {
+        17, 18, 24, 47, 99, 99, 99, 99,
+        18, 21, 26, 66, 99, 99, 99, 99,
+        24, 26, 56, 99, 99, 99, 99, 99,
+        47, 66, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99,
+    };
+
     int xRes = 0;
     int yRes = 0;
 
     if(resMode == 0) {
-        xRes = 5344;
-        yRes = 4016;
+        xRes = BIGXRES;
+        yRes = BIGYRES;
     }
     else if(resMode == 1) {
-        xRes = 1920;
-        yRes = 1080;
+        xRes = MIDXRES;
+        yRes = MIDYRES;
+    }
+    else if(resMode == 2) {
+        xRes = SMALLXRES;
+        yRes = SMALLYRES;
     }
     else return 0;
 
@@ -192,9 +221,9 @@ int QuantBuffers(int resMode, size_t res) {
                     size_t indexToEdit = xIndex + yIndex;
                     size_t indexInTable = x*y;
 
-                    dctYBuffer[indexToEdit]/lumiQuantTable[indexInTable];
-                    dctCbBuffer[indexToEdit]/chromiQuantTable[indexInTable];
-                    dctCrBuffer[indexToEdit]/chromiQuantTable[indexInTable];
+                    dctYBuffer[indexToEdit] = dctYBuffer[indexToEdit]/lumiQuantTable[indexInTable];
+                    dctCbBuffer[indexToEdit] = dctCbBuffer[indexToEdit]/chromiQuantTable[indexInTable];
+                    dctCrBuffer[indexToEdit] = dctCrBuffer[indexToEdit]/chromiQuantTable[indexInTable];
                 }
             }
         }
@@ -266,6 +295,8 @@ int DiffDCBuffers(int resMode, size_t res) {
     return 1;
 }
 
+// Zig-zag og run skal også være her
+
 /*
  * Function: HuffmanBuffer
  * Purpose: Apply Huffman coding to buffers
@@ -295,4 +326,5 @@ int WriteToJPEG() {
      * RST0-7 ad nauseam
      * EOI
     */
+   return 1;
 }
