@@ -11,10 +11,6 @@ BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
-int TestInput() {
-
-}
-
 /*
  * Function: BuildJFIFHeader
  * Purpose: Builds JFIF header with some basic variables, then puts in custom values
@@ -70,15 +66,60 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }
 
+int TestInput(int lumiQuantTable[], int chromiQuantTable[]) {
+
+    FILE* fInput = fopen("memdump_bin_720p", "rb");
+    FILE* fOutput = fopen("memdump_ycc_bin_720p", "wb");
+
+    if(fInput == NULL){
+		printf("\nError opening file.\n");
+		return(0);
+	}
+
+    printf("Input file is open.\n");
+
+    fseek(fInput, 0, SEEK_END);
+	long fileLength = ftell(fInput);
+	fseek(fInput, 0, SEEK_SET);
+
+	char *buffer = (char*) malloc(sizeof(char)*fileLength);
+
+	char ch = (char) fgetc(fInput);
+
+	printf("We are set up.\n");
+
+	int i = 0;
+	while(!feof(fInput)) {
+		// *(buffer + i) = ch;
+		buffer[i] = ch;
+		ch = (char) fgetc(fInput);
+		i++;
+	}
+
+	printf("We are past feof.\n");
+
+    int ReadDataErr = ReadDataToBuffer(buffer, SMALLRESLEN);
+    if(ReadDataErr == 1) {
+        printf("ReadDataToBuffer returned fine.\n");
+    }
+
+    fwrite(yccBuffer, sizeof(char)*1280*720, 1, fOutput);
+
+    free(buffer);
+
+    return 1;
+}
+
 /*
  * Function: ReadDataToBuffer
  * Purpose: Read data from RAM, sanitise (remove alpha data)
  * Input: Address in RAM of data, resolution (is multiplied by 4 during function)
  * Output: Error code
 */
-int ReadDataToBuffer(long* dataAddr, size_t res) {
+int ReadDataToBuffer(char* dataAddr, size_t res) {
     // Counter going through DataBuffer
     size_t byteNum = 0;
+    size_t test = 0;
 
     BYTE r, g, b;
 

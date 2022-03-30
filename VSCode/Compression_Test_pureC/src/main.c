@@ -14,6 +14,13 @@
 #include "SatCamImage.h"
 
 int main() {
+	TestInput();
+
+	return 0;
+}
+
+/*
+int main() {
 	BYTE xDensity[2] = {0x01, 0x2c};
 	BYTE yDensity[2] = {0x01, 0x2c};
 	
@@ -26,7 +33,7 @@ int main() {
 	}
 
 	return 0;
-}
+}*/
 
 /* 
 int main() {
