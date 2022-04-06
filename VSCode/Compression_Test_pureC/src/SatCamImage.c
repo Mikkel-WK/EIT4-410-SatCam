@@ -66,7 +66,7 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }
 
-int TestInput(int lumiQuantTable[], int chromiQuantTable[]) {
+/*int TestInput() {
 
     FILE* fInput = fopen("memdump_bin_720p", "rb");
     FILE* fOutput = fopen("memdump_ycc_bin_720p", "wb");
@@ -108,6 +108,36 @@ int TestInput(int lumiQuantTable[], int chromiQuantTable[]) {
     free(buffer);
 
     return 1;
+}*/
+
+int TestInput() {
+    for(int i = 0; i < (64*3); i++) {
+        yccBuffer[i] = 255;
+    }
+
+    printf("yccBuffer:\n(\n");
+    for(int i = 0; i < (64*3); i++) {
+        printf("%d, ", yccBuffer[i]);
+        if((i + 1) % 8 == 0) {
+            printf("\n");
+        }
+    }
+    printf(")\n");
+
+    if(DCTToBuffers(99) == 1) {
+        printf("DCT good\n");
+    }
+
+    printf("Y buffer:\n(\n");
+    for(int i = 0; i < 64; i++) {
+        printf("%d, ", dctYBuffer[i]);
+        if((i + 1) % 8 == 0) {
+            printf("\n");
+        }
+    }
+    printf(")\n");
+
+    return 1;
 }
 
 /*
@@ -119,8 +149,7 @@ int TestInput(int lumiQuantTable[], int chromiQuantTable[]) {
 int ReadDataToBuffer(char* dataAddr, size_t res) {
     // Counter going through DataBuffer
     size_t byteNum = 0;
-    size_t test = 0;
-
+    
     BYTE r, g, b;
 
     // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
@@ -157,7 +186,89 @@ int ReadDataToBuffer(char* dataAddr, size_t res) {
  * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int DCTToBuffers(int mode) {
+int DCTToBuffers(int resMode) {
+    int xRes = 0;
+    int yRes = 0;
+
+    if(resMode == 0) {
+        xRes = BIGXRES;
+        yRes = BIGYRES;
+    }
+    else if(resMode == 1) {
+        xRes = MIDXRES;
+        yRes = MIDYRES;
+    }
+    else if(resMode == 2) {
+        xRes = SMALLXRES;
+        yRes = SMALLYRES;
+    }
+    else if(resMode == 99) {
+        xRes = 8;
+        yRes = 8;
+    }
+    else return 0;
+
+    // Sources:
+    // https://se.mathworks.com/help/images/discrete-cosine-transform.html#:~:text=Discrete%20Cosine%20Transform-,DCT%20Definition,(DCT)%20of%20an%20image
+    // https://www.geeksforgeeks.org/discrete-cosine-transform-algorithm-program/
+    
+    // Order of pixels is YCbCr
+
+    float aP = 0; // alphaP is for x
+    float aQ = 0; // alphaQ is for y
+    
+    // for each DCT calculated at each initial coordinate
+    float dctY = 0; 
+    float dctCb = 0;
+    float dctCr = 0;
+
+    // For the sums of all DCT's calculated
+    float dctYSum = 0;
+    float dctCbSum = 0;
+    float dctCrSum = 0;
+
+    // Y buffer
+    for(size_t yNum = 0; yNum < yRes; yNum++) {
+        for(size_t xNum = 0; xNum < xRes; xNum++) {
+
+            if(xNum == 0)   aP = 1 / sqrt(xRes);
+            else            aP = sqrt(2) / sqrt(xRes);
+
+            if(yNum == 0)   aQ = 1 / sqrt(yRes);
+            else            aQ = sqrt(2) / sqrt(yRes);
+
+            dctYSum = 0;
+            dctCbSum = 0;
+            dctCrSum = 0;
+            for(size_t yPos = 0; yPos < yRes; yPos++) {
+                for(size_t xPos = 0; xPos < xRes; xPos++) {
+                    size_t xIndex = xPos * 3;
+                    size_t yIndex = yPos * xRes;
+
+                    size_t indexToRead = xIndex + yIndex;
+
+                    dctY =  yccBuffer[indexToRead] * 
+                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    dctYSum = dctYSum + dctY;
+
+                    dctCb = yccBuffer[indexToRead + 1] * 
+                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    dctCbSum = dctCbSum + dctCb;
+
+                    dctCr = yccBuffer[indexToRead + 2] * 
+                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    dctCrSum = dctCrSum + dctCr;
+                }
+            }
+
+            dctYBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctYSum;
+            dctCbBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctCbSum;
+            dctCrBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctCrSum;
+        }
+    }
 
     return 1;
 }
@@ -209,6 +320,10 @@ int QuantBuffers(int resMode) {
         xRes = SMALLXRES;
         yRes = SMALLYRES;
     }
+    else if(resMode == 99) {
+        xRes = 8;
+        yRes = 8;
+    }
     else return 0;
 
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
@@ -219,7 +334,7 @@ int QuantBuffers(int resMode) {
                     size_t yIndex = (y * xRes) + (yBlock * xRes * 8);
     
                     size_t indexToEdit = xIndex + yIndex;
-                    size_t indexInTable = x*y;
+                    size_t indexInTable = x + (y * 8);
 
                     dctYBuffer[indexToEdit] = dctYBuffer[indexToEdit]/lumiQuantTable[indexInTable];
                     dctCbBuffer[indexToEdit] = dctCbBuffer[indexToEdit]/chromiQuantTable[indexInTable];
@@ -243,6 +358,14 @@ int DiffDCBuffers(int resMode) {
     else if(resMode == 1) {
         xRes = 1920;
         yRes = 1080;
+    }
+    else if(resMode == 2) {
+        xRes = SMALLXRES;
+        yRes = SMALLYRES;
+    }
+    else if(resMode == 99) {
+        xRes = 8;
+        yRes = 8;
     }
     else return 0;
 

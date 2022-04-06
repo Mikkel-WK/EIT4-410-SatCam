@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
 
 /* Define data types for ease of use */
 #define BYTE unsigned char
@@ -44,7 +45,7 @@
 // extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
 
 /* Define buffers to use for compression */
-SBYTE yccBuffer[BIGRESLEN*3];
+BYTE yccBuffer[BIGRESLEN*3];
 DCT dctYBuffer[BIGRESLEN];
 DCT dctCbBuffer[BIGRESLEN];
 DCT dctCrBuffer[BIGRESLEN];

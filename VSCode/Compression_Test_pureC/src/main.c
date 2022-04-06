@@ -14,6 +14,7 @@
 #include "SatCamImage.h"
 
 int main() {
+	
 	TestInput();
 
 	return 0;
