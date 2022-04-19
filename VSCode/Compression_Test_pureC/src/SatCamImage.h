@@ -21,8 +21,8 @@
 
 /* Define data types for ease of use */
 #define BYTE unsigned char
-#define SBYTE signed char 
-#define DCT short
+#define SBYTE unsigned char 
+#define DCT signed short
 
 /* Define variables to use during data reading */
 /*
@@ -41,14 +41,46 @@
 #define SMALLYRES 720
 #define SMALLRESLEN 921600
 
+#define TESTXRES 8
+#define TESTYRES 8
+#define TESTRESLEN 64
+
+/* Enum to pass into functions */
+enum RESMODE 
+{
+    BIG = 0,
+    MID = 1,
+    SMALL = 2,
+    TEST = 3
+} resMode;
+
 /* Define buffers to use for compression */
 // extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
 
+/* Struct defined to hold YCbCr values */
+typedef struct
+{
+    SBYTE Y;
+    SBYTE Cb;
+    SBYTE Cr;
+} YCBCR;
+
 /* Define buffers to use for compression */
-BYTE yccBuffer[BIGRESLEN*3];
-DCT dctYBuffer[BIGRESLEN];
-DCT dctCbBuffer[BIGRESLEN];
-DCT dctCrBuffer[BIGRESLEN];
+// YCBCR yccBuffer[BIGXRES][BIGYRES];
+// DCT dctYBuffer[BIGXRES][BIGYRES];
+// DCT dctCbBuffer[BIGXRES][BIGYRES];
+// DCT dctCrBuffer[BIGXRES][BIGYRES];
+YCBCR yccBuffer[MIDXRES][MIDYRES];
+DCT dctYBuffer[MIDXRES][MIDYRES];
+DCT dctCbBuffer[MIDXRES][MIDYRES];
+DCT dctCrBuffer[MIDXRES][MIDYRES];
+// DCT zzBuffer[MIDXRES*MIDYRES];
+
+/* Define buffers to use for compression */
+// BYTE yccBuffer[BIGRESLEN*3];
+// DCT dctYBuffer[BIGRESLEN];
+// DCT dctCbBuffer[BIGRESLEN];
+// DCT dctCrBuffer[BIGRESLEN];
 
 /* Markers for JPEG creation */
 extern BYTE SOI[2], SOS[2], EOI[2];
@@ -88,11 +120,12 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr);
 int TestInput();
 
 /* Some functions are written with ints to return potential errors */
-int ReadDataToBuffer(char* dataAddr, size_t res);
-int DCTToBuffers(int mode);
-int QuantBuffers(int mode);
-int DiffDCBuffers(int mode);
+int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode);
+int DCTToBuffers(enum RESMODE resMode);
+int QuantBuffers(enum RESMODE resMode);
+int DiffDCBuffers(enum RESMODE resMode);
 
+// int ZigzagBuffers(enum RESMODE resMode);
 int ZigzagBuffers();
 int RunLengthBuffers();
 

@@ -66,6 +66,7 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }
 
+// This tests file opening and closing
 /*int TestInput() {
 
     FILE* fInput = fopen("memdump_bin_720p", "rb");
@@ -110,35 +111,48 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }*/
 
+// This tests DCT
 int TestInput() {
-    for(int i = 0; i < (64*3); i++) {
-        yccBuffer[i] = 255;
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            yccBuffer[j][i].Y = 255;
+            yccBuffer[j][i].Cb = 255;
+            yccBuffer[j][i].Cr = 255;
+        }
     }
 
-    printf("yccBuffer:\n(\n");
-    for(int i = 0; i < (64*3); i++) {
-        printf("%d, ", yccBuffer[i]);
-        if((i + 1) % 8 == 0) {
-            printf("\n");
+    printf("ycc Y buffer:\n(\n");
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            printf("%d, ", yccBuffer[j][i].Y);
         }
+        printf("\n");
     }
     printf(")\n");
 
-    if(DCTToBuffers(99) == 1) {
+    if(DCTToBuffers(TEST) == 1) {
         printf("DCT good\n");
     }
 
     printf("Y buffer:\n(\n");
-    for(int i = 0; i < 64; i++) {
-        printf("%d, ", dctYBuffer[i]);
-        if((i + 1) % 8 == 0) {
-            printf("\n");
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            printf("%d, ", dctYBuffer[j][i]);
         }
+        printf("\n");
     }
     printf(")\n");
-
+    
     return 1;
 }
+
+// This tests zig-zag + run-length
+/*int TestInput() {
+    ZigzagBuffers(TEST);
+    // int result = DCTToBuffers(TEST);
+
+    return 1;
+}*/
 
 /*
  * Function: ReadDataToBuffer
@@ -146,12 +160,27 @@ int TestInput() {
  * Input: Address in RAM of data, resolution (is multiplied by 4 during function)
  * Output: Error code
 */
-int ReadDataToBuffer(char* dataAddr, size_t res) {
-    // Counter going through DataBuffer
-    size_t byteNum = 0;
+int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
+    int xRes = 0;
+    int yRes = 0;
+    if(resMode == BIG) {
+        xRes = BIGRESLEN;
+        yRes = BIGRESLEN;
+    }
+    else if(resMode == MID) {
+        xRes = MIDXRES;
+        yRes = MIDYRES;
+    }
+    else if(resMode == SMALL) {
+        xRes = SMALLXRES;
+        yRes = SMALLYRES;
+    }
+    else if(resMode == TEST) {
+        xRes = TESTXRES;
+        yRes = TESTYRES;
+    }
+    else return 0;
     
-    BYTE r, g, b;
-
     // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
     // Using BT.709 standard
     int transMatrix[] = 
@@ -161,20 +190,23 @@ int ReadDataToBuffer(char* dataAddr, size_t res) {
         112, -102, -10
     };
 
-    for(size_t i = 0; i < (res * 4); i = i + 4) {
-        // Order is rgba
-        b = *(dataAddr + (i + 2));
-        g = *(dataAddr + (i + 1));
-        r = *(dataAddr + (i));
+    BYTE r, g, b;
+    for(size_t yPos = 0; yPos < yRes; yPos++) {
+        for(size_t xPos = 0; xPos < xRes; xPos++) {
+            size_t dataIndex = (xPos + (yPos * xRes)) * 4;
 
-        // Note: var >> 8 is the same as var/256
-        // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
-        // They all have -128 to level shift
-        yccBuffer[byteNum] = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112; // Y
-        yccBuffer[byteNum + 1] = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8); // Cb
-        yccBuffer[byteNum + 2] = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8); // Cr
+            // Order is rgba
+            b = *(dataAddr + (dataIndex + 2));
+            g = *(dataAddr + (dataIndex + 1));
+            r = *(dataAddr + (dataIndex));
 
-        byteNum = byteNum + 3;
+            // Note: var >> 8 is the same as var/256
+            // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
+            // They all have -128 to level shift
+            yccBuffer[xPos][yPos].Y = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112;
+            yccBuffer[xPos][yPos].Cb = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8);
+            yccBuffer[xPos][yPos].Cr = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8);
+        }
     }
 
     return 1;
@@ -186,25 +218,24 @@ int ReadDataToBuffer(char* dataAddr, size_t res) {
  * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int DCTToBuffers(int resMode) {
+int DCTToBuffers(enum RESMODE resMode) {
     int xRes = 0;
     int yRes = 0;
-
-    if(resMode == 0) {
+    if(resMode == BIG) {
         xRes = BIGXRES;
         yRes = BIGYRES;
     }
-    else if(resMode == 1) {
+    else if(resMode == MID) {
         xRes = MIDXRES;
         yRes = MIDYRES;
     }
-    else if(resMode == 2) {
+    else if(resMode == SMALL) {
         xRes = SMALLXRES;
         yRes = SMALLYRES;
     }
-    else if(resMode == 99) {
-        xRes = 8;
-        yRes = 8;
+    else if(resMode == TEST) {
+        xRes = TESTXRES;
+        yRes = TESTYRES;
     }
     else return 0;
 
@@ -227,10 +258,8 @@ int DCTToBuffers(int resMode) {
     float dctCbSum = 0;
     float dctCrSum = 0;
 
-    // Y buffer
     for(size_t yNum = 0; yNum < yRes; yNum++) {
         for(size_t xNum = 0; xNum < xRes; xNum++) {
-
             if(xNum == 0)   aP = 1 / sqrt(xRes);
             else            aP = sqrt(2) / sqrt(xRes);
 
@@ -240,33 +269,30 @@ int DCTToBuffers(int resMode) {
             dctYSum = 0;
             dctCbSum = 0;
             dctCrSum = 0;
+
             for(size_t yPos = 0; yPos < yRes; yPos++) {
                 for(size_t xPos = 0; xPos < xRes; xPos++) {
-                    size_t xIndex = xPos * 3;
-                    size_t yIndex = yPos * xRes;
-
-                    size_t indexToRead = xIndex + yIndex;
-
-                    dctY =  yccBuffer[indexToRead] * 
-                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    
+                    dctY =  yccBuffer[xPos][yPos].Y *
+                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
                     dctYSum = dctYSum + dctY;
 
-                    dctCb = yccBuffer[indexToRead + 1] * 
-                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    dctCb =  yccBuffer[xPos][yPos].Cb *
+                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
                     dctCbSum = dctCbSum + dctCb;
 
-                    dctCr = yccBuffer[indexToRead + 2] * 
-                            cos(((2 * xPos * 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos * 1) * 3.142857 * yNum) / (2 * yRes));
+                    dctCr =  yccBuffer[xPos][yPos].Cr *
+                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
+                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
                     dctCrSum = dctCrSum + dctCr;
                 }
             }
 
-            dctYBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctYSum;
-            dctCbBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctCbSum;
-            dctCrBuffer[(xNum + (yNum * xRes))] = aP * aQ * dctCrSum;
+            dctYBuffer[xNum][yNum] = aP * aQ * dctYSum;
+            dctCbBuffer[xNum][yNum] = aP * aQ * dctCbSum;
+            dctCrBuffer[xNum][yNum] = aP * aQ * dctCrSum;
         }
     }
 
@@ -279,7 +305,7 @@ int DCTToBuffers(int resMode) {
  * Input: Mode (0 = bigres, 1 = midres), pixel amount
  * Output: Error code
 */
-int QuantBuffers(int resMode) {
+int QuantBuffers(enum RESMODE resMode) {
     /* Quantization tables */
     const int lumiQuantTable[] = 
     {
@@ -307,22 +333,21 @@ int QuantBuffers(int resMode) {
 
     int xRes = 0;
     int yRes = 0;
-
-    if(resMode == 0) {
+    if(resMode == BIG) {
         xRes = BIGXRES;
         yRes = BIGYRES;
     }
-    else if(resMode == 1) {
+    else if(resMode == MID) {
         xRes = MIDXRES;
         yRes = MIDYRES;
     }
-    else if(resMode == 2) {
+    else if(resMode == SMALL) {
         xRes = SMALLXRES;
         yRes = SMALLYRES;
     }
-    else if(resMode == 99) {
-        xRes = 8;
-        yRes = 8;
+    else if(resMode == TEST) {
+        xRes = TESTXRES;
+        yRes = TESTYRES;
     }
     else return 0;
 
@@ -330,15 +355,15 @@ int QuantBuffers(int resMode) {
         for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
+
                     size_t xIndex = x + (xBlock * 8);
-                    size_t yIndex = (y * xRes) + (yBlock * xRes * 8);
-    
-                    size_t indexToEdit = xIndex + yIndex;
+                    size_t yIndex = y + (yBlock * 8);
+
                     size_t indexInTable = x + (y * 8);
 
-                    dctYBuffer[indexToEdit] = dctYBuffer[indexToEdit]/lumiQuantTable[indexInTable];
-                    dctCbBuffer[indexToEdit] = dctCbBuffer[indexToEdit]/chromiQuantTable[indexInTable];
-                    dctCrBuffer[indexToEdit] = dctCrBuffer[indexToEdit]/chromiQuantTable[indexInTable];
+                    dctYBuffer[xIndex][yIndex] = dctYBuffer[xIndex][yIndex] / lumiQuantTable[indexInTable];
+                    dctCbBuffer[xIndex][yIndex] = dctCbBuffer[xIndex][yIndex] / chromiQuantTable[indexInTable];
+                    dctCrBuffer[xIndex][yIndex] = dctCrBuffer[xIndex][yIndex] / chromiQuantTable[indexInTable];
                 }
             }
         }
@@ -347,78 +372,180 @@ int QuantBuffers(int resMode) {
     return 1;
 }
 
-int DiffDCBuffers(int resMode) {
+int DiffDCBuffers(enum RESMODE resMode) {
     int xRes = 0;
     int yRes = 0;
-
-    if(resMode == 0) {
-        xRes = 5344;
-        yRes = 4016;
+    if(resMode == BIG) {
+        xRes = BIGXRES;
+        yRes = BIGYRES;
     }
-    else if(resMode == 1) {
-        xRes = 1920;
-        yRes = 1080;
+    else if(resMode == MID) {
+        xRes = MIDXRES;
+        yRes = MIDYRES;
     }
-    else if(resMode == 2) {
+    else if(resMode == SMALL) {
         xRes = SMALLXRES;
         yRes = SMALLYRES;
     }
-    else if(resMode == 99) {
-        xRes = 8;
-        yRes = 8;
+    else if(resMode == TEST) {
+        xRes = TESTXRES;
+        yRes = TESTYRES;
     }
     else return 0;
 
-    int oldValue = 0;
-    int newValue = 0;
+    int oldYValue = 0;
+    int newYValue = 0;
+    int oldCbValue = 0;
+    int newCbValue = 0;
+    int oldCrValue = 0;
+    int newCrValue = 0;
 
     for(size_t yDC = 0; yDC < yRes/8; yDC++) {
         for(size_t xDC = 0; xDC < xRes/8; xDC++) {
             size_t xIndex = (xDC * 8);
-            size_t yIndex = (yDC * xRes * 8);
-    
-            size_t indexToEdit = xIndex + yIndex;
+            size_t yIndex = (yDC * 8);
 
-            newValue = dctYBuffer[indexToEdit];
-            dctYBuffer[indexToEdit] = dctYBuffer[indexToEdit] - oldValue;
-            oldValue = newValue;
-        }
-    }
+            newYValue = dctYBuffer[xIndex][yIndex];
+            dctYBuffer[xIndex][yIndex] = dctYBuffer[xIndex][yIndex] - oldYValue;
+            oldYValue = newYValue;
 
-    oldValue = 0;
-    newValue = 0;
-    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
-        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
-            size_t xIndex = (xDC * 8);
-            size_t yIndex = (yDC * xRes * 8);
-    
-            size_t indexToEdit = xIndex + yIndex;
+            newCbValue = dctCbBuffer[xIndex][yIndex];
+            dctCbBuffer[xIndex][yIndex] = dctCbBuffer[xIndex][yIndex] - oldCbValue;
+            oldCbValue = newCbValue;
 
-            newValue = dctCbBuffer[indexToEdit];
-            dctCbBuffer[indexToEdit] = dctCbBuffer[indexToEdit] - oldValue;
-            oldValue = newValue;
-        }
-    }
-
-    oldValue = 0;
-    newValue = 0;
-    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
-        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
-            size_t xIndex = (xDC * 8);
-            size_t yIndex = (yDC * xRes * 8);
-    
-            size_t indexToEdit = xIndex + yIndex;
-
-            newValue = dctCrBuffer[indexToEdit];
-            dctCrBuffer[indexToEdit] = dctCrBuffer[indexToEdit] - oldValue;
-            oldValue = newValue;
+            newCrValue = dctCrBuffer[xIndex][yIndex];
+            dctCrBuffer[xIndex][yIndex] = dctCrBuffer[xIndex][yIndex] - oldCrValue;
+            oldCrValue = newCrValue;
         }
     }
 
     return 1;
 }
 
-// Zig-zag og run skal også være her
+int ZigzagBuffers(enum RESMODE resMode) {
+    int xRes = 0;
+    int yRes = 0;
+    if(resMode == BIG) {
+        xRes = BIGXRES;
+        yRes = BIGYRES;
+    }
+    else if(resMode == MID) {
+        xRes = MIDXRES;
+        yRes = MIDYRES;
+    }
+    else if(resMode == SMALL) {
+        xRes = SMALLXRES;
+        yRes = SMALLYRES;
+    }
+    else if(resMode == TEST) {
+        xRes = TESTXRES;
+        yRes = TESTYRES;
+    }
+    else return 0;
+
+    // I hate these
+    int blockXIndex[] = {
+        0, 1, 0, 
+        0, 1, 2, 
+        3, 2, 1, 0, 
+        0, 1, 2, 3, 4,
+        5, 4, 3, 2, 1, 0, 
+        0, 1, 2, 3, 4, 5, 6,
+        7, 6, 5, 4, 3, 2, 1, 0, 
+        1, 2, 3, 4, 5, 6, 7, 
+		7, 6, 5, 4, 3, 2,
+        3, 4, 5, 6, 7,
+        7, 6, 5, 4,
+        5, 6, 7,
+        7, 6,
+        7,
+    };
+
+    int blockYIndex[] = {
+        0, 0, 1,
+        2, 1, 0,
+        0, 1, 2, 3, 
+        4, 3, 2, 1, 0,
+        0, 1, 2, 3, 4, 5,
+        6, 5, 4, 3, 2 ,1, 0,
+        0, 1, 2, 3, 4, 5, 6, 7,
+        7, 6, 5, 4, 3, 2, 1,
+        2, 3, 4, 5, 6, 7,
+        7, 6, 5, 4, 3,
+        4, 5, 6, 7,
+        7, 6, 5,
+        6, 7,
+        7,
+    };
+
+    int testBuffer[8][8] = {
+        {0,   1,  5,  6, 14, 15, 27, 28},
+        {2,   4,  7, 13, 16, 26, 29, 42},
+        {3,   8, 12, 17, 25, 30, 41, 43},
+        {9,  11, 18, 24, 31, 40, 44, 53},
+        {10, 19, 23, 32, 39, 45, 52, 54},
+        {20, 22, 33, 38, 46, 51, 55, 60},
+        {21, 34, 37, 47, 50, 56, 59, 61},
+        {35, 36, 48, 49, 57, 58, 62, 63},
+    };
+
+    // Go by 8*8 blocks
+    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+            
+            DCT zzBuffer[64];
+
+            for(int i = 0; i < 64; i++) {
+                size_t zzIndex = i + (64*xBlock) + ((xRes*8)*yBlock);
+
+                // zzBuffer[zzIndex] = dctYBuffer[blockXIndex[i]][blockYIndex[i]];
+                zzBuffer[zzIndex] = testBuffer[blockXIndex[i]][blockYIndex[i]];
+            }
+            
+            for(int i = 0; i < 64; i++) {
+                printf("%d, ", zzBuffer[i]);
+            }
+            fflush(stdout);
+
+            // // Put DC value in zz buffer right away
+            // zzBuffer[0][0] = dctYBuffer[8*xBlock][8*yBlock];
+
+            // int blockXIndex = 0, blockYIndex = 0, bufferXIndex = 0, bufferYIndex = 0, zzXIndex = 0, zzYIndex = 0;
+            // int zzFlag = 0;
+
+            // while(blockXIndex != 6 && blockYIndex != 7) {
+                
+            //     if((blockXIndex != 0) || (blockXIndex==0 && blockYIndex==0)) {
+            //         blockXIndex++;
+
+            //         for(int i = blockXIndex; i > 0; i--) {
+                        
+            //         }
+            //     }
+
+            //     if(blockYIndex == 7) zzFlag = 1;
+            // }
+
+            // bufferXIndex = 7 + (8*xBlock);
+            // bufferYIndex = 7 + (8*yBlock);
+
+            // zzBuffer[7][7] = dctYBuffer[bufferXIndex][bufferYIndex];
+
+            // // if x != 0 and flag not set OR x,y==0 { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
+            // // if y != 0 and flag not set { yIndex+1, put in buffer, and run in zag (put in buffers during loop)
+            // // if x != 7 and flag is set { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
+            // // if y != 7 and flag is set { yIndex+1, put in buffer, and run in zig (put in buffers during loop)
+
+            // // if y == 7 { set flag
+            // // if x == 6 && y == 7 { do the last one and be done
+
+        }
+    }
+
+    return 1;
+}
+
+// Run skal også være her
 
 /*
  * Function: HuffmanBuffer
