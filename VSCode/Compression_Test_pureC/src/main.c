@@ -14,11 +14,93 @@
 #include "SatCamImage.h"
 
 int main() {
-	
 	TestInput();
 
 	return 0;
 }
+
+/*int main() {
+	int xRes = 8;
+	int yRes = 8;
+
+	int blockXIndex[] = {
+        0, 
+		1, 0, 
+        0, 1, 2, 
+        3, 2, 1, 0, 
+        0, 1, 2, 3, 4,
+        5, 4, 3, 2, 1, 0, 
+        0, 1, 2, 3, 4, 5, 6,
+        7, 6, 5, 4, 3, 2, 1, 0, 
+        1, 2, 3, 4, 5, 6, 7, 
+		7, 6, 5, 4, 3, 2,
+        3, 4, 5, 6, 7,
+        7, 6, 5, 4,
+        5, 6, 7,
+        7, 6,
+        7,
+    };
+
+    int blockYIndex[] = {
+        0, 
+		0, 1,
+        2, 1, 0,
+        0, 1, 2, 3, 
+        4, 3, 2, 1, 0,
+        0, 1, 2, 3, 4, 5,
+        6, 5, 4, 3, 2 ,1, 0,
+        0, 1, 2, 3, 4, 5, 6, 7,
+        7, 6, 5, 4, 3, 2, 1,
+        2, 3, 4, 5, 6, 7,
+        7, 6, 5, 4, 3,
+        4, 5, 6, 7,
+        7, 6, 5,
+        6, 7,
+        7,
+    };
+
+	int testBuffer[8][8] = {
+        {0,   1,  5,  6, 14, 15, 27, 28},
+        {2,   4,  7, 13, 16, 26, 29, 42},
+        {3,   8, 12, 17, 25, 30, 41, 43},
+        {9,  11, 18, 24, 31, 40, 44, 53},
+        {10, 19, 23, 32, 39, 45, 52, 54},
+        {20, 22, 33, 38, 46, 51, 55, 60},
+        {21, 34, 37, 47, 50, 56, 59, 61},
+        {35, 36, 48, 49, 57, 58, 62, 63},
+    };
+
+	for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+			// Define a temporary buffer
+			DCT zzBuffer[64];
+
+            for(int i = 0; i < 64; i++) {
+                size_t zzIndex = i + (64*xBlock) + ((xRes*8)*yBlock);
+
+                // zzBuffer[zzIndex] = dctYBuffer[blockXIndex[i]][blockYIndex[i]];
+                zzBuffer[zzIndex] = testBuffer[blockYIndex[i]][blockXIndex[i]];
+            }
+            
+			for(int i = 0; i < 8; i++) {
+				for(int j = 0; j < 8; j++) {
+					testBuffer[i][j] = zzBuffer[i+(8*j)];
+				}
+			}
+
+            for(int j = 0; j < 8; j++) {
+				for(int i = 0; i < 8; i++) {
+					printf("%d, ", testBuffer[i][j]);
+				}
+            }
+            fflush(stdout);
+        }
+    }
+
+	// TestInput();
+
+	return 0;
+}*/
 
 /*
 int main() {
