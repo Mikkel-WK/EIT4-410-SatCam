@@ -75,15 +75,24 @@ typedef struct
     SBYTE Cr;
 } YCBCR;
 
+/* Struct defined to hold DCT values */
+typedef struct
+{
+    DCT Y;
+    DCT Cb;
+    DCT Cr;
+} DCTPIXEL;
+
 /* Define buffers to use for compression */
 // YCBCR yccBuffer[BIGXRES][BIGYRES];
 // DCT dctYBuffer[BIGXRES][BIGYRES];
 // DCT dctCbBuffer[BIGXRES][BIGYRES];
 // DCT dctCrBuffer[BIGXRES][BIGYRES];
 YCBCR yccBuffer[MIDXRES][MIDYRES];
-DCT dctYBuffer[MIDXRES][MIDYRES];
-DCT dctCbBuffer[MIDXRES][MIDYRES];
-DCT dctCrBuffer[MIDXRES][MIDYRES];
+// DCT dctYBuffer[MIDXRES][MIDYRES];
+// DCT dctCbBuffer[MIDXRES][MIDYRES];
+// DCT dctCrBuffer[MIDXRES][MIDYRES];
+DCTPIXEL dctBuffer[MIDXRES][MIDYRES];
 // DCT zzBuffer[MIDXRES*MIDYRES];
 
 /* Define buffers to use for compression */

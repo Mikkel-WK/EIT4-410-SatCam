@@ -201,10 +201,10 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
 }*/
 
 // This tests run-length and Huffman
-/*int TestInput() {
+int TestInput() {
 
     return 1;
-}*/
+}
 
 /*
  * Function: ReadDataToBuffer
@@ -326,41 +326,49 @@ int DCTToBuffers(enum RESMODE resMode) {
     float dctCbSum = 0;
     float dctCrSum = 0;
 
-    for(size_t yNum = 0; yNum < yRes; yNum++) {
-        for(size_t xNum = 0; xNum < xRes; xNum++) {
-            if(xNum == 0)   aP = 1 / sqrt(xRes);
-            else            aP = sqrt(2) / sqrt(xRes);
+    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+            
+            for(int yStart = 0; yStart < 8; yStart++) {
+                for(int xStart = 0; xStart < 8; xStart++) {
+                    if(xStart == 0)   aP = 1 / sqrt(xRes);
+                    else            aP = sqrt(2) / sqrt(xRes);
 
-            if(yNum == 0)   aQ = 1 / sqrt(yRes);
-            else            aQ = sqrt(2) / sqrt(yRes);
+                    if(yStart == 0)   aQ = 1 / sqrt(yRes);
+                    else            aQ = sqrt(2) / sqrt(yRes);
 
-            dctYSum = 0;
-            dctCbSum = 0;
-            dctCrSum = 0;
+                    dctYSum = 0;
+                    dctCbSum = 0;
+                    dctCrSum = 0;
 
-            for(size_t yPos = 0; yPos < yRes; yPos++) {
-                for(size_t xPos = 0; xPos < xRes; xPos++) {
-                    
-                    dctY =  yccBuffer[xPos][yPos].Y *
-                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
-                    dctYSum = dctYSum + dctY;
+                    for(size_t y = 0; y < 8; y++) {
+                        for(size_t x = 0; x < 8; x++) {
+                            size_t xIndex = x + (xBlock * 8);
+                            size_t yIndex = y + (yBlock * 8);
 
-                    dctCb =  yccBuffer[xPos][yPos].Cb *
-                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
-                    dctCbSum = dctCbSum + dctCb;
+                            dctY =  yccBuffer[xIndex][yIndex].Y *
+                                cos(((2 * x + 1) * 3.142857 * xStart) / (2 * xRes)) *
+                                cos(((2 * y + 1) * 3.142857 * yStart) / (2 * yRes));
+                            dctYSum = dctYSum + dctY;
 
-                    dctCr =  yccBuffer[xPos][yPos].Cr *
-                            cos(((2 * xPos + 1) * 3.142857 * xNum) / (2 * xRes)) *
-                            cos(((2 * yPos + 1) * 3.142857 * yNum) / (2 * yRes));
-                    dctCrSum = dctCrSum + dctCr;
+                            dctCb =  yccBuffer[xIndex][yIndex].Cb *
+                                cos(((2 * x + 1) * 3.142857 * xStart) / (2 * xRes)) *
+                                cos(((2 * y + 1) * 3.142857 * yStart) / (2 * yRes));
+                            dctCbSum = dctCbSum + dctCb;
+
+                            dctCr =  yccBuffer[xIndex][yIndex].Cr *
+                                cos(((2 * x + 1) * 3.142857 * xStart) / (2 * xRes)) *
+                                cos(((2 * y + 1) * 3.142857 * yStart) / (2 * yRes));
+                            dctCrSum = dctCrSum + dctCr;
+
+                        }
+                    }
+
+                    dctBuffer[xStart][yStart].Y = aP * aQ * dctYSum;
+                    dctBuffer[xStart][yStart].Cb = aP * aQ * dctCbSum;
+                    dctBuffer[xStart][yStart].Cr = aP * aQ * dctCrSum;
                 }
             }
-
-            dctYBuffer[xNum][yNum] = aP * aQ * dctYSum;
-            dctCbBuffer[xNum][yNum] = aP * aQ * dctCbSum;
-            dctCrBuffer[xNum][yNum] = aP * aQ * dctCrSum;
         }
     }
 
@@ -437,9 +445,9 @@ int QuantBuffers(enum RESMODE resMode) {
 
                     size_t indexInTable = x + (y * 8);
 
-                    dctYBuffer[xIndex][yIndex] = dctYBuffer[xIndex][yIndex] / lumiQuantTable[indexInTable];
-                    dctCbBuffer[xIndex][yIndex] = dctCbBuffer[xIndex][yIndex] / chromiQuantTable[indexInTable];
-                    dctCrBuffer[xIndex][yIndex] = dctCrBuffer[xIndex][yIndex] / chromiQuantTable[indexInTable];
+                    dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y / lumiQuantTable[indexInTable];
+                    dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb / chromiQuantTable[indexInTable];
+                    dctBuffer[xIndex][yIndex].Cr = dctBuffer[xIndex][yIndex].Cr / chromiQuantTable[indexInTable];
                 }
             }
         }
@@ -489,16 +497,16 @@ int DiffDCBuffers(enum RESMODE resMode) {
             size_t xIndex = (xDC * 8);
             size_t yIndex = (yDC * 8);
 
-            newYValue = dctYBuffer[xIndex][yIndex];
-            dctYBuffer[xIndex][yIndex] = dctYBuffer[xIndex][yIndex] - oldYValue;
+            newYValue = dctBuffer[xIndex][yIndex].Y;
+            dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y - oldYValue;
             oldYValue = newYValue;
 
-            newCbValue = dctCbBuffer[xIndex][yIndex];
-            dctCbBuffer[xIndex][yIndex] = dctCbBuffer[xIndex][yIndex] - oldCbValue;
+            newCbValue = dctBuffer[xIndex][yIndex].Cb;
+            dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb - oldCbValue;
             oldCbValue = newCbValue;
 
-            newCrValue = dctCrBuffer[xIndex][yIndex];
-            dctCrBuffer[xIndex][yIndex] = dctCrBuffer[xIndex][yIndex] - oldCrValue;
+            newCrValue = dctBuffer[xIndex][yIndex].Cr;
+            dctBuffer[xIndex][yIndex].Cr = dctBuffer[xIndex][yIndex].Cr - oldCrValue;
             oldCrValue = newCrValue;
         }
     }
@@ -570,67 +578,82 @@ int ZigzagBuffers(enum RESMODE resMode) {
         7,
     };
 
-    int testBuffer[8][8] = {
-        {0,   1,  5,  6, 14, 15, 27, 28},
-        {2,   4,  7, 13, 16, 26, 29, 42},
-        {3,   8, 12, 17, 25, 30, 41, 43},
-        {9,  11, 18, 24, 31, 40, 44, 53},
-        {10, 19, 23, 32, 39, 45, 52, 54},
-        {20, 22, 33, 38, 46, 51, 55, 60},
-        {21, 34, 37, 47, 50, 56, 59, 61},
-        {35, 36, 48, 49, 57, 58, 62, 63},
-    };
-
     // Go by 8*8 blocks
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
             
-            DCT zzBuffer[64];
+            // First with Y buffer
+            DCT zzBuffer[8][8];
+            // Put the data from the DCT buffer in the right order
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
-            for(int i = 0; i < 64; i++) {
-                size_t zzIndex = i + (64*xBlock) + ((xRes*8)*yBlock);
-
-                // zzBuffer[zzIndex] = dctYBuffer[blockXIndex[i]][blockYIndex[i]];
-                zzBuffer[zzIndex] = testBuffer[blockXIndex[i]][blockYIndex[i]];
+                    zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Y;
+                }
             }
-            
-            for(int i = 0; i < 64; i++) {
-                printf("%d, ", zzBuffer[i]);
+            // Put the rightly ordered data back into the DCT buffer
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = x + (8*xBlock);
+                    size_t dctYIndex = y + (8*yBlock);
+                    
+                    dctBuffer[dctXIndex][dctYIndex].Y = zzBuffer[x][y];
+                }
             }
-            fflush(stdout);
 
-            // // Put DC value in zz buffer right away
-            // zzBuffer[0][0] = dctYBuffer[8*xBlock][8*yBlock];
+            // Then with Cb buffer
+            zzBuffer[8][8];
+            // Put the data from the DCT buffer in the right order
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
-            // int blockXIndex = 0, blockYIndex = 0, bufferXIndex = 0, bufferYIndex = 0, zzXIndex = 0, zzYIndex = 0;
-            // int zzFlag = 0;
+                    zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Cb;
+                }
+            }
+            // Put the rightly ordered data back into the DCT buffer
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = x + (8*xBlock);
+                    size_t dctYIndex = y + (8*yBlock);
+                    
+                    dctBuffer[dctXIndex][dctYIndex].Cb = zzBuffer[x][y];
+                }
+            }
 
-            // while(blockXIndex != 6 && blockYIndex != 7) {
-                
-            //     if((blockXIndex != 0) || (blockXIndex==0 && blockYIndex==0)) {
-            //         blockXIndex++;
+            // Finally with Cr buffer
+            zzBuffer[8][8];
+            // Put the data from the DCT buffer in the right order
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
-            //         for(int i = blockXIndex; i > 0; i--) {
-                        
-            //         }
-            //     }
+                    zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Cr;
+                }
+            }
+            // Put the rightly ordered data back into the DCT buffer
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    size_t dctXIndex = x + (8*xBlock);
+                    size_t dctYIndex = y + (8*yBlock);
+                    
+                    dctBuffer[dctXIndex][dctYIndex].Cr = zzBuffer[x][y];
+                }
+            }
 
-            //     if(blockYIndex == 7) zzFlag = 1;
-            // }
 
-            // bufferXIndex = 7 + (8*xBlock);
-            // bufferYIndex = 7 + (8*yBlock);
+            // Old shit KEPT FOR PROSPERITY AND POTENTIALLY BETTER IMPLEMENTATION EVENTUALLY
+                // if x != 0 and flag not set OR x,y==0 { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
+                // if y != 0 and flag not set { yIndex+1, put in buffer, and run in zag (put in buffers during loop)
+                // if x != 7 and flag is set { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
+                // if y != 7 and flag is set { yIndex+1, put in buffer, and run in zig (put in buffers during loop)
 
-            // zzBuffer[7][7] = dctYBuffer[bufferXIndex][bufferYIndex];
-
-            // // if x != 0 and flag not set OR x,y==0 { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
-            // // if y != 0 and flag not set { yIndex+1, put in buffer, and run in zag (put in buffers during loop)
-            // // if x != 7 and flag is set { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
-            // // if y != 7 and flag is set { yIndex+1, put in buffer, and run in zig (put in buffers during loop)
-
-            // // if y == 7 { set flag
-            // // if x == 6 && y == 7 { do the last one and be done
-
+                // if y == 7 { set flag
+                // if x == 6 && y == 7 { do the last one and be done
         }
     }
 
