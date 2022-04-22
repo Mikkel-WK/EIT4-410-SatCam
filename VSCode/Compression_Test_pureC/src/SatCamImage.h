@@ -143,9 +143,8 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode);
 int DCTToBuffers(enum RESMODE resMode);
 int QuantBuffers(enum RESMODE resMode);
 int DiffDCBuffers(enum RESMODE resMode);
+int ZigzagBuffers(enum RESMODE resMode);
 
-// int ZigzagBuffers(enum RESMODE resMode);
-int ZigzagBuffers();
 int RunLengthBuffers();
 
 int HuffmanBuffer();
