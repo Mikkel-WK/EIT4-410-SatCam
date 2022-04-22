@@ -1,7 +1,7 @@
 /*
  * Checkliste til brug af bibliotek
- * Indsæt opløsning i variabler (xRes, yRes)
- * Definer datalængde udfra variabler (dataLen = xRes * yRes * 4)
+ * 
+ * 
  * 
  * 
  * 
