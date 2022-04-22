@@ -45,13 +45,23 @@
 #define TESTYRES 8
 #define TESTRESLEN 64
 
+#define TEST2XRES 16
+#define TEST2YRES 16
+#define TEST2RESLEN 256
+
+#define TEST3XRES 32
+#define TEST3YRES 16
+#define TEST3RESLEN 512
+
 /* Enum to pass into functions */
 enum RESMODE 
 {
     BIG = 0,
     MID = 1,
     SMALL = 2,
-    TEST = 3
+    TEST = 3,
+    TEST2 = 4,
+    TESTWIDE = 5
 } resMode;
 
 /* Define buffers to use for compression */

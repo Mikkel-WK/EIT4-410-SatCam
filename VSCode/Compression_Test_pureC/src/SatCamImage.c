@@ -112,7 +112,7 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
 }*/
 
 // This tests DCT
-int TestInput() {
+/*int TestInput() {
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             yccBuffer[j][i].Y = 255;
@@ -144,12 +144,64 @@ int TestInput() {
     printf(")\n");
     
     return 1;
-}
+}*/ 
 
-// This tests zig-zag + run-length
+// This tests zig-zag
 /*int TestInput() {
-    ZigzagBuffers(TEST);
+
+    int testBuffer[8][8] = {
+        {0,   1,  5,  6, 14, 15, 27, 28},
+        {2,   4,  7, 13, 16, 26, 29, 42},
+        {3,   8, 12, 17, 25, 30, 41, 43},
+        {9,  11, 18, 24, 31, 40, 44, 53},
+        {10, 19, 23, 32, 39, 45, 52, 54},
+        {20, 22, 33, 38, 46, 51, 55, 60},
+        {21, 34, 37, 47, 50, 56, 59, 61},
+        {35, 36, 48, 49, 57, 58, 62, 63},
+    };
+
+    int testBuffer2[16][16] = {
+        {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
+        {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
+        {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
+        {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
+        {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
+        {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
+        {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
+        {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
+        {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
+        {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
+        {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
+        {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
+        {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
+        {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
+        {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
+        {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
+    };
+
+    for(int j = 0; j < 16; j++) {
+        for(int i = 0; i < 16; i++) {
+            dctYBuffer[i][j] = testBuffer2[j][i];
+        }
+    }
+    
+    ZigzagBuffers(TEST2);
     // int result = DCTToBuffers(TEST);
+
+    printf("Y buffer:\n(\n");
+    for(int j = 0; j < 16; j++) {
+        for(int i = 0; i < 16; i++) {
+            printf("%d, ", dctYBuffer[i][j]);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    return 1;
+}*/
+
+// This tests run-length and Huffman
+/*int TestInput() {
 
     return 1;
 }*/
@@ -178,6 +230,14 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
     else if(resMode == TEST) {
         xRes = TESTXRES;
         yRes = TESTYRES;
+    }
+    else if(resMode == TEST2) {
+        xRes = TEST2XRES;
+        yRes = TEST2YRES;
+    }
+    else if(resMode == TESTWIDE) {
+        xRes = TEST3XRES;
+        yRes = TEST3YRES;
     }
     else return 0;
     
@@ -236,6 +296,14 @@ int DCTToBuffers(enum RESMODE resMode) {
     else if(resMode == TEST) {
         xRes = TESTXRES;
         yRes = TESTYRES;
+    }
+    else if(resMode == TEST2) {
+        xRes = TEST2XRES;
+        yRes = TEST2YRES;
+    }
+    else if(resMode == TESTWIDE) {
+        xRes = TEST3XRES;
+        yRes = TEST3YRES;
     }
     else return 0;
 
@@ -349,6 +417,14 @@ int QuantBuffers(enum RESMODE resMode) {
         xRes = TESTXRES;
         yRes = TESTYRES;
     }
+    else if(resMode == TEST2) {
+        xRes = TEST2XRES;
+        yRes = TEST2YRES;
+    }
+    else if(resMode == TESTWIDE) {
+        xRes = TEST3XRES;
+        yRes = TEST3YRES;
+    }
     else return 0;
 
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
@@ -390,6 +466,14 @@ int DiffDCBuffers(enum RESMODE resMode) {
     else if(resMode == TEST) {
         xRes = TESTXRES;
         yRes = TESTYRES;
+    }
+    else if(resMode == TEST2) {
+        xRes = TEST2XRES;
+        yRes = TEST2YRES;
+    }
+    else if(resMode == TESTWIDE) {
+        xRes = TEST3XRES;
+        yRes = TEST3YRES;
     }
     else return 0;
 
@@ -440,6 +524,14 @@ int ZigzagBuffers(enum RESMODE resMode) {
     else if(resMode == TEST) {
         xRes = TESTXRES;
         yRes = TESTYRES;
+    }
+    else if(resMode == TEST2) {
+        xRes = TEST2XRES;
+        yRes = TEST2YRES;
+    }
+    else if(resMode == TESTWIDE) {
+        xRes = TEST3XRES;
+        yRes = TEST3YRES;
     }
     else return 0;
 
