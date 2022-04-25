@@ -21,7 +21,7 @@
 
 /* Define data types for ease of use */
 #define BYTE unsigned char
-#define SBYTE unsigned char 
+#define SBYTE signed char 
 #define DCT signed short
 
 /* Define variables to use during data reading */

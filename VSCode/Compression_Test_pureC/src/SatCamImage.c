@@ -112,14 +112,14 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
 }*/
 
 // This tests DCT
-/*int TestInput() {
-    for(int i = 0; i < 8; i++) {
+int TestInput() {
+    /*for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            yccBuffer[j][i].Y = 255;
-            yccBuffer[j][i].Cb = 255;
-            yccBuffer[j][i].Cr = 255;
+            yccBuffer[j][i].Y = 127;
+            yccBuffer[j][i].Cb = 127;
+            yccBuffer[j][i].Cr = 127;
         }
-    }
+    }*/
 
     printf("ycc Y buffer:\n(\n");
     for(int i = 0; i < 8; i++) {
@@ -137,14 +137,14 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     printf("Y buffer:\n(\n");
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            printf("%d, ", dctYBuffer[j][i]);
+            printf("%d, ", dctBuffer[j][i].Y);
         }
         printf("\n");
     }
     printf(")\n");
     
     return 1;
-}*/ 
+}
 
 // This tests zig-zag
 /*int TestInput() {
@@ -201,10 +201,10 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
 }*/
 
 // This tests run-length and Huffman
-int TestInput() {
+/*int TestInput() {
 
     return 1;
-}
+}*/
 
 /*
  * Function: ReadDataToBuffer
