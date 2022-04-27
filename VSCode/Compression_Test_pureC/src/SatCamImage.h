@@ -28,6 +28,10 @@
 /*
  * Big resolution: 21MP
  * Mid resolution: Full HD
+ * Small resolution: 720p
+ * Test resolution: 8x8
+ * Test resolution 2: 16x16
+ * Test resolution 3: 32x16
 */
 #define BIGXRES 5344
 #define BIGYRES 4016
@@ -52,6 +56,10 @@
 #define TEST3XRES 32
 #define TEST3YRES 16
 #define TEST3RESLEN 512
+
+#define BUFFERX MIDXRES
+#define BUFFERY MIDYRES
+#define BUFFERLEN MIDRESLEN
 
 /* Enum to pass into functions */
 enum RESMODE 
@@ -84,22 +92,9 @@ typedef struct
 } DCTPIXEL;
 
 /* Define buffers to use for compression */
-// YCBCR yccBuffer[BIGXRES][BIGYRES];
-// DCT dctYBuffer[BIGXRES][BIGYRES];
-// DCT dctCbBuffer[BIGXRES][BIGYRES];
-// DCT dctCrBuffer[BIGXRES][BIGYRES];
-YCBCR yccBuffer[MIDXRES][MIDYRES];
-// DCT dctYBuffer[MIDXRES][MIDYRES];
-// DCT dctCbBuffer[MIDXRES][MIDYRES];
-// DCT dctCrBuffer[MIDXRES][MIDYRES];
-DCTPIXEL dctBuffer[MIDXRES][MIDYRES];
-// DCT zzBuffer[MIDXRES*MIDYRES];
-
-/* Define buffers to use for compression */
-// BYTE yccBuffer[BIGRESLEN*3];
-// DCT dctYBuffer[BIGRESLEN];
-// DCT dctCbBuffer[BIGRESLEN];
-// DCT dctCrBuffer[BIGRESLEN];
+YCBCR yccBuffer[BUFFERX][BUFFERY];
+DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
+char huffOutput[BUFFERLEN];
 
 /* Markers for JPEG creation */
 extern BYTE SOI[2], SOS[2], EOI[2];
@@ -144,10 +139,8 @@ int DCTToBuffers(enum RESMODE resMode);
 int QuantBuffers(enum RESMODE resMode);
 int DiffDCBuffers(enum RESMODE resMode);
 int ZigzagBuffers(enum RESMODE resMode);
+int HuffmanEncode(enum RESMODE resMode);
 
-int RunLengthBuffers();
-
-int HuffmanBuffer();
 int WriteToJPEG();
 
 #endif
