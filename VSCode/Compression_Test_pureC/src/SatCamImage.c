@@ -1066,7 +1066,13 @@ int HuffmanEncode(enum RESMODE resMode) {
         {16, 0b1111111111111110},
     };
 
+    // Counters keeping track of how many zeroes found previously
     int zeroCtr = 0;
+    int bigZeroCtr = 0;
+
+    size_t bitPos = 0;
+    size_t bytePos = 0;
+    
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
             for(int y = 0; y < 8; y++) {
@@ -1085,19 +1091,26 @@ int HuffmanEncode(enum RESMODE resMode) {
                     if(cat == -1) return -1; // Sanity check, exits if problem arises
                     
                     // If it is a DC value, do thing like this. Otherwise do it normally
-                    if(x==0 && y==0) {
+                    if(x == 0 && y == 0) {
                         //get CatCode
+                        
                         //Add LSB from code bits
                     }
                     else {
                         if(dctBuffer[x][y].Y == 0){
                           zeroCtr++;
                           if(zeroCtr >= 15) {
-                              // Add F0
+                              zeroCtr = 0;
+                              bigZeroCtr++;
                           }
                           continue;
                         }
                         else{
+                            while(bigZeroCtr != 0) {
+                                // do bigZeroCtr adding
+                                bigZeroCtr--;
+                            }
+                            // algebra for huff_base_code = AChufftable[zeroCtr*10 + cat][1]
                             //get CatCode + zeros + reset zeroCtr
                             //Add LSB from code bits
                         }
