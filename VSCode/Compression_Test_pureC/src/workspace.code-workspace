@@ -2,10 +2,12 @@
 	"folders": [
 		{
 			"path": ".."
-		},
-		{
-			"path": "..\\..\\Compression_Test"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"stdlib.h": "c",
+			"satcamimage.h": "c"
+		}
+	}
 }
