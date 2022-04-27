@@ -17,7 +17,7 @@ WIP
 -1, 0, -0, 0, -0, 0, -0, 0
 NOTE: -0 may be represented as 0. Not sure how to fix that at present but it changes nothing.
 
-## Quantization
+## Quantization (NOT CORRECT ATM)
 1. Fill the buffers dctYBuffer, dctCbBuffer, and dctCrBuffer with a 16x16 array, wherein every value is 255.
 2. Invoke QuantBuffers(TEST2).
 3. Output the dctYBuffer to (16, 16), preferably in a pretty 16x16 format. Every 8x8 block should look like this:
