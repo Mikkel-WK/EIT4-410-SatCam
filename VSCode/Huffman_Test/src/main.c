@@ -7,13 +7,34 @@
 #define codeTableSize (((catAmount - 2) * 16) + 2)
 
 unsigned char outString[8] = {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000};
-
+size_t bitPosInOutString = 0;
 
 int AddToBitString(int len, short bitsToAdd) {
 	unsigned char b;
 
-	
+	for(int i = len - 1; 0 <= i; i--) {
+		b = (bitsToAdd >> i) & 0b01;
 
+		if(b) {
+			outString[(bitPosInOutString/8)] |= (b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
+		}
+		else {
+			outString[(bitPosInOutString/8)] &= ~(b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
+		}
+
+		// printf("Byte 1: %d  ", outString[0]);
+		// printf("Byte 2: %d  ", outString[1]);
+		// printf("Byte 3: %d  ", outString[2]);
+		// printf("Byte 4: %d  ", outString[3]);
+		// printf("Byte 5: %d  ", outString[4]);
+		// printf("Byte 6: %d  ", outString[5]);
+		// printf("bitPos: %d  ", bitPosInOutString);
+		// printf("bitPos/8: %d\n", (bitPosInOutString/8));
+
+		bitPosInOutString++;
+	}
+
+	return 1;
 }
 
 /*int main()
@@ -819,8 +840,6 @@ int main() {
 		-14,
 	};
 
-	size_t bitPos = 0;
-	unsigned char b;
 	while(1) {
 		for(int j = 0; j < 6; j++) {
 			// Find category
@@ -839,65 +858,29 @@ int main() {
 				continue;
 			}
 
-			// Write in base code
-			for(int i = acLumiCodeTable[cat][0] - 1; 0 <= i; i--) {
-				b = (acLumiCodeTable[cat][1] >> (i)) & 0b01;
+			// Do differently if DC
 
-				if(b) {
-					outString[(bitPos/8)] |= (b<<(7-bitPos+(8*(bitPos/8))));
-				}
-				else {
-					outString[(bitPos/8)] &= ~(b<<(7-bitPos+(8*(bitPos/8))));
-				}
-
-				// printf("Byte 1: %d  ", outString[0]);
-				// printf("Byte 2: %d  ", outString[1]);
-				// printf("Byte 3: %d  ", outString[2]);
-				// printf("Byte 4: %d  ", outString[3]);
-				// printf("Byte 5: %d  ", outString[4]);
-				// printf("Byte 6: %d  ", outString[5]);
-				// printf("j: %d  ", j);
-				// printf("bitPos: %d  ", bitPos);
-				// printf("bitPos/8: %d\n", (bitPos/8));
-				bitPos++;
+			// This below is AC
+			// Add in base code
+			if(!AddToBitString(acLumiCodeTable[cat][0], acLumiCodeTable[cat][1])) {
+				printf("Something went wrong on AddToBitString 1\n");
 			}
 
-			// Write in last bits
+			// Add in last bits
 			int numCtr = 0;
-		
 			if(cat > 4) numCtr = 4;
 			else numCtr = cat;
 
-			for(int i = numCtr - 1; 0 <= i; i--) {
-				b = (testNumbers[j] >> (i)) & 0b01;
-
-				if(b) {
-					outString[(bitPos/8)] |= (b<<(7-bitPos+(8*(bitPos/8))));
-				}
-				else {
-					outString[(bitPos/8)] &= ~(b<<(7-bitPos+(8*(bitPos/8))));
-				}
-
-				printf("Byte 1: %d  ", outString[0]);
-				printf("Byte 2: %d  ", outString[1]);
-				printf("Byte 3: %d  ", outString[2]);
-				printf("Byte 4: %d  ", outString[3]);
-				printf("Byte 5: %d  ", outString[4]);
-				printf("Byte 6: %d  ", outString[5]);
-				printf("j: %d  ", j);
-				printf("bitPos: %d  ", bitPos);
-				printf("bitPos/8: %d\n", (bitPos/8));
-				bitPos++;
+			if(!AddToBitString(numCtr, testNumbers[j])) {
+				printf("Something went wrong on AddToBitString 2\n");
 			}
 
-			// printf("Byte: %d  byte data: %d  j: %d  bitPos: %d\n", (bitPos/8), outString[bitPos/8], j, bitPos);
+			printf("Byte: %d  byte data: %d  j: %d  bitPos: %d\n", (bitPosInOutString/8), outString[bitPosInOutString/8], j, bitPosInOutString);
 		}
 
 		printf("Done printing\n");
 		break;
 	}
-
-
 
 	return 0;
 }
