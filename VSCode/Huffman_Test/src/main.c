@@ -375,37 +375,52 @@ int main()
 		{16, 0b1111111111111110},
 	};
 
-	char testString[5][2] = {
-		{8, 0b10011001},
-		{5, 0b10110},
+	unsigned short testString[7][2] = {
+		{16, 0b0110001110011001},
+		{11, 0b00111001101},
 		{6, 0b101011},
 		{8, 0b00011100},
-		{11, 0b00111001101},
+		{5, 0b10110},
+		{3, 0b011},
+		{8, 0b10011001},
 	};
 
-	unsigned char outString[2] = {0b00000000, 0b00000000};
+	unsigned char outString[8] = {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000};
 
 	size_t bitPos = 0;
 	size_t bytePos = 0;
 
 	unsigned char b;
 	while(1) {
-		for(int i = testString[0][0] - 1; 0 <= i; i--) {
-			b = (testString[0][1] >> (i)) & 0b01;
+		for(int j = 0; j < 7; j++) {
+			for(int i = testString[j][0] - 1; 0 <= i; i--) {
+				b = (testString[j][1] >> (i)) & 0b01;
 
-			if(b) {
-				outString[0] |= (b<<i);
-			}
-			else {
-				outString[0] &= ~(b<<i);
-			}
+				if(b) {
+					outString[(bitPos/8)] |= (b<<(7-bitPos+(8*(bitPos/8))));
+				}
+				else {
+					outString[(bitPos/8)] &= ~(b<<(7-bitPos+(8*(bitPos/8))));
+				}
 
-			printf("Byte 1: %d\n", outString[0]);
-			bitPos++;
+				printf("Byte: %d  byte data: %d  j: %d  bitPos: %d\n", (bitPos/8), outString[bitPos/8], j, bitPos);
+				// printf("Byte 1: %d  ", outString[0]);
+				// printf("Byte 2: %d  ", outString[1]);
+				// printf("Byte 3: %d  ", outString[2]);
+				// printf("Byte 4: %d  ", outString[3]);
+				// printf("Byte 5: %d  ", outString[4]);
+				// printf("Byte 6: %d  ", outString[5]);
+				// printf("j: %d  ", j);
+				// printf("bitPos: %d  ", bitPos);
+				// printf("bitPos/8: %d\n", (bitPos/8));
+				bitPos++;
+			}
 		}
+
 		printf("Done printing\n");
 		break;
 	}
 
 	return 0;
 }
+
