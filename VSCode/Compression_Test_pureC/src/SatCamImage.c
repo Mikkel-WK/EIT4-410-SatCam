@@ -66,6 +66,38 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }
 
+// This adds bits to the huffman output string
+int AddToBitString(int len, short bitsToAdd) {
+	unsigned char b;
+
+	for(int i = len - 1; 0 <= i; i--) {
+		/* If we reach the boundary of our buffer, exit */
+		if(bitPosInOutString+1 >= maxBitPos) return 0;
+
+		b = (bitsToAdd >> i) & 0b01;
+
+		if(b) {
+			huffOutput[(bitPosInOutString/8)] |= (b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
+		}
+		else {
+			huffOutput[(bitPosInOutString/8)] &= ~(b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
+		}
+
+		// printf("Byte 1: %d  ", outString[0]);
+		// printf("Byte 2: %d  ", outString[1]);
+		// printf("Byte 3: %d  ", outString[2]);
+		// printf("Byte 4: %d  ", outString[3]);
+		// printf("Byte 5: %d  ", outString[4]);
+		// printf("Byte 6: %d  ", outString[5]);
+		// printf("bitPos: %d  ", bitPosInOutString);
+		// printf("bitPos/8: %d\n", (bitPosInOutString/8));
+
+		bitPosInOutString++;
+	}
+
+	return 1;
+}
+
 // This tests file opening and closing
 /*int TestInput() {
 
@@ -111,15 +143,79 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     return 1;
 }*/
 
-// This tests DCT
+// This tests the whole shebang
 int TestInput() {
-    /*for(int i = 0; i < 8; i++) {
+    FILE* fInput = fopen("memdump_bin_720p", "rb");
+    FILE* fOutput = fopen("memdump_ycc_bin_720p", "wb");
+
+    if(fInput == NULL){
+		printf("\nError opening file.\n");
+		return(0);
+	}
+
+    printf("Input file is open.\n");
+
+    fseek(fInput, 0, SEEK_END);
+	long fileLength = ftell(fInput);
+	fseek(fInput, 0, SEEK_SET);
+
+    char *buffer = (char*) malloc(sizeof(char)*fileLength);
+
+	char ch = (char) fgetc(fInput);
+
+	printf("We are set up.\n");
+
+	int i = 0;
+	while(!feof(fInput)) {
+		// *(buffer + i) = ch;
+		buffer[i] = ch;
+		ch = (char) fgetc(fInput);
+		i++;
+	}
+
+	printf("We are past feof.\n");
+
+    int ReadDataErr = ReadDataToBuffer(buffer, SMALLRESLEN);
+    if(ReadDataErr == 1) {
+        printf("ReadDataToBuffer returned fine.\n");
+    }
+
+    free(buffer);
+
+    if(DCTToBuffers(SMALL)) {
+        printf("DCT returned fine.\n");
+    }
+
+    if(QuantBuffers(SMALL)) {
+        printf("Quant returned fine.\n");
+    }
+
+    if(DiffDCBuffers(SMALL)) {
+        printf("Quant returned fine.\n");
+    }
+
+    if(ZigzagBuffers(SMALL)) {
+        printf("Zigzag returned fine.\n");
+    }
+
+    if(HuffmanEncode(SMALL)) {
+        printf("Huff returned fine.\n");
+    }
+ 
+    fwrite(huffOutput, 1, 1280*720, fOutput);
+    
+    return 1;
+}
+
+// This tests DCT
+/*int TestInput() {
+    for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             yccBuffer[j][i].Y = 127;
             yccBuffer[j][i].Cb = 127;
             yccBuffer[j][i].Cr = 127;
         }
-    }*/
+    }
 
     printf("ycc Y buffer:\n(\n");
     for(int i = 0; i < 8; i++) {
@@ -144,7 +240,7 @@ int TestInput() {
     printf(")\n");
     
     return 1;
-}
+}*/
 
 // This tests zig-zag
 /*int TestInput() {
@@ -604,7 +700,7 @@ int ZigzagBuffers(enum RESMODE resMode) {
             }
 
             // Then with Cb buffer
-            zzBuffer[8][8];
+            memset(zzBuffer, 0, 8*8*sizeof(DCT));
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
@@ -625,7 +721,7 @@ int ZigzagBuffers(enum RESMODE resMode) {
             }
 
             // Finally with Cr buffer
-            zzBuffer[8][8];
+            memset(zzBuffer, 0, 8*8*sizeof(DCT));
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
@@ -695,15 +791,20 @@ int HuffmanEncode(enum RESMODE resMode) {
     }
     else return 0;
 
+    memset(huffOutput, 0, BUFFERLEN);
+
+    // Variables
+    maxBitPos = sizeof(huffOutput) * 8;
+    bitPosInOutString = 0;
+
     /* Tables for categories */
-    const int catAmount = 12;
-    static const size_t huffCatTable[catAmount][2] = {
+    static const size_t huffCatTable[12][2] = {
         {0,0}, {1,1}, {2,3}, {4,7}, {8,15}, {16,31}, {32,63},
         {64,127}, {128,255}, {256,511}, {512,1023}, {1024,2047}
     };
 
     /* Tables for Huffman codes */
-    static const unsigned short dcLumiCodeTable[catAmount][2] = {
+    static const unsigned short dcLumiCodeTable[12][2] = {
         {2, 0b00},
         {3, 0b010},
         {3, 0b011},
@@ -715,10 +816,10 @@ int HuffmanEncode(enum RESMODE resMode) {
         {6, 0b111110},
         {7, 0b1111110},
         {8, 0b11111110},
-        {9, 0b111111110},
+        {9, 0b111111110}
     };
 
-    static const unsigned short dcChromiCodeTable[catAmount][2] = {
+    static const unsigned short dcChromiCodeTable[12][2] = {
         {2, 0b00},
         {2, 0b01},
         {2, 0b10},
@@ -730,13 +831,10 @@ int HuffmanEncode(enum RESMODE resMode) {
         {8, 0b11111110},
         {9, 0b111111110},
         {10, 0b1111111110},
-        {11, 0b11111111110},
+        {11, 0b11111111110}
     };
 
-    // ((catAmount-2)*16) + 2 is due to the following:
-        // The category table includes from 0 to B, codes go from run 0 to run F. The AC tables go from 1 to A, except for EOB and ZRL which are 0,0 and F,0
-    const int codeTableSize = ((catAmount - 2) * 16) + 2;
-    static const unsigned short acLumiCodeTable[codeTableSize][2] = {
+    static const unsigned short acLumiCodeTable[162][2] = {
         {4, 0b1010},
         {2, 0b00},
         {2, 0b01},
@@ -888,7 +986,6 @@ int HuffmanEncode(enum RESMODE resMode) {
         {16, 0b1111111111110010},
         {16, 0b1111111111110011},
         {16, 0b1111111111110100},
-        {11, 0b11111111001},
         {16, 0b1111111111110101},
         {16, 0b1111111111110110},
         {16, 0b1111111111110111},
@@ -899,9 +996,10 @@ int HuffmanEncode(enum RESMODE resMode) {
         {16, 0b1111111111111100},
         {16, 0b1111111111111101},
         {16, 0b1111111111111110},
+        {11, 0b11111111001}
     };
     
-    static const unsigned short acChromiCodeTable[codeTableSize][2] = {
+    static const unsigned short acChromiCodeTable[162][2] = {
         {2, 0b00},
         {2, 0b01},
         {3, 0b100},
@@ -1053,7 +1151,6 @@ int HuffmanEncode(enum RESMODE resMode) {
         {16, 0b1111111111110011},
         {16, 0b1111111111110100},
         {16, 0b1111111111110101},
-        {10, 0b1111111010},
         {15, 0b111111111000011},
         {16, 0b1111111111110110},
         {16, 0b1111111111110111},
@@ -1064,25 +1161,29 @@ int HuffmanEncode(enum RESMODE resMode) {
         {16, 0b1111111111111100},
         {16, 0b1111111111111101},
         {16, 0b1111111111111110},
+        {10, 0b1111111010}
     };
 
-    // Counters keeping track of how many zeroes found previously
-    int zeroCtr = 0;
-    int bigZeroCtr = 0;
+    // Various variables
+    int catAmount = 12; // The amount of categories
+    int zeroCtr = 0; // Keeps track of how many zeroes have been found on run
+    int bigZeroCtr = 0; // Keeps track of how many times to write F/0 if applicable
+    int cat = -1; // Keeps track of the category of value
+    int numBits = 0; // Keeps track of how many bits to add from original value
+    size_t tableIndex; // Holds whichever index is needed for the table
 
-    size_t bitPos = 0;
-    size_t bytePos = 0;
-    
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+            /*---------------------------------------------------------------*/
+            // Y
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
                     
                     // Find category
-                    int cat = -1;
+                    cat = -1;
                     for(int i = 0; i < catAmount; i++) {
-                        if((huffCatTable[i][0] < dctBuffer[x][y].Y && huffCatTable[i][1] > dctBuffer[x][y].Y) 
-                            || (-huffCatTable[i][0] > dctBuffer[x][y].Y && -huffCatTable[i][1] < dctBuffer[x][y].Y)) {
+                        if((huffCatTable[i][0] <= dctBuffer[x][y].Y && huffCatTable[i][1] >= dctBuffer[x][y].Y) 
+                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Y && -huffCatTable[i][1] <= dctBuffer[x][y].Y)) {
                             
                             cat = i;
                             i = catAmount+1;
@@ -1092,9 +1193,20 @@ int HuffmanEncode(enum RESMODE resMode) {
                     
                     // If it is a DC value, do thing like this. Otherwise do it normally
                     if(x == 0 && y == 0) {
-                        //get CatCode
-                        
-                        //Add LSB from code bits
+                        // Add the base code
+                        if(!AddToBitString(dcLumiCodeTable[cat][0], dcLumiCodeTable[cat][1])) {
+                            printf("Something went wrong on AddToBitString 1\n");
+                        }
+
+                        // Add the at most last 4 bits
+                        numBits = 0;
+                        if(cat > 4) numBits = 4;
+                        else numBits = cat;
+
+                        if(!AddToBitString(numBits, dctBuffer[x][y].Y)) {
+                            printf("Something went wrong on AddToBitString 2\n");
+                        }
+
                     }
                     else {
                         if(dctBuffer[x][y].Y == 0){
@@ -1103,24 +1215,201 @@ int HuffmanEncode(enum RESMODE resMode) {
                               zeroCtr = 0;
                               bigZeroCtr++;
                           }
-                          continue;
                         }
                         else{
+                            // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
-                                // do bigZeroCtr adding
+                                if(!AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1])) {
+                                    printf("Something went wrong on AddToBitString 3\n");
+                                }
+                                
                                 bigZeroCtr--;
                             }
-                            // algebra for huff_base_code = AChufftable[zeroCtr*10 + cat][1]
-                            //get CatCode + zeros + reset zeroCtr
-                            //Add LSB from code bits
+                            
+                            tableIndex = zeroCtr*10 + cat;
+				
+                            // Add in base code
+                            if(!AddToBitString(acLumiCodeTable[tableIndex][0], acLumiCodeTable[tableIndex][1])) {
+                                printf("Something went wrong on AddToBitString 1\n");
+                            }
+
+                            // Add in last bits
+                            numBits = 0;
+                            if(cat > 4) numBits = 4;
+                            else numBits = cat;
+
+                            if(!AddToBitString(numBits, dctBuffer[x][y].Y)) {
+                                printf("Something went wrong on AddToBitString 2\n");
+                            }
+
+                            zeroCtr = 0;
                         }
                     }
                 }
             }
 
-            // EOB procedure
-            // Add 1010
-            // zeroCtr = 0;
+            // Add EOB
+            zeroCtr = 0;
+            bigZeroCtr = 0;
+            AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1]);
+
+            /*---------------------------------------------------------------*/
+            // Cb
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    
+                    // Find category
+                    cat = -1;
+                    for(int i = 0; i < catAmount; i++) {
+                        if((huffCatTable[i][0] <= dctBuffer[x][y].Cb && huffCatTable[i][1] >= dctBuffer[x][y].Cb) 
+                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Cb && -huffCatTable[i][1] <= dctBuffer[x][y].Cb)) {
+                            
+                            cat = i;
+                            i = catAmount+1;
+                        }
+                    }
+                    if(cat == -1) return -1; // Sanity check, exits if problem arises
+                    
+                    // If it is a DC value, do thing like this. Otherwise do it normally
+                    if(x == 0 && y == 0) {
+                        // Add the base code
+                        if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1])) {
+                            printf("Something went wrong on AddToBitString 1\n");
+                        }
+
+                        // Add the at most last 4 bits
+                        numBits = 0;
+                        if(cat > 4) numBits = 4;
+                        else numBits = cat;
+
+                        if(!AddToBitString(numBits, dctBuffer[x][y].Cb)) {
+                            printf("Something went wrong on AddToBitString 2\n");
+                        }
+
+                    }
+                    else {
+                        if(dctBuffer[x][y].Cb == 0){
+                          zeroCtr++;
+                          if(zeroCtr >= 15) {
+                              zeroCtr = 0;
+                              bigZeroCtr++;
+                          }
+                        }
+                        else{
+                            // So long as there are 15 zeros in a row
+                            while(bigZeroCtr != 0) {
+                                if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1])) {
+                                    printf("Something went wrong on AddToBitString 3\n");
+                                }
+                                
+                                bigZeroCtr--;
+                            }
+                            
+                            tableIndex = zeroCtr*10 + cat;
+				
+                            // Add in base code
+                            if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1])) {
+                                printf("Something went wrong on AddToBitString 1\n");
+                            }
+
+                            // Add in last bits
+                            numBits = 0;
+                            if(cat > 4) numBits = 4;
+                            else numBits = cat;
+
+                            if(!AddToBitString(numBits, dctBuffer[x][y].Cb)) {
+                                printf("Something went wrong on AddToBitString 2\n");
+                            }
+
+                            zeroCtr = 0;
+                        }
+                    }
+                }
+            }
+
+            // Add EOB
+            zeroCtr = 0;
+            bigZeroCtr = 0;
+            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1]);
+
+            /*---------------------------------------------------------------*/
+            // Cr
+            for(int y = 0; y < 8; y++) {
+                for(int x = 0; x < 8; x++) {
+                    
+                    // Find category
+                    cat = -1;
+                    for(int i = 0; i < catAmount; i++) {
+                        if((huffCatTable[i][0] <= dctBuffer[x][y].Cr && huffCatTable[i][1] >= dctBuffer[x][y].Cr) 
+                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Cr && -huffCatTable[i][1] <= dctBuffer[x][y].Cr)) {
+                            
+                            cat = i;
+                            i = catAmount+1;
+                        }
+                    }
+                    if(cat == -1) return -1; // Sanity check, exits if problem arises
+                    
+                    // If it is a DC value, do thing like this. Otherwise do it normally
+                    if(x == 0 && y == 0) {
+                        // Add the base code
+                        if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1])) {
+                            printf("Something went wrong on AddToBitString 1\n");
+                        }
+
+                        // Add the at most last 4 bits
+                        numBits = 0;
+                        if(cat > 4) numBits = 4;
+                        else numBits = cat;
+
+                        if(!AddToBitString(numBits, dctBuffer[x][y].Cr)) {
+                            printf("Something went wrong on AddToBitString 2\n");
+                        }
+
+                    }
+                    else {
+                        if(dctBuffer[x][y].Cr == 0){
+                          zeroCtr++;
+                          if(zeroCtr >= 15) {
+                              zeroCtr = 0;
+                              bigZeroCtr++;
+                          }
+                        }
+                        else{
+                            // So long as there are 15 zeros in a row
+                            while(bigZeroCtr != 0) {
+                                if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1])) {
+                                    printf("Something went wrong on AddToBitString 3\n");
+                                }
+                                
+                                bigZeroCtr--;
+                            }
+                            
+                            tableIndex = zeroCtr*10 + cat;
+				
+                            // Add in base code
+                            if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1])) {
+                                printf("Something went wrong on AddToBitString 1\n");
+                            }
+
+                            // Add in last bits
+                            numBits = 0;
+                            if(cat > 4) numBits = 4;
+                            else numBits = cat;
+
+                            if(!AddToBitString(numBits, dctBuffer[x][y].Cr)) {
+                                printf("Something went wrong on AddToBitString 2\n");
+                            }
+
+                            zeroCtr = 0;
+                        }
+                    }
+                }
+            }
+
+            // Add EOB
+            zeroCtr = 0;
+            bigZeroCtr = 0;
+            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1]);
         }
     }
 

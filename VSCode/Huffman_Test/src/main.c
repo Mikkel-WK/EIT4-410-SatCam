@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #define catAmount 12
 
@@ -6,13 +7,17 @@
 // The category table includes from 0 to B, codes go from run 0 to run F. The AC tables go from 1 to A, except for EOB and ZRL which are 0,0 and F,0
 #define codeTableSize (((catAmount - 2) * 16) + 2)
 
-unsigned char outString[8] = {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000};
+unsigned char outString[32] = {0b00011000, 0b00000000, 0b00000000, 0b00011001, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00011100, 0b00000000, 0b00000000, 0b00100010, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b10000000};
+size_t maxBitPos = sizeof(outString) * 8;
 size_t bitPosInOutString = 0;
 
 int AddToBitString(int len, short bitsToAdd) {
 	unsigned char b;
 
 	for(int i = len - 1; 0 <= i; i--) {
+		/* If we reach the boundary of our buffer, exit */
+		if(bitPosInOutString+1 >= maxBitPos) return 0;
+
 		b = (bitsToAdd >> i) & 0b01;
 
 		if(b) {
@@ -454,6 +459,16 @@ int AddToBitString(int len, short bitsToAdd) {
 }*/
 
 int main() {
+	for(int i = 0; i < 32; i++) {
+		printf("%d ", outString[i]);
+	}
+	printf("\n");
+	memset(outString, 0, 32);
+	for(int i = 0; i < 32; i++) {
+		printf("%d ", outString[i]);
+	}
+	printf("\n");
+
 	/* Tables for categories */
 	static const size_t huffCatTable[catAmount][2] = {
 		{0,0}, {1,1}, {2,3}, {4,7}, {8,15}, {16,31}, {32,63},
@@ -643,7 +658,6 @@ int main() {
 		{16, 0b1111111111110010},
 		{16, 0b1111111111110011},
 		{16, 0b1111111111110100},
-		{11, 0b11111111001},
 		{16, 0b1111111111110101},
 		{16, 0b1111111111110110},
 		{16, 0b1111111111110111},
@@ -654,6 +668,7 @@ int main() {
 		{16, 0b1111111111111100},
 		{16, 0b1111111111111101},
 		{16, 0b1111111111111110},
+		{11, 0b11111111001},
 	};
 
 	static const unsigned short acChromiCodeTable[codeTableSize][2] = {
@@ -808,7 +823,6 @@ int main() {
 		{16, 0b1111111111110011},
 		{16, 0b1111111111110100},
 		{16, 0b1111111111110101},
-		{10, 0b1111111010},
 		{15, 0b111111111000011},
 		{16, 0b1111111111110110},
 		{16, 0b1111111111110111},
@@ -819,6 +833,7 @@ int main() {
 		{16, 0b1111111111111100},
 		{16, 0b1111111111111101},
 		{16, 0b1111111111111110},
+		{10, 0b1111111010},
 	};
 
 	unsigned short testString[7][2] = {
@@ -831,17 +846,27 @@ int main() {
 		{8, 0b10011001},
 	};
 
-	signed short testNumbers[6] = {
+	signed short testNumbers[13] = {
 		213,
 		3,
+		0,
 		-9,
+		0,
+		0,
 		22,
 		94,
+		0,
 		-14,
+		0,
+		0,
+		0,
 	};
 
 	while(1) {
-		for(int j = 0; j < 6; j++) {
+		int zeroCtr = 0;
+    	int bigZeroCtr = 0;
+		
+		for(int j = 0; j < 12; j++) {
 			// Find category
 			int cat = -1;
 			for(int i = 0; i < catAmount; i++) {
@@ -861,23 +886,51 @@ int main() {
 			// Do differently if DC
 
 			// This below is AC
-			// Add in base code
-			if(!AddToBitString(acLumiCodeTable[cat][0], acLumiCodeTable[cat][1])) {
-				printf("Something went wrong on AddToBitString 1\n");
+			if(testNumbers[j] == 0){
+				zeroCtr++;
+				if(zeroCtr >= 15) {
+					zeroCtr = 0;
+					bigZeroCtr++;
+				}
+				continue;
+			}
+			else {
+				// So long as there are 15 zeros in a row
+				while(bigZeroCtr != 0) {
+					if(!AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1])) {
+						printf("Something went wrong on AddToBitString 3\n");
+					}
+					
+					bigZeroCtr--;
+				}
+
+				size_t tableIndex = zeroCtr*10 + cat;
+				
+				// Add in base code
+				if(!AddToBitString(acLumiCodeTable[tableIndex][0], acLumiCodeTable[tableIndex][1])) {
+					printf("Something went wrong on AddToBitString 1\n");
+				}
+
+				// Add in last bits
+				int numCtr = 0;
+				if(cat > 4) numCtr = 4;
+				else numCtr = cat;
+
+				if(!AddToBitString(numCtr, testNumbers[j])) {
+					printf("Something went wrong on AddToBitString 2\n");
+				}
+
+				zeroCtr = 0;
 			}
 
-			// Add in last bits
-			int numCtr = 0;
-			if(cat > 4) numCtr = 4;
-			else numCtr = cat;
-
-			if(!AddToBitString(numCtr, testNumbers[j])) {
-				printf("Something went wrong on AddToBitString 2\n");
-			}
-
-			printf("Byte: %d  byte data: %d  j: %d  bitPos: %d\n", (bitPosInOutString/8), outString[bitPosInOutString/8], j, bitPosInOutString);
+			// printf("Byte: %d  byte data: %d  j: %d  bitPos: %d\n", (bitPosInOutString/8), outString[bitPosInOutString/8], j, bitPosInOutString);
 		}
 
+		// Add EOB
+		zeroCtr = 0;
+		bigZeroCtr = 0;
+		AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1]);
+		
 		printf("Done printing\n");
 		break;
 	}

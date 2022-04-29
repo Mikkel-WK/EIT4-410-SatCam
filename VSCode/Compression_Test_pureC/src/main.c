@@ -14,6 +14,12 @@
 #include "SatCamImage.h"
 
 int main() {
+	TestInput();
+
+	return 0;
+}
+
+/*int main() {
 	char testArr[64*4] = 
 	{
 		149, 124, 154, 255, 153, 128, 158, 255, 151, 128, 157, 255, 152, 129, 158, 255, 153, 133, 160, 255, 150, 132, 158, 255, 149, 133, 159, 255, 147, 123, 155, 255,
@@ -31,7 +37,7 @@ int main() {
 	TestInput();
 
 	return 0;
-}
+}*/
 
 /*int main() {
 	int xRes = 8;
