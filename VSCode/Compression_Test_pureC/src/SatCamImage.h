@@ -133,7 +133,7 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr);
 /* Function built to move bits into the huffman buffer */
 extern size_t maxBitPos;
 extern size_t bitPosInOutString;
-int AddToBitString(int len, short bitsToAdd);
+int AddToBitString(int len, signed short bitsToAdd, int isNegative);
 
 /* Functions specifically for testing purposes */
 int TestInput();
@@ -146,6 +146,8 @@ int DiffDCBuffers(enum RESMODE resMode);
 int ZigzagBuffers(enum RESMODE resMode);
 int HuffmanEncode(enum RESMODE resMode);
 
+int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode);
+int printDCT(int printX, int printY);
 int WriteToJPEG();
 
 #endif
