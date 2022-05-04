@@ -1382,7 +1382,7 @@ int HuffmanEncode(enum RESMODE resMode) {
     int zeroCtr = 0; // Keeps track of how many zeroes have been found on run
     int bigZeroCtr = 0; // Keeps track of how many times to write F/0 if applicable
     int cat = -1; // Keeps track of the category of value
-    int numBits = 0; // Keeps track of how many bits to add from original value
+    //int numBits = 0; // Keeps track of how many bits to add from original value
     size_t tableIndex; // Holds whichever index is needed for the table
 
     for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
@@ -1412,17 +1412,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                         }
 
                         // Add the at most last 4 bits
-                        numBits = 0;
-                        if(cat > 4) numBits = 4;
-                        else numBits = cat;
+                        //numBits = 0;
+                        //if(cat > 4) numBits = 4;
+                        //else numBits = cat;
 
                         if(dctBuffer[x][y].Y < 0) {
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Y, 1)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Y, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Y, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Y, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
@@ -1454,17 +1454,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                             }
 
                             // Add in last bits
-                            numBits = 0;
-                            if(cat > 4) numBits = 4;
-                            else numBits = cat;
+                            //numBits = 0;
+                            //if(cat > 4) numBits = 4;
+                            //else numBits = cat;
 
                             if(dctBuffer[x][y].Y < 0) {
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Y, 1)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Y, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Y, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Y, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
@@ -1505,17 +1505,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                         }
 
                         // Add the at most last 4 bits
-                        numBits = 0;
-                        if(cat > 4) numBits = 4;
-                        else numBits = cat;
+                        //numBits = 0;
+                        //if(cat > 4) numBits = 4;
+                        //else numBits = cat;
 
                         if(dctBuffer[x][y].Cb < 0) {
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Cb, 1)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Cb, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Cb, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Cb, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
@@ -1547,17 +1547,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                             }
 
                             // Add in last bits
-                            numBits = 0;
-                            if(cat > 4) numBits = 4;
-                            else numBits = cat;
+                            //numBits = 0;
+                            //if(cat > 4) numBits = 4;
+                            //else numBits = cat;
 
                             if(dctBuffer[x][y].Cb < 0) {
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Cb, 1)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Cb, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Cb, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Cb, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
@@ -1598,17 +1598,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                         }
 
                         // Add the at most last 4 bits
-                        numBits = 0;
-                        if(cat > 4) numBits = 4;
-                        else numBits = cat;
+                        //numBits = 0;
+                        //if(cat > 4) numBits = 4;
+                        //else numBits = cat;
 
                         if(dctBuffer[x][y].Cr < 0) {
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Cr, 1)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Cr, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(numBits, dctBuffer[x][y].Cr, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[x][y].Cr, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
@@ -1640,17 +1640,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                             }
 
                             // Add in last bits
-                            numBits = 0;
-                            if(cat > 4) numBits = 4;
-                            else numBits = cat;
+                            //numBits = 0;
+                            //if(cat > 4) numBits = 4;
+                            //else numBits = cat;
 
                             if(dctBuffer[x][y].Cr < 0) {
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Cr, 1)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Cr, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(numBits, dctBuffer[x][y].Cr, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[x][y].Cr, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
