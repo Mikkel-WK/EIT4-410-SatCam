@@ -87,16 +87,24 @@ int AddToBitString(int len, signed short bitsToAdd, int isNegative) {
 			huffOutput[(bitPosInOutString/8)] &= ~(b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
 		}
 
-		// printf("Byte 1: %d  ", outString[0]);
-		// printf("Byte 2: %d  ", outString[1]);
-		// printf("Byte 3: %d  ", outString[2]);
-		// printf("Byte 4: %d  ", outString[3]);
-		// printf("Byte 5: %d  ", outString[4]);
-		// printf("Byte 6: %d  ", outString[5]);
+		// printf("Byte 1: %d  ", huffOutput[0]);
+		// printf("Byte 2: %d  ", huffOutput[1]);
+		// printf("Byte 3: %d  ", huffOutput[2]);
+		// printf("Byte 4: %d  ", huffOutput[3]);
+		// printf("Byte 5: %d  ", huffOutput[4]);
+		// printf("Byte 6: %d  ", huffOutput[5]);
 		// printf("bitPos: %d  ", bitPosInOutString);
 		// printf("bitPos/8: %d\n", (bitPosInOutString/8));
 
 		bitPosInOutString++;
+
+        if(bitPosInOutString%8 == 0) {
+            // printf("aaaa\n");
+            if(huffOutput[(bitPosInOutString/8) - 1] == 255) {
+                // printf("AAAA\n");
+                bitPosInOutString = bitPosInOutString + 8;
+            }
+        }
 	}
 
 	return 1;
@@ -149,12 +157,13 @@ int AddToBitString(int len, signed short bitsToAdd, int isNegative) {
 
 // This tests the whole shebang
 int TestInput() {
-    enum RESMODE res = TEST2;
+    enum RESMODE res = MID;
 
-    FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
+    // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
+    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
 
     if(fInput == NULL){
-		printf("\nError opening file.\n");
+		printf("\nError opening file in fInput.\n");
 		return(0);
 	}
 
@@ -260,10 +269,12 @@ int TestInput() {
 
     // int printx = 16;
     // int printy = 16;
+
+    // printDCTY(8, 8, 1912, 1072);
     if(DCTToBuffers(res)) {
         printf("DCT returned fine.\n");
 
-        // printDCT(printx, printy);
+        // printDCTY(printx, printy);
 
         // OutputYCbCr(res, 1, 1);
         // return 0;
@@ -273,10 +284,12 @@ int TestInput() {
         return 0;
     }
 
+    // printDCTY(8, 8, 1904, 1072);
+    // printDCTY(8, 8, 1912, 1072);
     if(QuantBuffers(res)) {
         printf("Quant returned fine.\n");
 
-        // printDCT(printx, printy);
+        // printDCTY(printx, printy);
 
         // OutputYCbCr(res, 1, 2);
         // return 0;
@@ -286,10 +299,12 @@ int TestInput() {
         return 0;
     }
 
+    // printDCTY(8, 8, 1904, 1072);
+    // printDCTY(8, 8, 1912, 1072);
     if(DiffDCBuffers(res)) {
         printf("DiffDC returned fine.\n");
 
-        // printDCT(printx, printy);
+        // printDCTY(printx, printy);
 
         // OutputYCbCr(res, 1, 3);
         // return 0;
@@ -299,10 +314,15 @@ int TestInput() {
         return 0;
     }
 
+    printDCTY(72, 1, 1800, 0);
+    printDCTCb(72, 1, 1800, 0);
+    printDCTCr(72, 1, 1800, 0);
+
+    // printDCTY(8, 8, 1912, 1072);
     if(ZigzagBuffers(res)) {
         printf("Zigzag returned fine.\n");
 
-        // printDCT(printx, printy);
+        // printDCTY(printx, printy);
 
         // OutputYCbCr(res, 1, 4);
         // return 0;
@@ -312,25 +332,25 @@ int TestInput() {
         return 0;
     }
 
-    signed int yBuf[64] = {
-        30, -20, -4, -1, 1, -17, -4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
+    // signed int yBuf[64] = {
+    //     127, 127, -4, -1, 1, -17, -4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
 
-    signed int cbBuf[64] = {
-        -2, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
+    // signed int cbBuf[64] = {
+    //     -2, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
 
-    signed int crBuf[64] = {
-        -7, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
+    // signed int crBuf[64] = {
+    //     -7, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
 
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            dctBuffer[x][y].Y = yBuf[x+(y*8)];
-            dctBuffer[x][y].Cb = cbBuf[x+(y*8)];
-            dctBuffer[x][y].Cr = crBuf[x+(y*8)];
-        }
-    }
+    // for(int y = 0; y < 8; y++) {
+    //     for(int x = 0; x < 8; x++) {
+    //         dctBuffer[x][y].Y = yBuf[x+(y*8)];
+    //         dctBuffer[x][y].Cb = cbBuf[x+(y*8)];
+    //         dctBuffer[x][y].Cr = crBuf[x+(y*8)];
+    //     }
+    // }
 
     // signed int yBuf[256] = {
     //     30, -20, -4, -1, 1, -17, -4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, -5, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -22, 0, 0, 0, -17, -5, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -356,21 +376,25 @@ int TestInput() {
     //     }
     // }
 
-    printDCT(8, 8);
-    res = TEST;
+    printDCTY(8, 8, 1912, 1072);
+    // res = TEST2;
     if(HuffmanEncode(res)) {
         printf("Huff returned fine.\n");
         // OutputYCbCr(res, 1, 5);
         // OutputYCbCr(TEST, 1, 5);
-        return 0;
+        // return 0;
     }
     else {
         printf("Oops\n");
         return 0;
     }
 
-    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_long", "w");
-    fwrite(huffOutput, 1, MIDRESLEN*3, fOutput);
+    while(!(bitPosInOutString%8 == 0)) {
+        AddToBitString(1, 1, 0);
+    }
+
+    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_index", "w");
+    fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
     fclose(fOutput);
 
     return 1;
@@ -848,23 +872,35 @@ int DiffDCBuffers(enum RESMODE resMode) {
     int oldCrValue = 0;
     int newCrValue = 0;
 
-    for(size_t yDC = 0; yDC < yRes/8; yDC++) {
-        for(size_t xDC = 0; xDC < xRes/8; xDC++) {
+    size_t yDC = 0;
+    size_t xDC = 0;
+
+    for(yDC = 0; yDC < yRes/8; yDC++) {
+        for(xDC = 0; xDC < xRes/8; xDC++) {
             size_t xIndex = (xDC * 8);
             size_t yIndex = (yDC * 8);
 
-            newYValue = dctBuffer[xIndex][yIndex].Y;
-            dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y - oldYValue;
-            oldYValue = newYValue;
+            // printf("   old new\n");
 
-            newCbValue = dctBuffer[xIndex][yIndex].Cb;
-            dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb - oldCbValue;
-            oldCbValue = newCbValue;
+            newYValue = dctBuffer[xIndex][yIndex].Y; 
+            dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y - oldYValue; 
+            // printf("Y  %d", newYValue);
+            // printf("  %d\n", dctBuffer[xIndex][yIndex].Y);
+            oldYValue = newYValue; 
 
-            newCrValue = dctBuffer[xIndex][yIndex].Cr;
-            dctBuffer[xIndex][yIndex].Cr = dctBuffer[xIndex][yIndex].Cr - oldCrValue;
-            oldCrValue = newCrValue;
+            newCbValue = dctBuffer[xIndex][yIndex].Cb; 
+            dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb - oldCbValue; 
+            // printf("Cb  %d", newCbValue);
+            // printf("  %d\n", dctBuffer[xIndex][yIndex].Cb);
+            oldCbValue = newCbValue; 
+
+            newCrValue = dctBuffer[xIndex][yIndex].Cr; 
+            dctBuffer[xIndex][yIndex].Cr = dctBuffer[xIndex][yIndex].Cr - oldCrValue; 
+            // printf("Cr  %d", newCrValue);
+            // printf("  %d\n", dctBuffer[xIndex][yIndex].Cr);
+            oldCrValue = newCrValue; 
         }
+        
     }
 
     return 1;
@@ -1438,12 +1474,14 @@ int HuffmanEncode(enum RESMODE resMode) {
             // Y
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    
+                    size_t xIndex = x + (xBlock * 8);
+                    size_t yIndex = y + (yBlock * 8);
+
                     // Find category
                     cat = -1;
                     for(int i = 0; i < catAmount; i++) {
-                        if((huffCatTable[i][0] <= dctBuffer[x][y].Y && huffCatTable[i][1] >= dctBuffer[x][y].Y) 
-                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Y && -huffCatTable[i][1] <= dctBuffer[x][y].Y)) {
+                        if((huffCatTable[i][0] <= dctBuffer[xIndex][yIndex].Y && huffCatTable[i][1] >= dctBuffer[xIndex][yIndex].Y) 
+                            || (-huffCatTable[i][0] >= dctBuffer[xIndex][yIndex].Y && -huffCatTable[i][1] <= dctBuffer[xIndex][yIndex].Y)) {
                             
                             cat = i;
                             i = catAmount+1;
@@ -1463,22 +1501,22 @@ int HuffmanEncode(enum RESMODE resMode) {
                         //if(cat > 4) numBits = 4;
                         //else numBits = cat;
 
-                        if(dctBuffer[x][y].Y < 0) {
-                            if(!AddToBitString(cat, dctBuffer[x][y].Y, 1)) {
+                        if(dctBuffer[xIndex][yIndex].Y < 0) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(cat, dctBuffer[x][y].Y, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
 
                     }
                     else {
-                        if(dctBuffer[x][y].Y == 0){
+                        if(dctBuffer[xIndex][yIndex].Y == 0){
                           zeroCtr++;
-                          if(zeroCtr >= 15) {
+                          if(zeroCtr > 15) {
                               zeroCtr = 0;
                               bigZeroCtr++;
                           }
@@ -1505,13 +1543,13 @@ int HuffmanEncode(enum RESMODE resMode) {
                             //if(cat > 4) numBits = 4;
                             //else numBits = cat;
 
-                            if(dctBuffer[x][y].Y < 0) {
-                                if(!AddToBitString(cat, dctBuffer[x][y].Y, 1)) {
+                            if(dctBuffer[xIndex][yIndex].Y < 0) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(cat, dctBuffer[x][y].Y, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
@@ -1531,12 +1569,14 @@ int HuffmanEncode(enum RESMODE resMode) {
             // Cb
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    
+                    size_t xIndex = x + (xBlock * 8);
+                    size_t yIndex = y + (yBlock * 8);
+
                     // Find category
                     cat = -1;
                     for(int i = 0; i < catAmount; i++) {
-                        if((huffCatTable[i][0] <= dctBuffer[x][y].Cb && huffCatTable[i][1] >= dctBuffer[x][y].Cb) 
-                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Cb && -huffCatTable[i][1] <= dctBuffer[x][y].Cb)) {
+                        if((huffCatTable[i][0] <= dctBuffer[xIndex][yIndex].Cb && huffCatTable[i][1] >= dctBuffer[xIndex][yIndex].Cb) 
+                            || (-huffCatTable[i][0] >= dctBuffer[xIndex][yIndex].Cb && -huffCatTable[i][1] <= dctBuffer[xIndex][yIndex].Cb)) {
                             
                             cat = i;
                             i = catAmount+1;
@@ -1556,22 +1596,22 @@ int HuffmanEncode(enum RESMODE resMode) {
                         //if(cat > 4) numBits = 4;
                         //else numBits = cat;
 
-                        if(dctBuffer[x][y].Cb < 0) {
-                            if(!AddToBitString(cat, dctBuffer[x][y].Cb, 1)) {
+                        if(dctBuffer[xIndex][yIndex].Cb < 0) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(cat, dctBuffer[x][y].Cb, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
 
                     }
                     else {
-                        if(dctBuffer[x][y].Cb == 0){
+                        if(dctBuffer[xIndex][yIndex].Cb == 0){
                           zeroCtr++;
-                          if(zeroCtr >= 15) {
+                          if(zeroCtr > 15) {
                               zeroCtr = 0;
                               bigZeroCtr++;
                           }
@@ -1598,13 +1638,13 @@ int HuffmanEncode(enum RESMODE resMode) {
                             //if(cat > 4) numBits = 4;
                             //else numBits = cat;
 
-                            if(dctBuffer[x][y].Cb < 0) {
-                                if(!AddToBitString(cat, dctBuffer[x][y].Cb, 1)) {
+                            if(dctBuffer[xIndex][yIndex].Cb < 0) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(cat, dctBuffer[x][y].Cb, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
@@ -1624,12 +1664,14 @@ int HuffmanEncode(enum RESMODE resMode) {
             // Cr
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    
+                    size_t xIndex = x + (xBlock * 8);
+                    size_t yIndex = y + (yBlock * 8);
+
                     // Find category
                     cat = -1;
                     for(int i = 0; i < catAmount; i++) {
-                        if((huffCatTable[i][0] <= dctBuffer[x][y].Cr && huffCatTable[i][1] >= dctBuffer[x][y].Cr) 
-                            || (-huffCatTable[i][0] >= dctBuffer[x][y].Cr && -huffCatTable[i][1] <= dctBuffer[x][y].Cr)) {
+                        if((huffCatTable[i][0] <= dctBuffer[xIndex][yIndex].Cr && huffCatTable[i][1] >= dctBuffer[xIndex][yIndex].Cr) 
+                            || (-huffCatTable[i][0] >= dctBuffer[xIndex][yIndex].Cr && -huffCatTable[i][1] <= dctBuffer[xIndex][yIndex].Cr)) {
                             
                             cat = i;
                             i = catAmount+1;
@@ -1649,22 +1691,22 @@ int HuffmanEncode(enum RESMODE resMode) {
                         //if(cat > 4) numBits = 4;
                         //else numBits = cat;
 
-                        if(dctBuffer[x][y].Cr < 0) {
-                            if(!AddToBitString(cat, dctBuffer[x][y].Cr, 1)) {
+                        if(dctBuffer[xIndex][yIndex].Cr < 0) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
                         else{
-                            if(!AddToBitString(cat, dctBuffer[x][y].Cr, 0)) {
+                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
                                 printf("Something went wrong on AddToBitString 2\n");
                             }
                         }
 
                     }
                     else {
-                        if(dctBuffer[x][y].Cr == 0){
+                        if(dctBuffer[xIndex][yIndex].Cr == 0){
                           zeroCtr++;
-                          if(zeroCtr >= 15) {
+                          if(zeroCtr > 15) {
                               zeroCtr = 0;
                               bigZeroCtr++;
                           }
@@ -1691,13 +1733,13 @@ int HuffmanEncode(enum RESMODE resMode) {
                             //if(cat > 4) numBits = 4;
                             //else numBits = cat;
 
-                            if(dctBuffer[x][y].Cr < 0) {
-                                if(!AddToBitString(cat, dctBuffer[x][y].Cr, 1)) {
+                            if(dctBuffer[xIndex][yIndex].Cr < 0) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
                             else{
-                                if(!AddToBitString(cat, dctBuffer[x][y].Cr, 0)) {
+                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
                                     printf("Something went wrong on AddToBitString 2\n");
                                 }
                             }
@@ -1713,7 +1755,7 @@ int HuffmanEncode(enum RESMODE resMode) {
             bigZeroCtr = 0;
             AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
 
-            printf("Out of block %d %d\n", xBlock, yBlock);
+            // printf("Out of block %d %d\n", xBlock, yBlock);
         }
     }
 
@@ -1815,7 +1857,7 @@ int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode) {
     return 1;
 }
 
-int printDCT(int printX, int printY) {
+int printDCTY(int printX, int printY, int xIndex, int yIndex) {
     printf("DCT Y buffer:\n(\n");
     for(int y = 0; y < printY; y++) {
         if(y%8 == 0) {
@@ -1825,7 +1867,45 @@ int printDCT(int printX, int printY) {
             if(x%8 == 0) {
                 printf("   ");
             }
-            printf("%d, ", dctBuffer[x][y].Y);
+            printf("%d, ", dctBuffer[x+xIndex][y+yIndex].Y);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    return 1;    
+}
+
+int printDCTCb(int printX, int printY, int xIndex, int yIndex) {
+    printf("DCT Cb buffer:\n(\n");
+    for(int y = 0; y < printY; y++) {
+        if(y%8 == 0) {
+            printf("\n");
+        }
+        for(int x = 0; x < printX; x++) {
+            if(x%8 == 0) {
+                printf("   ");
+            }
+            printf("%d, ", dctBuffer[x+xIndex][y+yIndex].Cb);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    return 1;    
+}
+
+int printDCTCr(int printX, int printY, int xIndex, int yIndex) {
+    printf("DCT Cr buffer:\n(\n");
+    for(int y = 0; y < printY; y++) {
+        if(y%8 == 0) {
+            printf("\n");
+        }
+        for(int x = 0; x < printX; x++) {
+            if(x%8 == 0) {
+                printf("   ");
+            }
+            printf("%d, ", dctBuffer[x+xIndex][y+yIndex].Cr);
         }
         printf("\n");
     }

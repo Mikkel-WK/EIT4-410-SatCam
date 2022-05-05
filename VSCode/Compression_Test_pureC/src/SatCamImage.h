@@ -94,7 +94,7 @@ typedef struct
 /* Define buffers to use for compression */
 YCBCR yccBuffer[BUFFERX][BUFFERY];
 DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
-char huffOutput[BUFFERLEN];
+unsigned char huffOutput[BUFFERLEN];
 
 /* Markers for JPEG creation */
 extern BYTE SOI[2], SOS[2], EOI[2];
@@ -147,7 +147,9 @@ int ZigzagBuffers(enum RESMODE resMode);
 int HuffmanEncode(enum RESMODE resMode);
 
 int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode);
-int printDCT(int printX, int printY);
+int printDCTY(int printX, int printY, int xIndex, int yIndex);
+int printDCTCb(int printX, int printY, int xIndex, int yIndex);
+int printDCTCr(int printX, int printY, int xIndex, int yIndex);
 int WriteToJPEG();
 
 #endif
