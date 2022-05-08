@@ -12,7 +12,7 @@ BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
 /* Defining extern variables */
-size_t bitPosInOutString;
+size_t bitPosInOutString = 0;
 size_t maxBitPos = sizeof(huffOutput) * 8;
 
 YCBCR yccBuffer[BUFFERX][BUFFERY];
@@ -168,7 +168,8 @@ int TestInput() {
     enum RESMODE res = MID;
 
     // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
-    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    FILE* fInput = fopen("/home/mark_el/Documents/Programming/Python_BACKUP/Compression/EIT4-410-SatCam/VSCode/Compression_Test_pureC/output/memdump_comp_buf_fhd", "r");
 
     if(fInput == NULL){
 		printf("\nError opening file in fInput.\n");
@@ -1568,9 +1569,11 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1], 0);
 
             /*---------------------------------------------------------------*/
             // Cb
@@ -1663,9 +1666,12 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            
 
             /*---------------------------------------------------------------*/
             // Cr
@@ -1758,10 +1764,12 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
-
+            
             // printf("Out of block %d %d\n", xBlock, yBlock);
         }
     }
