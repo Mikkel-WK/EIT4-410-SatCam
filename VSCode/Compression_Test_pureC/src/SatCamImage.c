@@ -11,6 +11,14 @@ BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
+/* Defining extern variables */
+size_t bitPosInOutString;
+size_t maxBitPos = sizeof(huffOutput) * 8;
+
+YCBCR yccBuffer[BUFFERX][BUFFERY];
+DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
+unsigned char huffOutput[BUFFERLEN];
+
 /*
  * Function: BuildJFIFHeader
  * Purpose: Builds JFIF header with some basic variables, then puts in custom values
@@ -1089,8 +1097,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 
     memset(huffOutput, 0, BUFFERLEN);
 
-    // Variables
-    maxBitPos = sizeof(huffOutput) * 8;
+    // Initializing variable
     bitPosInOutString = 0;
 
     /* Tables for categories */

@@ -70,7 +70,7 @@ enum RESMODE
     TEST = 3,
     TEST2 = 4,
     TESTWIDE = 5
-} resMode;
+};
 
 /* Define buffers to use for compression */
 // extern BYTE huffmanBuffer[]; // Buffer for huffman coefficients
@@ -91,10 +91,10 @@ typedef struct
     DCT Cr;
 } DCTPIXEL;
 
-/* Define buffers to use for compression */
-YCBCR yccBuffer[BUFFERX][BUFFERY];
-DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
-unsigned char huffOutput[BUFFERLEN];
+/* Declare buffers to use for compression */
+extern YCBCR yccBuffer[BUFFERX][BUFFERY];
+extern DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
+extern unsigned char huffOutput[BUFFERLEN];
 
 /* Markers for JPEG creation */
 extern BYTE SOI[2], SOS[2], EOI[2];
