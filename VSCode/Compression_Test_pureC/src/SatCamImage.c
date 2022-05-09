@@ -169,7 +169,7 @@ int TestInput() {
     enum RESMODE res = MID;
 
     // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
-    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "rb");
     // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\21MP-Garbage.bin", "r");
 
     if(fInput == NULL){
@@ -354,6 +354,28 @@ int TestInput() {
     // printDCTCr(72, 1, 1800, 0);
     // printDCTY(8, 8, 1912, 1072);
 
+    // signed int yBuf[64] = {
+    //     26, -15, -13, -3, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
+    
+    // signed int cbBuf[64] = {
+    //     -3, -4, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
+    
+    // signed int crBuf[64] = {
+    //     -7, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    // };
+    
+    // for(int y = 0; y < 8; y++) {
+    //     for(int x = 0; x < 8; x++) {
+    //         dctBuffer[x][y].Y = yBuf[x+(y*8)];
+    //         dctBuffer[x][y].Cb = cbBuf[x+(y*8)];
+    //         dctBuffer[x][y].Cr = crBuf[x+(y*8)];
+    //     }
+    // }
+
+    // res = TEST;
+
     if(ZigzagBuffers(res)) {
         printf("Zigzag returned fine.\n");
 
@@ -432,7 +454,7 @@ int TestInput() {
     // FILE* fOutput = fopen("memdump_comp_buf_fhd_after_new_colour", "w");
     // fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
 
-    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_markus.jpeg", "w");
+    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_markus.jpeg", "wb");
     // FILE* fOutput = fopen("21MP_LUL.jpeg", "r");
 
     fwrite(jpegheader, 1, sizeof(jpegheader), fOutput);
