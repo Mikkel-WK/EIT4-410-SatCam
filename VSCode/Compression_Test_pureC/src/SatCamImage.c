@@ -12,11 +12,6 @@ BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
-<<<<<<< HEAD
-// BitPos variables
-int maxBitPos;
-int bitPosInOutString;
-=======
 /* Defining extern variables */
 size_t bitPosInOutString = 0;
 size_t maxBitPos = sizeof(huffOutput) * 8;
@@ -24,7 +19,6 @@ size_t maxBitPos = sizeof(huffOutput) * 8;
 YCBCR yccBuffer[BUFFERX][BUFFERY];
 DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
 unsigned char huffOutput[BUFFERLEN];
->>>>>>> dc61d2b3faf26126e89e1a7f2a2223aca61f7817
 
 /*
  * Function: BuildJFIFHeader
@@ -175,12 +169,8 @@ int TestInput() {
     enum RESMODE res = MID;
 
     // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
-    // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
-<<<<<<< HEAD
-    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\21MP-Garbage.bin", "r");
-=======
-    FILE* fInput = fopen("/home/mark_el/Documents/Programming/Python_BACKUP/Compression/EIT4-410-SatCam/VSCode/Compression_Test_pureC/output/memdump_comp_buf_fhd", "r");
->>>>>>> dc61d2b3faf26126e89e1a7f2a2223aca61f7817
+    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\21MP-Garbage.bin", "r");
 
     if(fInput == NULL){
 		printf("\nError opening file in fInput.\n");
@@ -211,28 +201,28 @@ int TestInput() {
 
     if(ReadDataToBuffer(buffer, res)) {
         printf("ReadDataToBuffer returned fine.\n");
-        FILE* yccOutput = fopen("YCC_buf", "w");
-        
-        char *yccOutBuf = (char*) malloc(sizeof(char)*MIDRESLEN*3);
-
-        int i = 0;
-        for(int y = 0; y < MIDYRES; y++) {
-            for(int x = 0; x < MIDXRES; x++) {
-                *(yccOutBuf + i) = yccBuffer[x][y].Y;
-                *(yccOutBuf + i + 1) = yccBuffer[x][y].Cb;
-                *(yccOutBuf + i + 2) = yccBuffer[x][y].Cr;
-
-                i = i+3;
-            }
-        }
-        
-        fwrite(yccOutBuf, 1, 3*MIDRESLEN, yccOutput);
-        fclose(yccOutput);
+        // FILE* yccOutput = fopen("YCC_buf", "w");
+        //
+        // char *yccOutBuf = (char*) malloc(sizeof(char)*MIDRESLEN*3);
+        //
+        // int i = 0;
+        // for(int y = 0; y < MIDYRES; y++) {
+        //     for(int x = 0; x < MIDXRES; x++) {
+        //         *(yccOutBuf + i) = yccBuffer[x][y].Y;
+        //         *(yccOutBuf + i + 1) = yccBuffer[x][y].Cb;
+        //         *(yccOutBuf + i + 2) = yccBuffer[x][y].Cr;
+        //
+        //         i = i+3;
+        //     }
+        // }
+        //
+        // fwrite(yccOutBuf, 1, 3*MIDRESLEN, yccOutput);
+        // fclose(yccOutput);
 
         // fwrite(*yccBuffer, 1, 3*MIDRESLEN, yccOutput);
         // fclose(yccOutput);
 
-        return 0;
+        // return 0;
         
         // OutputYCbCr(res, 0);
     }
@@ -442,7 +432,7 @@ int TestInput() {
     // FILE* fOutput = fopen("memdump_comp_buf_fhd_after_new_colour", "w");
     // fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
 
-    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_data_change.jpeg", "w");
+    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_markus.jpeg", "w");
     // FILE* fOutput = fopen("21MP_LUL.jpeg", "r");
 
     fwrite(jpegheader, 1, sizeof(jpegheader), fOutput);
@@ -1557,7 +1547,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                         }
                         else{
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
-                                printf("Something went wrong on AddToBitString 2\n");
+                                printf("Something went wrong on AddToBitString 3\n");
                             }
                         }
 
@@ -1574,7 +1564,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                             // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
                                 if(!AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1], 0)) {
-                                    printf("Something went wrong on AddToBitString 3\n");
+                                    printf("Something went wrong on AddToBitString 4\n");
                                 }
                                 
                                 bigZeroCtr--;
@@ -1584,7 +1574,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 				
                             // Add in base code
                             if(!AddToBitString(acLumiCodeTable[tableIndex][0], acLumiCodeTable[tableIndex][1], 0)) {
-                                printf("Something went wrong on AddToBitString 1\n");
+                                printf("Something went wrong on AddToBitString 5\n");
                             }
 
                             // Add in last bits
@@ -1594,12 +1584,12 @@ int HuffmanEncode(enum RESMODE resMode) {
 
                             if(dctBuffer[xIndex][yIndex].Y < 0) {
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 6\n");
                                 }
                             }
                             else{
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 7\n");
                                 }
                             }
 
@@ -1639,7 +1629,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                     if(x == 0 && y == 0) {
                         // Add the base code
                         if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0)) {
-                            printf("Something went wrong on AddToBitString 1\n");
+                            printf("Something went wrong on AddToBitString 8\n");
                         }
 
                         // Add the at most last 4 bits
@@ -1649,12 +1639,12 @@ int HuffmanEncode(enum RESMODE resMode) {
 
                         if(dctBuffer[xIndex][yIndex].Cb < 0) {
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
-                                printf("Something went wrong on AddToBitString 2\n");
+                                printf("Something went wrong on AddToBitString 9\n");
                             }
                         }
                         else{
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
-                                printf("Something went wrong on AddToBitString 2\n");
+                                printf("Something went wrong on AddToBitString 10\n");
                             }
                         }
 
@@ -1671,7 +1661,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                             // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
                                 if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0)) {
-                                    printf("Something went wrong on AddToBitString 3\n");
+                                    printf("Something went wrong on AddToBitString 11\n");
                                 }
                                 
                                 bigZeroCtr--;
@@ -1681,7 +1671,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 				
                             // Add in base code
                             if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0)) {
-                                printf("Something went wrong on AddToBitString 1\n");
+                                printf("Something went wrong on AddToBitString 12\n");
                             }
 
                             // Add in last bits
@@ -1691,12 +1681,12 @@ int HuffmanEncode(enum RESMODE resMode) {
 
                             if(dctBuffer[xIndex][yIndex].Cb < 0) {
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 13\n");
                                 }
                             }
                             else{
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 14\n");
                                 }
                             }
 
@@ -1737,7 +1727,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                     if(x == 0 && y == 0) {
                         // Add the base code
                         if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0)) {
-                            printf("Something went wrong on AddToBitString 1\n");
+                            printf("Something went wrong on AddToBitString 15\n");
                         }
 
                         // Add the at most last 4 bits
@@ -1747,12 +1737,12 @@ int HuffmanEncode(enum RESMODE resMode) {
 
                         if(dctBuffer[xIndex][yIndex].Cr < 0) {
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
-                                printf("Something went wrong on AddToBitString 2\n");
+                                printf("Something went wrong on AddToBitString 16\n");
                             }
                         }
                         else{
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
-                                printf("Something went wrong on AddToBitString 2\n");
+                                printf("Something went wrong on AddToBitString 17\n");
                             }
                         }
 
@@ -1769,7 +1759,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                             // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
                                 if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0)) {
-                                    printf("Something went wrong on AddToBitString 3\n");
+                                    printf("Something went wrong on AddToBitString 18\n");
                                 }
                                 
                                 bigZeroCtr--;
@@ -1779,7 +1769,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 				
                             // Add in base code
                             if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0)) {
-                                printf("Something went wrong on AddToBitString 1\n");
+                                printf("Something went wrong on AddToBitString 19\n");
                             }
 
                             // Add in last bits
@@ -1789,12 +1779,12 @@ int HuffmanEncode(enum RESMODE resMode) {
 
                             if(dctBuffer[xIndex][yIndex].Cr < 0) {
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 20\n");
                                 }
                             }
                             else{
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
-                                    printf("Something went wrong on AddToBitString 2\n");
+                                    printf("Something went wrong on AddToBitString 21\n");
                                 }
                             }
 
