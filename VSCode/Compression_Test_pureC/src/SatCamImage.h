@@ -158,6 +158,9 @@ int printDCTCb(int printX, int printY, int xIndex, int yIndex);
 int printDCTCr(int printX, int printY, int xIndex, int yIndex);
 
 /* Ease-of-use functions */
-int WriteToJPEG();
+int RawFileToHuffman(FILE* rawFile, char* huffPtr, int* huffPtrLen, enum RESMODE resMode); // File to Huffman
+int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode);// File to JPEG
+int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE resMode); // RAM to Huffman
+int RAMToJPEG(char* dataAddr, FILE* jpegFile, enum RESMODE resMode); // RAM to JPEG
 
 #endif

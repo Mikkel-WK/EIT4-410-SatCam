@@ -809,9 +809,9 @@ int TestInput() {
     FILE* fOutput = fopen("memdump_comp_buf_fhd_after_markus.jpeg", "wb");
     // FILE* fOutput = fopen("21MP_LUL.jpeg", "r");
 
-    fwrite(jpegheader, 1, sizeof(jpegheader), fOutput);
+    fwrite(JPEGHEADER, 1, sizeof(JPEGHEADER), fOutput);
     fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
-    fwrite(jpegfooter, 1, sizeof(jpegfooter), fOutput);
+    fwrite(JPEGFOOTER, 1, sizeof(JPEGFOOTER), fOutput);
     fclose(fOutput);
 
     return 0;
@@ -1578,28 +1578,262 @@ int printDCTCr(int printX, int printY, int xIndex, int yIndex) {
     return 0;    
 }
 
+/*
+ * Function: RawFileToHuffman
+ * Purpose: Read from a raw file and return Huffman encoded string and length
+ * Input:
+ * - FILE pointer to raw file
+ * - pointer to Huffman string
+ * - Pointer to length of huffman string
+ * - Resolution mode
+ * Output: Error code
+*/
+int RawFileToHuffman(FILE* rawFile, char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
+    // If the rawFile is not initialized correctly, exit
+    if(rawFile == NULL) {
+        printf("\nError opening file in RawFileToHuffman.");
+        return -1;
+    }
 
+    // Find length of the file
+    fseek(rawFile, 0, SEEK_END);
+	long fileLength = ftell(rawFile);
+	fseek(rawFile, 0, SEEK_SET);
+
+    // Make a buffer for the file
+    char *buffer = (char*) malloc(sizeof(char)*fileLength);
+
+    // Go through the whole file until feof, put it in buffer
+	char ch = (char) fgetc(rawFile);
+	int buffIndex = 0;
+	while(!feof(rawFile)) {
+		*(buffer + buffIndex) = ch;
+		// buffer[i] = ch;
+		ch = (char) fgetc(rawFile);
+		buffIndex++;
+	}
+    
+    if(ReadDataToBuffer(buffer, resMode) == -1) {
+        printf("\nError occurred in ReadDataToBuffer.\n");
+        return -1;
+    }
+
+    free(buffer);
+
+    if(DCTToBuffers(resMode) == -1) {
+        printf("\nError occurred in DCTToBuffers.\n");
+        return -1;
+    }
+
+    if(QuantBuffers(resMode) == -1) {
+        printf("\nError occurred in QuantBuffers.\n");
+        return -1;
+    }
+
+    if(DiffDCBuffers(resMode) == -1) {
+        printf("\nError occurred in DiffDCBuffers.\n");
+        return -1;
+    }
+
+    if(ZigzagBuffers(resMode) == -1) {
+        printf("\nError occurred in ZigzagBuffers.\n");
+        return -1;
+    }
+
+    if(HuffmanEncode(resMode) == -1) {
+        printf("\nError occurred in HuffmanEncode.\n");
+        return -1;
+    }
+
+    // Put the correct values in the necessary pointers
+    huffPtr = huffOutput;
+    huffPtrLen = bitPosInOutString;
+
+    return 0;
+}
 
 /*
- * Function: WriteToJPEG
- * UNFINISHED DO NOT USE
+ * Function: RawFileToJPEG
+ * Purpose: Read from a raw file and output in JPEG file
+ * Input:
+ * - FILE pointer to raw file
+ * - FILE pointer to JPEG file
+ * - Resolution mode
+ * Output: Error code
 */
-int WriteToJPEG() {
+int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode) {
+    // If a is not initialized correctly, exit
+    if(rawFile == NULL) {
+        printf("\nError opening raw file in RawFileToJPEG.\n");
+        return -1;
+    }
+    if(jpegFile == NULL) {
+        printf("\nError opening jpeg file in RawFileToJPEG.\n");
+    }
 
+    // Find length of the file
+    fseek(rawFile, 0, SEEK_END);
+	long fileLength = ftell(rawFile);
+	fseek(rawFile, 0, SEEK_SET);
 
-    /*
-     * Checklist for making JPEG file
-     * 
-     * Order of headers
-     * SOI (not included in JPEG header)
-     * APP0-14
-     * DQT
-     * SOF0
-     * DHT
-     * DRI
-     * SOS
-     * RST0-7 ad nauseam
-     * EOI
-    */
-   return 0;
+    // Make a buffer for the file
+    char *buffer = (char*) malloc(sizeof(char)*fileLength);
+
+    // Go through the whole file until feof, put it in buffer
+	char ch = (char) fgetc(rawFile);
+	int buffIndex = 0;
+	while(!feof(rawFile)) {
+		*(buffer + buffIndex) = ch;
+		// buffer[i] = ch;
+		ch = (char) fgetc(rawFile);
+		buffIndex++;
+	}
+    
+    if(ReadDataToBuffer(buffer, resMode) == -1) {
+        printf("\nError occurred in ReadDataToBuffer.\n");
+        return -1;
+    }
+
+    free(buffer);
+
+    if(DCTToBuffers(resMode) == -1) {
+        printf("\nError occurred in DCTToBuffers.\n");
+        return -1;
+    }
+
+    if(QuantBuffers(resMode) == -1) {
+        printf("\nError occurred in QuantBuffers.\n");
+        return -1;
+    }
+
+    if(DiffDCBuffers(resMode) == -1) {
+        printf("\nError occurred in DiffDCBuffers.\n");
+        return -1;
+    }
+
+    if(ZigzagBuffers(resMode) == -1) {
+        printf("\nError occurred in ZigzagBuffers.\n");
+        return -1;
+    }
+
+    if(HuffmanEncode(resMode) == -1) {
+        printf("\nError occurred in HuffmanEncode.\n");
+        return -1;
+    }
+
+    // Fill the last byte to make even bytes
+    while(!(bitPosInOutString%8 == 0)) {
+        AddToBitString(1, 1, 0);
+    }
+
+    fwrite(JPEGHEADER, 1, sizeof(JPEGHEADER), jpegFile);
+    fwrite(huffOutput, 1, bitPosInOutString/8, jpegFile);
+    fwrite(JPEGFOOTER, 1, sizeof(JPEGFOOTER), jpegFile);
+
+    return 0;
+}
+
+/*
+ * Function: RAMToHuffman
+ * Purpose: Read from RAM and return Huffman encoded string and length
+ * Input:
+ * - Pointer to data address
+ * - pointer to Huffman string
+ * - Pointer to length of huffman string
+ * - Resolution mode
+ * Output: Error code
+*/
+int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
+    if(ReadDataToBuffer(dataAddr, resMode) == -1) {
+        printf("\nError occurred in ReadDataToBuffer.\n");
+        return -1;
+    }
+
+    if(DCTToBuffers(resMode) == -1) {
+        printf("\nError occurred in DCTToBuffers.\n");
+        return -1;
+    }
+
+    if(QuantBuffers(resMode) == -1) {
+        printf("\nError occurred in QuantBuffers.\n");
+        return -1;
+    }
+
+    if(DiffDCBuffers(resMode) == -1) {
+        printf("\nError occurred in DiffDCBuffers.\n");
+        return -1;
+    }
+
+    if(ZigzagBuffers(resMode) == -1) {
+        printf("\nError occurred in ZigzagBuffers.\n");
+        return -1;
+    }
+
+    if(HuffmanEncode(resMode) == -1) {
+        printf("\nError occurred in HuffmanEncode.\n");
+        return -1;
+    }
+
+    // Put the correct values in the necessary pointers
+    huffPtr = huffOutput;
+    huffPtrLen = bitPosInOutString;
+
+    return 0;
+}
+
+/*
+ * Function: RAMToJPEG
+ * Purpose: Read from RAM and output in JPEG file
+ * Input:
+ * - Pointer to data address
+ * - FILE pointer to JPEG file
+ * - Resolution mode
+ * Output: Error code
+*/
+int RAMToJPEG(char* dataAddr, FILE* jpegFile, enum RESMODE resMode) {
+    // If the file is not initialized correctly, exit
+    if(jpegFile == NULL) {
+        printf("\nError opening jpeg file in RawFileToJPEG.\n");
+    }
+    
+    if(ReadDataToBuffer(dataAddr, resMode) == -1) {
+        printf("\nError occurred in ReadDataToBuffer.\n");
+        return -1;
+    }
+
+    if(DCTToBuffers(resMode) == -1) {
+        printf("\nError occurred in DCTToBuffers.\n");
+        return -1;
+    }
+
+    if(QuantBuffers(resMode) == -1) {
+        printf("\nError occurred in QuantBuffers.\n");
+        return -1;
+    }
+
+    if(DiffDCBuffers(resMode) == -1) {
+        printf("\nError occurred in DiffDCBuffers.\n");
+        return -1;
+    }
+
+    if(ZigzagBuffers(resMode) == -1) {
+        printf("\nError occurred in ZigzagBuffers.\n");
+        return -1;
+    }
+
+    if(HuffmanEncode(resMode) == -1) {
+        printf("\nError occurred in HuffmanEncode.\n");
+        return -1;
+    }
+
+    // Fill the last byte to make even bytes
+    while(!(bitPosInOutString%8 == 0)) {
+        AddToBitString(1, 1, 0);
+    }
+
+    fwrite(JPEGHEADER, 1, sizeof(JPEGHEADER), jpegFile);
+    fwrite(huffOutput, 1, bitPosInOutString/8, jpegFile);
+    fwrite(JPEGFOOTER, 1, sizeof(JPEGFOOTER), jpegFile);
+
+    return 0;
 }
