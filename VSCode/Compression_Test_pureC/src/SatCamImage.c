@@ -3,13 +3,18 @@
  * Created by person, month date, 2022
 */
 
-/* Include header file */
+/* Include header files */
 #include "SatCamImage.h"
+#include "jpegheader.h"
 
 /* Markers for JPEG creation */
 BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
+
+// BitPos variables
+int maxBitPos;
+int bitPosInOutString;
 
 /*
  * Function: BuildJFIFHeader
@@ -160,11 +165,12 @@ int TestInput() {
     enum RESMODE res = MID;
 
     // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
-    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+    FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\21MP-Garbage.bin", "r");
 
     if(fInput == NULL){
 		printf("\nError opening file in fInput.\n");
-		return(0);
+		return 0;
 	}
 
     printf("Input file is open.\n");
@@ -191,6 +197,29 @@ int TestInput() {
 
     if(ReadDataToBuffer(buffer, res)) {
         printf("ReadDataToBuffer returned fine.\n");
+        FILE* yccOutput = fopen("YCC_buf", "w");
+        
+        char *yccOutBuf = (char*) malloc(sizeof(char)*MIDRESLEN*3);
+
+        int i = 0;
+        for(int y = 0; y < MIDYRES; y++) {
+            for(int x = 0; x < MIDXRES; x++) {
+                *(yccOutBuf + i) = yccBuffer[x][y].Y;
+                *(yccOutBuf + i + 1) = yccBuffer[x][y].Cb;
+                *(yccOutBuf + i + 2) = yccBuffer[x][y].Cr;
+
+                i = i+3;
+            }
+        }
+        
+        fwrite(yccOutBuf, 1, 3*MIDRESLEN, yccOutput);
+        fclose(yccOutput);
+
+        // fwrite(*yccBuffer, 1, 3*MIDRESLEN, yccOutput);
+        // fclose(yccOutput);
+
+        return 0;
+        
         // OutputYCbCr(res, 0);
     }
     else {
@@ -212,7 +241,7 @@ int TestInput() {
     //     1, -6, 88, 90, 89, 92, 91, 83, 
     //     0, -2, 87, 90, 87, 93, 93, 93
     // };
-
+    //
     // signed int cbBuf[64] = {
     //     2, -64, 11, 5, 13, 1, 15, 3, 
     //     0, -61, -2, 2, 2, 4, -2, 1, 
@@ -223,7 +252,7 @@ int TestInput() {
     //     0, -70, 5, 6, 3, 6, 1, 10, 
     //     -1, -72, 2, 4, 2, 4, 3, 5
     // };
-
+    //
     // signed int crBuf[64] = {
     //     -1, -80, -6, -7, -8, -7, -9, -7, 
     //     -1, -78, 8, -9, 2, -6, 3, -7, 
@@ -234,7 +263,7 @@ int TestInput() {
     //     0, -88, -6, -5, -4, -10, -9, -2, 
     //     0, -91, -7, -4, -8, -8, -9, -10
     // };
-
+    //
     // for(int y = 0; y < 8; y++) {
     //     for(int x = 0; x < 8; x++) {
     //         yccBuffer[x][y].Y = yBuf[x+(y*8)];
@@ -242,19 +271,19 @@ int TestInput() {
     //         yccBuffer[x][y].Cr = crBuf[x+(y*8)];
     //     }
     // }
-
+    //
     // signed int yBuf[256] = {
     //     -7, -16, 70, 69, 71, 67, 70, 65, -6, -20, 67, 66, 75, 67, 71, 65, -5, -7, 87, 89, 91, 86, 88, 73, -6, -16, 77, 72, 78, 70, 77, 68, 1, -2, 90, 91, 90, 93, 93, 91, -4, -7, 88, 92, 93, 89, 89, 77, 1, -6, 88, 90, 89, 92, 91, 83, 0, -2, 87, 90, 87, 93, 93, 93, 68, 68, 70, 62, 64, 67, 69, 69, 70, 64, 69, 62, 69, 68, 73, 69, 75, 84, 88, 85, 88, 81, 83, 82, 74, 71, 77, 66, 72, 70, 73, 72, 91, 92, 91, 92, 91, 85, 83, 87, 78, 87, 87, 88, 87, 83, 84, 85, 81, 82, 83, 90, 88, 88, 88, 89, 90, 91, 89, 91, 90, 85, 85, 87, 1, -8, 90, 85, 85, 93, 92, 88, 1, -6, 88, 90, 89, 91, 91, 81, -2, -6, 93, 96, 95, 91, 92, 87, 1, -8, 91, 85, 88, 92, 93, 88, 1, -6, 86, 95, 94, 92, 92, 90, -1, -6, 95, 96, 91, 92, 92, 89, 3, -4, 91, 88, 87, 88, 87, 92, 1, -6, 86, 95, 92, 92, 91, 90, 86, 84, 83, 86, 85, 90, 88, 82, 81, 83, 85, 89, 89, 88, 89, 89, 89, 86, 85, 89, 89, 88, 88, 89, 88, 84, 84, 87, 85, 90, 87, 82, 88, 88, 87, 90, 89, 89, 88, 92, 89, 86, 85, 90, 88, 89, 86, 89, 91, 91, 91, 93, 92, 92, 92, 86, 88, 89, 87, 90, 89, 88, 88, 93
     // };
-
+    //
     // signed int cbBuf[256] = {
     //     2, -64, 11, 5, 13, 1, 15, 3, 0, -61, -2, 2, 2, 4, -2, 1, -1, -69, 1, -11, 1, -7, 3, -3, 4, -64, 7, 19, 9, 15, 11, 13, 0, -72, 1, 8, 1, 2, 3, 0, 2, -69, 0, 4, 0, 8, 2, 14, 0, -70, 5, 6, 3, 6, 1, 10, -1, -72, 2, 4, 2, 4, 3, 5, 13, 1, 11, 7, 14, 3, 12, 1, -2, 2, 2, 5, -1, 5, -4, 0, 8, -10, 5, -8, 4, -2, 5, -7, 9, 16, 7, 21, 9, 18, 10, 14, -1, 4, 1, 6, -1, 10, 1, 5, 7, 3, 5, 6, 5, 8, 4, 7, 2, 5, 6, 6, 1, 5, 2, 5, 0, 1, 2, 1, 0, 8, 0, 6, -1, -69, 1, 7, 8, 4, 1, 8, 2, -70, 5, 7, 3, 1, 1, 2, 3, -69, 2, 3, 1, 1, 2, -2, -1, -69, 1, 8, 6, 1, 0, 8, 0, -70, 4, 2, -1, 2, 2, 7, 4, -69, 2, 3, 3, 3, 2, 6, 2, -71, 0, 8, 3, 5, 1, 5, 1, -70, 4, 2, 0, 1, 2, 8, 1, 6, 2, 4, 2, 5, -1, 9, 2, 9, 4, 2, 1, 5, 1, 5, 6, 8, 2, 2, 0, 5, 2, 5, 0, 7, 1, 8, 2, 5, 0, 6, -2, 5, 2, 7, 2, 6, 1, 0, 6, 7, 2, 6, 0, 6, 2, 5, 2, 4, 2, 4, 0, 4, 2, 7, -2, 7, 2, 6, 1, 5, 1, 3
     // };
-
+    //
     // signed int crBuf[256] = {
     //     -1, -80, -6, -7, -8, -7, -9, -7, -1, -78, 8, -9, 2, -6, 3, -7, 0, -87, -7, -8, -10, -8, -10, 0, -1, -80, 7, -9, 4, -9, 3, -8, -1, -91, -2, -5, -4, -8, -8, -9, -1, -87, -6, -10, -7, -10, -8, -3, 0, -88, -6, -5, -4, -10, -9, -2, 0, -91, -7, -4, -8, -8, -9, -10, -8, -6, -8, -5, -7, -5, -6, -4, 2, -4, 3, -5, 7, -13, 0, -8, -2, -7, -10, -4, -6, -6, -7, -7, 3, -9, 3, -8, 6, -7, 0, -7, -9, -8, -7, -8, -7, -9, -7, -12, 2, -9, -11, -7, -8, -8, -4, -9, -1, -8, -8, -10, -10, -8, -7, -7, -11, -7, -10, -7, -9, -8, -4, -12, 0, -87, -9, -6, -6, -9, -8, -9, -1, -88, -7, -5, -4, -9, -8, -1, -1, -88, -10, -9, -8, -8, -8, -6, 0, -87, -8, -6, -2, -8, -7, -9, 0, -88, -4, -7, -6, -6, -7, -8, -1, -88, -8, -9, -15, -9, -8, -7, -1, -89, -6, -12, -11, -6, -5, -10, -1, -88, -4, -6, -10, -6, -8, -8, -8, -6, -6, -6, -6, -7, -6, -1, -1, -8, -3, -10, -8, -8, -5, -7, -7, -4, -3, -8, -8, -5, -4, -9, -6, -6, -4, -7, -7, -7, -8, -1, -6, -7, -6, -11, -10, -9, -8, -6, -8, -4, -3, -9, -9, -5, -6, -9, -9, -7, -7, -12, -11, -10, -10, -7, -6, -7, -6, -11, -8, -9, -7, -7
     // };
-
+    //
     // for(int yBlock = 0; yBlock < 2; yBlock++) {
     //     for(int xBlock = 0; xBlock < 2; xBlock++) {
     //         for(int y = 0; y < 8; y++) {
@@ -266,11 +295,11 @@ int TestInput() {
     //         }
     //     }
     // }
-
+    //
     // int printx = 16;
     // int printy = 16;
-
     // printDCTY(8, 8, 1912, 1072);
+
     if(DCTToBuffers(res)) {
         printf("DCT returned fine.\n");
 
@@ -286,6 +315,7 @@ int TestInput() {
 
     // printDCTY(8, 8, 1904, 1072);
     // printDCTY(8, 8, 1912, 1072);
+
     if(QuantBuffers(res)) {
         printf("Quant returned fine.\n");
 
@@ -301,6 +331,7 @@ int TestInput() {
 
     // printDCTY(8, 8, 1904, 1072);
     // printDCTY(8, 8, 1912, 1072);
+
     if(DiffDCBuffers(res)) {
         printf("DiffDC returned fine.\n");
 
@@ -314,11 +345,11 @@ int TestInput() {
         return 0;
     }
 
-    printDCTY(72, 1, 1800, 0);
-    printDCTCb(72, 1, 1800, 0);
-    printDCTCr(72, 1, 1800, 0);
-
+    // printDCTY(72, 1, 1800, 0);
+    // printDCTCb(72, 1, 1800, 0);
+    // printDCTCr(72, 1, 1800, 0);
     // printDCTY(8, 8, 1912, 1072);
+
     if(ZigzagBuffers(res)) {
         printf("Zigzag returned fine.\n");
 
@@ -335,15 +366,15 @@ int TestInput() {
     // signed int yBuf[64] = {
     //     127, 127, -4, -1, 1, -17, -4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // signed int cbBuf[64] = {
     //     -2, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // signed int crBuf[64] = {
     //     -7, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // for(int y = 0; y < 8; y++) {
     //     for(int x = 0; x < 8; x++) {
     //         dctBuffer[x][y].Y = yBuf[x+(y*8)];
@@ -351,19 +382,19 @@ int TestInput() {
     //         dctBuffer[x][y].Cr = crBuf[x+(y*8)];
     //     }
     // }
-
+    //
     // signed int yBuf[256] = {
     //     30, -20, -4, -1, 1, -17, -4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, -5, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, -22, 0, 0, 0, -17, -5, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // signed int cbBuf[256] = {
     //     -2, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // signed int crBuf[256] = {
     //     -7, -5, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     // };
-
+    //
     // for(int yBlock = 0; yBlock < 2; yBlock++) {
     //     for(int xBlock = 0; xBlock < 2; xBlock++) {
     //         for(int y = 0; y < 8; y++) {
@@ -375,9 +406,10 @@ int TestInput() {
     //         }
     //     }
     // }
-
-    printDCTY(8, 8, 1912, 1072);
+    //
+    // printDCTY(8, 8, 1912, 1072);
     // res = TEST2;
+
     if(HuffmanEncode(res)) {
         printf("Huff returned fine.\n");
         // OutputYCbCr(res, 1, 5);
@@ -393,193 +425,194 @@ int TestInput() {
         AddToBitString(1, 1, 0);
     }
 
-    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_index", "w");
+    // FILE* fOutput = fopen("memdump_comp_buf_fhd_after_new_colour", "w");
+    // fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
+
+    FILE* fOutput = fopen("memdump_comp_buf_fhd_after_data_change.jpeg", "w");
+    // FILE* fOutput = fopen("21MP_LUL.jpeg", "r");
+
+    fwrite(jpegheader, 1, sizeof(jpegheader), fOutput);
     fwrite(huffOutput, 1, bitPosInOutString/8, fOutput);
+    fwrite(jpegfooter, 1, sizeof(jpegfooter), fOutput);
     fclose(fOutput);
 
     return 1;
 }
 
 // This tests DCT
-/*int TestInput() {
-    signed int yBuf[64] = {
-        -7, -16, 70, 69, 71, 67, 70, 65, 
-        -6, -20, 67, 66, 75, 67, 71, 65, 
-        -5, -7, 87, 89, 91, 86, 88, 73, 
-        -6, -16, 77, 72, 78, 70, 77, 68, 
-        1, -2, 90, 91, 90, 93, 93, 91, 
-        -4, -7, 88, 92, 93, 89, 89, 77, 
-        1, -6, 88, 90, 89, 92, 91, 83, 
-        0, -2, 87, 90, 87, 93, 93, 93
-    };
-
-    signed int cbBuf[64] = {
-        2, -64, 11, 5, 13, 1, 15, 3, 
-        0, -61, -2, 2, 2, 4, -2, 1, 
-        -1, -69, 1, -11, 1, -7, 3, -3, 
-        4, -64, 7, 19, 9, 15, 11, 13, 
-        0, -72, 1, 8, 1, 2, 3, 0, 
-        2, -69, 0, 4, 0, 8, 2, 14, 
-        0, -70, 5, 6, 3, 6, 1, 10, 
-        -1, -72, 2, 4, 2, 4, 3, 5
-    };
-
-    signed int crBuf[64] = {
-        -1, -80, -6, -7, -8, -7, -9, -7, 
-        -1, -78, 8, -9, 2, -6, 3, -7, 
-        0, -87, -7, -8, -10, -8, -10, 0, 
-        -1, -80, 7, -9, 4, -9, 3, -8, 
-        -1, -91, -2, -5, -4, -8, -8, -9, 
-        -1, -87, -6, -10, -7, -10, -8, -3, 
-        0, -88, -6, -5, -4, -10, -9, -2, 
-        0, -91, -7, -4, -8, -8, -9, -10
-    };
-
-    // signed int yBuf[256] = {
-    //     -7, -16, 70, 69, 71, 67, 70, 65, -6, -20, 67, 66, 75, 67, 71, 65, -5, -7, 87, 89, 91, 86, 88, 73, -6, -16, 77, 72, 78, 70, 77, 68, 1, -2, 90, 91, 90, 93, 93, 91, -4, -7, 88, 92, 93, 89, 89, 77, 1, -6, 88, 90, 89, 92, 91, 83, 0, -2, 87, 90, 87, 93, 93, 93, 68, 68, 70, 62, 64, 67, 69, 69, 70, 64, 69, 62, 69, 68, 73, 69, 75, 84, 88, 85, 88, 81, 83, 82, 74, 71, 77, 66, 72, 70, 73, 72, 91, 92, 91, 92, 91, 85, 83, 87, 78, 87, 87, 88, 87, 83, 84, 85, 81, 82, 83, 90, 88, 88, 88, 89, 90, 91, 89, 91, 90, 85, 85, 87, 1, -8, 90, 85, 85, 93, 92, 88, 1, -6, 88, 90, 89, 91, 91, 81, -2, -6, 93, 96, 95, 91, 92, 87, 1, -8, 91, 85, 88, 92, 93, 88, 1, -6, 86, 95, 94, 92, 92, 90, -1, -6, 95, 96, 91, 92, 92, 89, 3, -4, 91, 88, 87, 88, 87, 92, 1, -6, 86, 95, 92, 92, 91, 90, 86, 84, 83, 86, 85, 90, 88, 82, 81, 83, 85, 89, 89, 88, 89, 89, 89, 86, 85, 89, 89, 88, 88, 89, 88, 84, 84, 87, 85, 90, 87, 82, 88, 88, 87, 90, 89, 89, 88, 92, 89, 86, 85, 90, 88, 89, 86, 89, 91, 91, 91, 93, 92, 92, 92, 86, 88, 89, 87, 90, 89, 88, 88, 93
-    // };
-
-    // signed int cbBuf[256] = {
-    //     2, -64, 11, 5, 13, 1, 15, 3, 0, -61, -2, 2, 2, 4, -2, 1, -1, -69, 1, -11, 1, -7, 3, -3, 4, -64, 7, 19, 9, 15, 11, 13, 0, -72, 1, 8, 1, 2, 3, 0, 2, -69, 0, 4, 0, 8, 2, 14, 0, -70, 5, 6, 3, 6, 1, 10, -1, -72, 2, 4, 2, 4, 3, 5, 13, 1, 11, 7, 14, 3, 12, 1, -2, 2, 2, 5, -1, 5, -4, 0, 8, -10, 5, -8, 4, -2, 5, -7, 9, 16, 7, 21, 9, 18, 10, 14, -1, 4, 1, 6, -1, 10, 1, 5, 7, 3, 5, 6, 5, 8, 4, 7, 2, 5, 6, 6, 1, 5, 2, 5, 0, 1, 2, 1, 0, 8, 0, 6, -1, -69, 1, 7, 8, 4, 1, 8, 2, -70, 5, 7, 3, 1, 1, 2, 3, -69, 2, 3, 1, 1, 2, -2, -1, -69, 1, 8, 6, 1, 0, 8, 0, -70, 4, 2, -1, 2, 2, 7, 4, -69, 2, 3, 3, 3, 2, 6, 2, -71, 0, 8, 3, 5, 1, 5, 1, -70, 4, 2, 0, 1, 2, 8, 1, 6, 2, 4, 2, 5, -1, 9, 2, 9, 4, 2, 1, 5, 1, 5, 6, 8, 2, 2, 0, 5, 2, 5, 0, 7, 1, 8, 2, 5, 0, 6, -2, 5, 2, 7, 2, 6, 1, 0, 6, 7, 2, 6, 0, 6, 2, 5, 2, 4, 2, 4, 0, 4, 2, 7, -2, 7, 2, 6, 1, 5, 1, 3
-    // };
-
-    // signed int crBuf[256] = {
-    //     -1, -80, -6, -7, -8, -7, -9, -7, -1, -78, 8, -9, 2, -6, 3, -7, 0, -87, -7, -8, -10, -8, -10, 0, -1, -80, 7, -9, 4, -9, 3, -8, -1, -91, -2, -5, -4, -8, -8, -9, -1, -87, -6, -10, -7, -10, -8, -3, 0, -88, -6, -5, -4, -10, -9, -2, 0, -91, -7, -4, -8, -8, -9, -10, -8, -6, -8, -5, -7, -5, -6, -4, 2, -4, 3, -5, 7, -13, 0, -8, -2, -7, -10, -4, -6, -6, -7, -7, 3, -9, 3, -8, 6, -7, 0, -7, -9, -8, -7, -8, -7, -9, -7, -12, 2, -9, -11, -7, -8, -8, -4, -9, -1, -8, -8, -10, -10, -8, -7, -7, -11, -7, -10, -7, -9, -8, -4, -12, 0, -87, -9, -6, -6, -9, -8, -9, -1, -88, -7, -5, -4, -9, -8, -1, -1, -88, -10, -9, -8, -8, -8, -6, 0, -87, -8, -6, -2, -8, -7, -9, 0, -88, -4, -7, -6, -6, -7, -8, -1, -88, -8, -9, -15, -9, -8, -7, -1, -89, -6, -12, -11, -6, -5, -10, -1, -88, -4, -6, -10, -6, -8, -8, -8, -6, -6, -6, -6, -7, -6, -1, -1, -8, -3, -10, -8, -8, -5, -7, -7, -4, -3, -8, -8, -5, -4, -9, -6, -6, -4, -7, -7, -7, -8, -1, -6, -7, -6, -11, -10, -9, -8, -6, -8, -4, -3, -9, -9, -5, -6, -9, -9, -7, -7, -12, -11, -10, -10, -7, -6, -7, -6, -11, -8, -9, -7, -7
-    // };
-
-    // for(int yBlock = 0; yBlock < 2; yBlock++) {
-    //     for(int xBlock = 0; xBlock < 2; xBlock++) {
-    //         for(int y = 0; y < 8; y++) {
-    //             for(int x = 0; x < 8; x++) {
-    //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Y = yBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
-    //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Cb = cbBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
-    //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Cr = crBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
-    //             }
-    //         }
-    //     }
-    // }
-
-    signed int yBuf[64] = {
-        -7, -16, 70, 69, 71, 67, 70, 65, 
-        -6, -20, 67, 66, 75, 67, 71, 65, 
-        -5, -7, 87, 89, 91, 86, 88, 73, 
-        -6, -16, 77, 72, 78, 70, 77, 68, 
-        1, -2, 90, 91, 90, 93, 93, 91, 
-        -4, -7, 88, 92, 93, 89, 89, 77, 
-        1, -6, 88, 90, 89, 92, 91, 83, 
-        0, -2, 87, 90, 87, 93, 93, 93
-    };
-
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            yccBuffer[x][y].Y = yBuf[x+(y*8)];
-            yccBuffer[x][y].Cb = cbBuf[x+(y*8)];
-            yccBuffer[x][y].Cr = crBuf[x+(y*8)];
-        }
-    }
-
-    printf("ycc buffer:\n(\n");
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            printf("%d, ", yccBuffer[x][y].Y);
-        }
-        printf("\n");
-    }
-    printf(")\n");
-
-    if(DCTToBuffers(TEST) == 1) {
-        printf("DCT good\n");
-    }
-
-    printf("DCT Y buffer:\n(\n");
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            printf("%d, ", dctBuffer[x][y].Y);
-        }
-        printf("\n");
-    }
-    printf(")\n");
-
-    printf("DCT Cb buffer:\n(\n");
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            printf("%d, ", dctBuffer[x][y].Cb);
-        }
-        printf("\n");
-    }
-    printf(")\n");
-
-    printf("DCT Cr buffer:\n(\n");
-    for(int y = 0; y < 8; y++) {
-        for(int x = 0; x < 8; x++) {
-            printf("%d, ", dctBuffer[x][y].Cr);
-        }
-        printf("\n");
-    }
-    printf(")\n");
-    
-    return 1;
-}*/
+// int TestInput() {
+//     signed int yBuf[64] = {
+//         -7, -16, 70, 69, 71, 67, 70, 65, 
+//         -6, -20, 67, 66, 75, 67, 71, 65, 
+//         -5, -7, 87, 89, 91, 86, 88, 73, 
+//         -6, -16, 77, 72, 78, 70, 77, 68, 
+//         1, -2, 90, 91, 90, 93, 93, 91, 
+//         -4, -7, 88, 92, 93, 89, 89, 77, 
+//         1, -6, 88, 90, 89, 92, 91, 83, 
+//         0, -2, 87, 90, 87, 93, 93, 93
+//     };
+//
+//     signed int cbBuf[64] = {
+//         2, -64, 11, 5, 13, 1, 15, 3, 
+//         0, -61, -2, 2, 2, 4, -2, 1, 
+//         -1, -69, 1, -11, 1, -7, 3, -3, 
+//         4, -64, 7, 19, 9, 15, 11, 13, 
+//         0, -72, 1, 8, 1, 2, 3, 0, 
+//         2, -69, 0, 4, 0, 8, 2, 14, 
+//         0, -70, 5, 6, 3, 6, 1, 10, 
+//         -1, -72, 2, 4, 2, 4, 3, 5
+//     };
+//
+//     signed int crBuf[64] = {
+//         -1, -80, -6, -7, -8, -7, -9, -7, 
+//         -1, -78, 8, -9, 2, -6, 3, -7, 
+//         0, -87, -7, -8, -10, -8, -10, 0, 
+//         -1, -80, 7, -9, 4, -9, 3, -8, 
+//         -1, -91, -2, -5, -4, -8, -8, -9, 
+//         -1, -87, -6, -10, -7, -10, -8, -3, 
+//         0, -88, -6, -5, -4, -10, -9, -2, 
+//         0, -91, -7, -4, -8, -8, -9, -10
+//     };
+//
+//     // signed int yBuf[256] = {
+//     //     -7, -16, 70, 69, 71, 67, 70, 65, -6, -20, 67, 66, 75, 67, 71, 65, -5, -7, 87, 89, 91, 86, 88, 73, -6, -16, 77, 72, 78, 70, 77, 68, 1, -2, 90, 91, 90, 93, 93, 91, -4, -7, 88, 92, 93, 89, 89, 77, 1, -6, 88, 90, 89, 92, 91, 83, 0, -2, 87, 90, 87, 93, 93, 93, 68, 68, 70, 62, 64, 67, 69, 69, 70, 64, 69, 62, 69, 68, 73, 69, 75, 84, 88, 85, 88, 81, 83, 82, 74, 71, 77, 66, 72, 70, 73, 72, 91, 92, 91, 92, 91, 85, 83, 87, 78, 87, 87, 88, 87, 83, 84, 85, 81, 82, 83, 90, 88, 88, 88, 89, 90, 91, 89, 91, 90, 85, 85, 87, 1, -8, 90, 85, 85, 93, 92, 88, 1, -6, 88, 90, 89, 91, 91, 81, -2, -6, 93, 96, 95, 91, 92, 87, 1, -8, 91, 85, 88, 92, 93, 88, 1, -6, 86, 95, 94, 92, 92, 90, -1, -6, 95, 96, 91, 92, 92, 89, 3, -4, 91, 88, 87, 88, 87, 92, 1, -6, 86, 95, 92, 92, 91, 90, 86, 84, 83, 86, 85, 90, 88, 82, 81, 83, 85, 89, 89, 88, 89, 89, 89, 86, 85, 89, 89, 88, 88, 89, 88, 84, 84, 87, 85, 90, 87, 82, 88, 88, 87, 90, 89, 89, 88, 92, 89, 86, 85, 90, 88, 89, 86, 89, 91, 91, 91, 93, 92, 92, 92, 86, 88, 89, 87, 90, 89, 88, 88, 93
+//     // };
+//
+//     // signed int cbBuf[256] = {
+//     //     2, -64, 11, 5, 13, 1, 15, 3, 0, -61, -2, 2, 2, 4, -2, 1, -1, -69, 1, -11, 1, -7, 3, -3, 4, -64, 7, 19, 9, 15, 11, 13, 0, -72, 1, 8, 1, 2, 3, 0, 2, -69, 0, 4, 0, 8, 2, 14, 0, -70, 5, 6, 3, 6, 1, 10, -1, -72, 2, 4, 2, 4, 3, 5, 13, 1, 11, 7, 14, 3, 12, 1, -2, 2, 2, 5, -1, 5, -4, 0, 8, -10, 5, -8, 4, -2, 5, -7, 9, 16, 7, 21, 9, 18, 10, 14, -1, 4, 1, 6, -1, 10, 1, 5, 7, 3, 5, 6, 5, 8, 4, 7, 2, 5, 6, 6, 1, 5, 2, 5, 0, 1, 2, 1, 0, 8, 0, 6, -1, -69, 1, 7, 8, 4, 1, 8, 2, -70, 5, 7, 3, 1, 1, 2, 3, -69, 2, 3, 1, 1, 2, -2, -1, -69, 1, 8, 6, 1, 0, 8, 0, -70, 4, 2, -1, 2, 2, 7, 4, -69, 2, 3, 3, 3, 2, 6, 2, -71, 0, 8, 3, 5, 1, 5, 1, -70, 4, 2, 0, 1, 2, 8, 1, 6, 2, 4, 2, 5, -1, 9, 2, 9, 4, 2, 1, 5, 1, 5, 6, 8, 2, 2, 0, 5, 2, 5, 0, 7, 1, 8, 2, 5, 0, 6, -2, 5, 2, 7, 2, 6, 1, 0, 6, 7, 2, 6, 0, 6, 2, 5, 2, 4, 2, 4, 0, 4, 2, 7, -2, 7, 2, 6, 1, 5, 1, 3
+//     // };
+//
+//     // signed int crBuf[256] = {
+//     //     -1, -80, -6, -7, -8, -7, -9, -7, -1, -78, 8, -9, 2, -6, 3, -7, 0, -87, -7, -8, -10, -8, -10, 0, -1, -80, 7, -9, 4, -9, 3, -8, -1, -91, -2, -5, -4, -8, -8, -9, -1, -87, -6, -10, -7, -10, -8, -3, 0, -88, -6, -5, -4, -10, -9, -2, 0, -91, -7, -4, -8, -8, -9, -10, -8, -6, -8, -5, -7, -5, -6, -4, 2, -4, 3, -5, 7, -13, 0, -8, -2, -7, -10, -4, -6, -6, -7, -7, 3, -9, 3, -8, 6, -7, 0, -7, -9, -8, -7, -8, -7, -9, -7, -12, 2, -9, -11, -7, -8, -8, -4, -9, -1, -8, -8, -10, -10, -8, -7, -7, -11, -7, -10, -7, -9, -8, -4, -12, 0, -87, -9, -6, -6, -9, -8, -9, -1, -88, -7, -5, -4, -9, -8, -1, -1, -88, -10, -9, -8, -8, -8, -6, 0, -87, -8, -6, -2, -8, -7, -9, 0, -88, -4, -7, -6, -6, -7, -8, -1, -88, -8, -9, -15, -9, -8, -7, -1, -89, -6, -12, -11, -6, -5, -10, -1, -88, -4, -6, -10, -6, -8, -8, -8, -6, -6, -6, -6, -7, -6, -1, -1, -8, -3, -10, -8, -8, -5, -7, -7, -4, -3, -8, -8, -5, -4, -9, -6, -6, -4, -7, -7, -7, -8, -1, -6, -7, -6, -11, -10, -9, -8, -6, -8, -4, -3, -9, -9, -5, -6, -9, -9, -7, -7, -12, -11, -10, -10, -7, -6, -7, -6, -11, -8, -9, -7, -7
+//     // };
+//
+//     // for(int yBlock = 0; yBlock < 2; yBlock++) {
+//     //     for(int xBlock = 0; xBlock < 2; xBlock++) {
+//     //         for(int y = 0; y < 8; y++) {
+//     //             for(int x = 0; x < 8; x++) {
+//     //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Y = yBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
+//     //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Cb = cbBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
+//     //                 yccBuffer[x+(xBlock * 8)][y+(yBlock * 8)].Cr = crBuf[x+(y*8)+(64*xBlock)+(128*yBlock)];
+//     //             }
+//     //         }
+//     //     }
+//     // }
+//
+//     signed int yBuf[64] = {
+//         -7, -16, 70, 69, 71, 67, 70, 65, 
+//         -6, -20, 67, 66, 75, 67, 71, 65, 
+//         -5, -7, 87, 89, 91, 86, 88, 73, 
+//         -6, -16, 77, 72, 78, 70, 77, 68, 
+//         1, -2, 90, 91, 90, 93, 93, 91, 
+//         -4, -7, 88, 92, 93, 89, 89, 77, 
+//         1, -6, 88, 90, 89, 92, 91, 83, 
+//         0, -2, 87, 90, 87, 93, 93, 93
+//     };
+//
+//     for(int y = 0; y < 8; y++) {
+//         for(int x = 0; x < 8; x++) {
+//             yccBuffer[x][y].Y = yBuf[x+(y*8)];
+//             yccBuffer[x][y].Cb = cbBuf[x+(y*8)];
+//             yccBuffer[x][y].Cr = crBuf[x+(y*8)];
+//         }
+//     }
+//
+//     printf("ycc buffer:\n(\n");
+//     for(int y = 0; y < 8; y++) {
+//         for(int x = 0; x < 8; x++) {
+//             printf("%d, ", yccBuffer[x][y].Y);
+//         }
+//         printf("\n");
+//     }
+//     printf(")\n");
+//
+//     if(DCTToBuffers(TEST) == 1) {
+//         printf("DCT good\n");
+//     }
+//
+//     printf("DCT Y buffer:\n(\n");
+//     for(int y = 0; y < 8; y++) {
+//         for(int x = 0; x < 8; x++) {
+//             printf("%d, ", dctBuffer[x][y].Y);
+//         }
+//         printf("\n");
+//     }
+//     printf(")\n");
+//
+//     printf("DCT Cb buffer:\n(\n");
+//     for(int y = 0; y < 8; y++) {
+//         for(int x = 0; x < 8; x++) {
+//             printf("%d, ", dctBuffer[x][y].Cb);
+//         }
+//         printf("\n");
+//     }
+//     printf(")\n");
+//
+//     printf("DCT Cr buffer:\n(\n");
+//     for(int y = 0; y < 8; y++) {
+//         for(int x = 0; x < 8; x++) {
+//             printf("%d, ", dctBuffer[x][y].Cr);
+//         }
+//         printf("\n");
+//     }
+//     printf(")\n");
+//
+//     return 1;
+// }
 
 // This tests zig-zag
-/*int TestInput() {
-
-    int testBuffer[8][8] = {
-        {0,   1,  5,  6, 14, 15, 27, 28},
-        {2,   4,  7, 13, 16, 26, 29, 42},
-        {3,   8, 12, 17, 25, 30, 41, 43},
-        {9,  11, 18, 24, 31, 40, 44, 53},
-        {10, 19, 23, 32, 39, 45, 52, 54},
-        {20, 22, 33, 38, 46, 51, 55, 60},
-        {21, 34, 37, 47, 50, 56, 59, 61},
-        {35, 36, 48, 49, 57, 58, 62, 63},
-    };
-
-    int testBuffer2[16][16] = {
-        {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
-        {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
-        {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
-        {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
-        {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
-        {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
-        {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
-        {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
-        {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
-        {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
-        {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
-        {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
-        {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
-        {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
-        {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
-        {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
-    };
-
-    for(int j = 0; j < 16; j++) {
-        for(int i = 0; i < 16; i++) {
-            dctYBuffer[i][j] = testBuffer2[j][i];
-        }
-    }
-    
-    ZigzagBuffers(TEST2);
-    // int result = DCTToBuffers(TEST);
-
-    printf("Y buffer:\n(\n");
-    for(int j = 0; j < 16; j++) {
-        for(int i = 0; i < 16; i++) {
-            printf("%d, ", dctYBuffer[i][j]);
-        }
-        printf("\n");
-    }
-    printf(")\n");
-
-    return 1;
-}*/
-
-// This tests run-length and Huffman
-/*int TestInput() {
-
-    return 1;
-}*/
+// int TestInput() {
+//
+//     int testBuffer[8][8] = {
+//         {0,   1,  5,  6, 14, 15, 27, 28},
+//         {2,   4,  7, 13, 16, 26, 29, 42},
+//         {3,   8, 12, 17, 25, 30, 41, 43},
+//         {9,  11, 18, 24, 31, 40, 44, 53},
+//         {10, 19, 23, 32, 39, 45, 52, 54},
+//         {20, 22, 33, 38, 46, 51, 55, 60},
+//         {21, 34, 37, 47, 50, 56, 59, 61},
+//         {35, 36, 48, 49, 57, 58, 62, 63},
+//     };
+//
+//     int testBuffer2[16][16] = {
+//         {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
+//         {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
+//         {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
+//         {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
+//         {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
+//         {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
+//         {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
+//         {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
+//         {0,   1,  5,  6, 14, 15, 27, 28, 0,   1,  5,  6, 14, 15, 27, 28},
+//         {2,   4,  7, 13, 16, 26, 29, 42, 2,   4,  7, 13, 16, 26, 29, 42},
+//         {3,   8, 12, 17, 25, 30, 41, 43, 3,   8, 12, 17, 25, 30, 41, 43},
+//         {9,  11, 18, 24, 31, 40, 44, 53, 9,  11, 18, 24, 31, 40, 44, 53},
+//         {10, 19, 23, 32, 39, 45, 52, 54, 10, 19, 23, 32, 39, 45, 52, 54},
+//         {20, 22, 33, 38, 46, 51, 55, 60, 20, 22, 33, 38, 46, 51, 55, 60},
+//         {21, 34, 37, 47, 50, 56, 59, 61, 21, 34, 37, 47, 50, 56, 59, 61},
+//         {35, 36, 48, 49, 57, 58, 62, 63, 35, 36, 48, 49, 57, 58, 62, 63},
+//     };
+//
+//     for(int j = 0; j < 16; j++) {
+//         for(int i = 0; i < 16; i++) {
+//             dctYBuffer[i][j] = testBuffer2[j][i];
+//         }
+//     }
+//
+//     ZigzagBuffers(TEST2);
+//     // int result = DCTToBuffers(TEST);
+//
+//     printf("Y buffer:\n(\n");
+//     for(int j = 0; j < 16; j++) {
+//         for(int i = 0; i < 16; i++) {
+//             printf("%d, ", dctYBuffer[i][j]);
+//         }
+//         printf("\n");
+//     }
+//     printf(")\n");
+//
+//     return 1;
+// }
 
 /*
  * Function: ReadDataToBuffer
@@ -591,8 +624,8 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
     int xRes = 0;
     int yRes = 0;
     if(resMode == BIG) {
-        xRes = BIGRESLEN;
-        yRes = BIGRESLEN;
+        xRes = BIGXRES;
+        yRes = BIGYRES;
     }
     else if(resMode == MID) {
         xRes = MIDXRES;
@@ -627,9 +660,9 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
 
     // printf("r    g    b    y  cb  cr\n");
     BYTE r, g, b;
-    for(size_t yPos = 0; yPos < yRes; yPos++) {
-        for(size_t xPos = 0; xPos < xRes; xPos++) {
-            size_t dataIndex = (xPos + (yPos * xRes)) * 4;
+    for(int yPos = 0; yPos < yRes; yPos++) {
+        for(int xPos = 0; xPos < xRes; xPos++) {
+            int dataIndex = ((xPos*4) + (yPos * xRes));
 
             // Order is rgba
             b = *(dataAddr + (dataIndex + 2));
@@ -642,6 +675,9 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
             yccBuffer[xPos][yPos].Y = (((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) >> 8) - 112;
             yccBuffer[xPos][yPos].Cb = (((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b)) >> 8);
             yccBuffer[xPos][yPos].Cr = (((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b)) >> 8);
+            // yccBuffer[xPos][yPos].Y = ((transMatrix[0]*r) + (transMatrix[1]*g) + (transMatrix[2]*b)) - 112;
+            // yccBuffer[xPos][yPos].Cb = ((transMatrix[3]*r) + (transMatrix[4]*g) + (transMatrix[5]*b));
+            // yccBuffer[xPos][yPos].Cr = ((transMatrix[6]*r) + (transMatrix[7]*g) + (transMatrix[8]*b));
 
             // if(dataIndex % 131072 == 0) {
             //     printf("%d  %d  %d  %d  %d  %d\n", r, g, b, yccBuffer[xPos][yPos].Y, yccBuffer[xPos][yPos].Cb, yccBuffer[xPos][yPos].Cr);
@@ -706,8 +742,8 @@ int DCTToBuffers(enum RESMODE resMode) {
     float dctCbSum = 0;
     float dctCrSum = 0;
 
-    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
-        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+    for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             
             for(int yStart = 0; yStart < 8; yStart++) {
                 for(int xStart = 0; xStart < 8; xStart++) {
@@ -723,8 +759,8 @@ int DCTToBuffers(enum RESMODE resMode) {
 
                     for(int y = 0; y < 8; y++) {
                         for(int x = 0; x < 8; x++) {
-                            size_t xIndex = x + (xBlock * 8);
-                            size_t yIndex = y + (yBlock * 8);
+                            int xIndex = x + (xBlock * 8);
+                            int yIndex = y + (yBlock * 8);
 
                             dctY =  yccBuffer[xIndex][yIndex].Y *
                                 cos(((2 * x + 1) * 3.142857 * xStart) / (2 * 8)) *
@@ -815,15 +851,15 @@ int QuantBuffers(enum RESMODE resMode) {
     }
     else return 0;
 
-    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
-        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+    for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
 
-                    size_t xIndex = x + (xBlock * 8);
-                    size_t yIndex = y + (yBlock * 8);
+                    int xIndex = x + (xBlock * 8);
+                    int yIndex = y + (yBlock * 8);
 
-                    size_t indexInTable = x + (y * 8);
+                    int indexInTable = x + (y * 8);
 
                     dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y / lumiQuantTable[indexInTable];
                     dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb / chromiQuantTable[indexInTable];
@@ -872,13 +908,13 @@ int DiffDCBuffers(enum RESMODE resMode) {
     int oldCrValue = 0;
     int newCrValue = 0;
 
-    size_t yDC = 0;
-    size_t xDC = 0;
+    int yDC = 0;
+    int xDC = 0;
 
     for(yDC = 0; yDC < yRes/8; yDC++) {
         for(xDC = 0; xDC < xRes/8; xDC++) {
-            size_t xIndex = (xDC * 8);
-            size_t yIndex = (yDC * 8);
+            int xIndex = (xDC * 8);
+            int yIndex = (yDC * 8);
 
             // printf("   old new\n");
 
@@ -971,16 +1007,16 @@ int ZigzagBuffers(enum RESMODE resMode) {
     };
 
     // Go by 8*8 blocks
-    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
-        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+    for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             
             // First with Y buffer
             DCT zzBuffer[8][8];
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
-                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
+                    int dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    int dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
                     zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Y;
                 }
@@ -988,8 +1024,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
             // Put the rightly ordered data back into the DCT buffer
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = x + (8*xBlock);
-                    size_t dctYIndex = y + (8*yBlock);
+                    int dctXIndex = x + (8*xBlock);
+                    int dctYIndex = y + (8*yBlock);
                     
                     dctBuffer[dctXIndex][dctYIndex].Y = zzBuffer[x][y];
                 }
@@ -1000,8 +1036,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
-                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
+                    int dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    int dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
                     zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Cb;
                 }
@@ -1009,8 +1045,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
             // Put the rightly ordered data back into the DCT buffer
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = x + (8*xBlock);
-                    size_t dctYIndex = y + (8*yBlock);
+                    int dctXIndex = x + (8*xBlock);
+                    int dctYIndex = y + (8*yBlock);
                     
                     dctBuffer[dctXIndex][dctYIndex].Cb = zzBuffer[x][y];
                 }
@@ -1021,8 +1057,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
-                    size_t dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
+                    int dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
+                    int dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
                     zzBuffer[x][y] = dctBuffer[dctXIndex][dctYIndex].Cr;
                 }
@@ -1030,8 +1066,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
             // Put the rightly ordered data back into the DCT buffer
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t dctXIndex = x + (8*xBlock);
-                    size_t dctYIndex = y + (8*yBlock);
+                    int dctXIndex = x + (8*xBlock);
+                    int dctYIndex = y + (8*yBlock);
                     
                     dctBuffer[dctXIndex][dctYIndex].Cr = zzBuffer[x][y];
                 }
@@ -1094,7 +1130,7 @@ int HuffmanEncode(enum RESMODE resMode) {
     bitPosInOutString = 0;
 
     /* Tables for categories */
-    static const size_t huffCatTable[12][2] = {
+    static const int huffCatTable[12][2] = {
         {0,0}, {1,1}, {2,3}, {4,7}, {8,15}, {16,31}, {32,63},
         {64,127}, {128,255}, {256,511}, {512,1023}, {1024,2047}
     };
@@ -1466,16 +1502,16 @@ int HuffmanEncode(enum RESMODE resMode) {
     int bigZeroCtr = 0; // Keeps track of how many times to write F/0 if applicable
     int cat = -1; // Keeps track of the category of value
     //int numBits = 0; // Keeps track of how many bits to add from original value
-    size_t tableIndex; // Holds whichever index is needed for the table
+    int tableIndex; // Holds whichever index is needed for the table
 
-    for(size_t yBlock = 0; yBlock < yRes/8; yBlock++) {
-        for(size_t xBlock = 0; xBlock < xRes/8; xBlock++) {
+    for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
+        for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             /*---------------------------------------------------------------*/
             // Y
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t xIndex = x + (xBlock * 8);
-                    size_t yIndex = y + (yBlock * 8);
+                    int xIndex = x + (xBlock * 8);
+                    int yIndex = y + (yBlock * 8);
 
                     // Find category
                     cat = -1;
@@ -1569,8 +1605,8 @@ int HuffmanEncode(enum RESMODE resMode) {
             // Cb
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t xIndex = x + (xBlock * 8);
-                    size_t yIndex = y + (yBlock * 8);
+                    int xIndex = x + (xBlock * 8);
+                    int yIndex = y + (yBlock * 8);
 
                     // Find category
                     cat = -1;
@@ -1664,8 +1700,8 @@ int HuffmanEncode(enum RESMODE resMode) {
             // Cr
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-                    size_t xIndex = x + (xBlock * 8);
-                    size_t yIndex = y + (yBlock * 8);
+                    int xIndex = x + (xBlock * 8);
+                    int yIndex = y + (yBlock * 8);
 
                     // Find category
                     cat = -1;
@@ -1800,9 +1836,9 @@ int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode) {
 
     printf("y  cb  cr\n");
     if(bufMode == 0) {
-        for(size_t yPos = 0; yPos < yRes; yPos++) {
-            for(size_t xPos = 0; xPos < xRes; xPos++) {
-                size_t dataIndex = (xPos + (yPos * xRes)) * 3;
+        for(int yPos = 0; yPos < yRes; yPos++) {
+            for(int xPos = 0; xPos < xRes; xPos++) {
+                int dataIndex = (xPos + (yPos * xRes)) * 3;
 
                 *(buffer + dataIndex) = yccBuffer[xPos][yPos].Y;
                 *(buffer + (dataIndex+1)) = yccBuffer[xPos][yPos].Cb;
@@ -1815,9 +1851,9 @@ int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode) {
         }
     }
     else if(bufMode == 1) {
-        for(size_t yPos = 0; yPos < yRes; yPos++) {
-            for(size_t xPos = 0; xPos < xRes; xPos++) {
-                size_t dataIndex = (xPos + (yPos * xRes)) * 3;
+        for(int yPos = 0; yPos < yRes; yPos++) {
+            for(int xPos = 0; xPos < xRes; xPos++) {
+                int dataIndex = (xPos + (yPos * xRes)) * 3;
 
                 *(buffer + dataIndex) = dctBuffer[xPos][yPos].Y;
                 *(buffer + (dataIndex+1)) = dctBuffer[xPos][yPos].Cb;

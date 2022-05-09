@@ -9,14 +9,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
 // #include "../lib/SatCamImage.h"
 #include "SatCamImage.h"
 
 int main() {
-	TestInput();
+    SYSTEMTIME t_start, t_stop;
 
-	return 0;
+    GetSystemTime(&t_start); 
+    TestInput();
+    GetSystemTime(&t_stop);
+
+    printf("The start time was: %02d:%02d:%02d.%03d\n", 
+                t_start.wHour, t_start.wMinute, t_start.wSecond, t_start.wMilliseconds);
+
+    printf("The stop time was: %02d:%02d:%02d.%03d\n", 
+            t_stop.wHour, t_stop.wMinute, t_stop.wSecond, t_stop.wMilliseconds);
+
+
+    return 0;
 }
 
 /*int main() {

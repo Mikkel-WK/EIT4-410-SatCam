@@ -131,8 +131,6 @@ int DestroyJFIFHeader(JFIFHEADER* headerptr);
 // int DestroyEXIFHeader();
 
 /* Function built to move bits into the huffman buffer */
-extern size_t maxBitPos;
-extern size_t bitPosInOutString;
 int AddToBitString(int len, signed short bitsToAdd, int isNegative);
 
 /* Functions specifically for testing purposes */
