@@ -130,13 +130,19 @@ int BuildJFIFHeader(JFIFHEADER* headerptr, BYTE unit, BYTE xDensity[2], BYTE yDe
 int DestroyJFIFHeader(JFIFHEADER* headerptr);
 // int DestroyEXIFHeader();
 
+/* Function for getting resolutions 
+ * Return is resolutions, not error
+*/
+int getXRes(enum RESMODE resMode);
+int getYRes(enum RESMODE resMode);
+
 /* Function built to move bits into the huffman buffer */
 int AddToBitString(int len, signed short bitsToAdd, int isNegative);
 
 /* Functions specifically for testing purposes */
 int TestInput();
 
-/* Some functions are written with ints to return potential errors */
+/* Functions are written with ints to return potential errors */
 int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode);
 int DCTToBuffers(enum RESMODE resMode);
 int QuantBuffers(enum RESMODE resMode);
