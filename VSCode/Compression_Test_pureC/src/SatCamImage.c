@@ -12,13 +12,12 @@ BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
-/* Defining extern variables */
-size_t bitPosInOutString = 0;
-size_t maxBitPos = sizeof(huffOutput) * 8;
-
+/* Defining extern variables and buffers */
 YCBCR yccBuffer[BUFFERX][BUFFERY];
 DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
 unsigned char huffOutput[BUFFERLEN];
+size_t bitPosInOutString = 0;
+size_t maxBitPos = sizeof(huffOutput) * 8;
 
 /* Transformation matrix for RGB -> YCbCr */
 // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
@@ -465,6 +464,7 @@ static const unsigned short acChromiCodeTable[162][2] = {
  * Purpose: Builds JFIF header with some basic variables, then puts in custom values
  * Input: Header pointer, Unit, XDensity, YDensity, XThumbnail, YThumbnail
  * Output: Error code
+ * UNFINISHED DO NOT USE YET
 */
 int BuildJFIFHeader(JFIFHEADER* headerptr, 
                     BYTE unit, 
@@ -501,6 +501,7 @@ int BuildJFIFHeader(JFIFHEADER* headerptr,
  * Purpose: Destroy header after use
  * Input: Header pointer
  * Output: Error code
+ * UNFINISHED DO NOT USE YET
 */
 int DestroyJFIFHeader(JFIFHEADER* headerptr) {
     free(headerptr);
@@ -540,29 +541,45 @@ int getYRes(enum RESMODE resMode) {
     else return -1;
 }
 
-// This adds bits to the huffman output string
+/*
+ * Function: AddToBitString
+ * Purpose: Add bits to an output bit string for Huffman coding
+ * Input: 
+ * - Length of the bit string to add
+ * - The bits to add
+ * - Bool for negative or not
+ * Output: Error code
+*/
 int AddToBitString(int len, signed short bitsToAdd, int isNegative) {
+    // Translate from 2's complement (C standard) to 1's complement (JPEG standard)
     if(isNegative) {
         bitsToAdd = bitsToAdd-1;
     }
 
 	unsigned char b;
 
+    // This for loop runs until it has been through the whole length of the bits to add
 	for(int i = len - 1; 0 <= i; i--) {
 		/* If we reach the boundary of our buffer, exit */
 		if(bitPosInOutString+1 >= maxBitPos) return -1;
 
+        // The bit to add is shifted to LSB and masked
 		b = (bitsToAdd >> i) & 0b01;
 
-		if(b) {
+		if(b) { // If the bit is positive
+            // Mask the current byte in the array with logical or on the right position based on bitPos
 			huffOutput[(bitPosInOutString/8)] |= (b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
 		}
 		else {
+            // Mask the current byte in the array with logical and on the right position based on bitPos
 			huffOutput[(bitPosInOutString/8)] &= ~(b<<(7-bitPosInOutString+(8*(bitPosInOutString/8))));
 		}
 
+        // Increment position in output string
 		bitPosInOutString++;
 
+        // Two nested for loops checks if a byte has been completed, then checks if the byte that was just completed is all 1's
+        // If so, bitPosInOutString is incremented by 8 to do byte stuffing and avoid looking like a JPEG header
         if(bitPosInOutString%8 == 0) {
             if(huffOutput[(bitPosInOutString/8) - 1] == 255) {
                 bitPosInOutString = bitPosInOutString + 8;
@@ -803,7 +820,7 @@ int TestInput() {
 /*
  * Function: ReadDataToBuffer
  * Purpose: Read data from RAM, sanitise (remove alpha data)
- * Input: Address in RAM of data, resolution (is multiplied by 4 during function)
+ * Input: Address in RAM of data, resolution mode
  * Output: Error code
 */
 int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
@@ -814,15 +831,20 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
     /* Return -1 if an error occurs */
     if(xRes == 0 || yRes == 0) return -1;
 
+    // Variables to hold rgb values in
     BYTE r, g, b;
+
+    // This nested for loop goes by pixel position to add values from RAM
     for(int yPos = 0; yPos < yRes; yPos++) {
         for(int xPos = 0; xPos < xRes; xPos++) {
+            // dataIndex built based on resolution and pixel position
+            // Multiplied by 4 due to having rgba values
             int dataIndex = (xPos + (yPos * xRes)) * 4;
 
             // Order is rgba
-            b = *(dataAddr + (dataIndex + 2));
-            g = *(dataAddr + (dataIndex + 1));
             r = *(dataAddr + (dataIndex));
+            g = *(dataAddr + (dataIndex + 1));
+            b = *(dataAddr + (dataIndex + 2));
 
             // Note: var >> 8 is the same as var/256
             // Note also: Normally Y would have 16 added, and Cb Cr would have 128 added
@@ -838,8 +860,8 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
 
 /*
  * Function: DCTToBuffers
- * Purpose: Perform DCT on YCbCr data, split into 3 separate buffers
- * Input: Mode (0 = bigres, 1 = midres), pixel amount
+ * Purpose: Perform DCT on YCbCr data, put in new DCT buffer
+ * Input: Resolution mode
  * Output: Error code
 */
 int DCTToBuffers(enum RESMODE resMode) {
@@ -854,8 +876,7 @@ int DCTToBuffers(enum RESMODE resMode) {
     // https://se.mathworks.com/help/images/discrete-cosine-transform.html#:~:text=Discrete%20Cosine%20Transform-,DCT%20Definition,(DCT)%20of%20an%20image
     // https://www.geeksforgeeks.org/discrete-cosine-transform-algorithm-program/
     
-    // Order of pixels is YCbCr
-
+    // Multiplication coefficients based on pixel position in 8x8 block
     float aP = 0; // alphaP is for x
     float aQ = 0; // alphaQ is for y
     
@@ -869,23 +890,29 @@ int DCTToBuffers(enum RESMODE resMode) {
     float dctCbSum = 0;
     float dctCrSum = 0;
 
+    // This nested for loop goes by 8x8 blocks
     for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
-            
+            // This goes through each position in the 8x8 block
             for(int yStart = 0; yStart < 8; yStart++) {
                 for(int xStart = 0; xStart < 8; xStart++) {
+                    // If the pixel in the far left column
                     if(xStart == 0)   aP = 1 / sqrt(8);
                     else            aP = sqrt(2) / sqrt(8);
 
+                    // If the pixel is in the top row
                     if(yStart == 0)   aQ = 1 / sqrt(8);
                     else            aQ = sqrt(2) / sqrt(8);
 
+                    // Reset sum variables
                     dctYSum = 0;
                     dctCbSum = 0;
                     dctCrSum = 0;
 
+                    // DCT calculation sums all values in the block
                     for(int y = 0; y < 8; y++) {
                         for(int x = 0; x < 8; x++) {
+                            // Index edited with block*8 to be able to go through whole image
                             int xIndex = x + (xBlock * 8);
                             int yIndex = y + (yBlock * 8);
 
@@ -907,6 +934,7 @@ int DCTToBuffers(enum RESMODE resMode) {
                         }
                     }
 
+                    // Sums multiplied by coefficients is put in new buffer
                     dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Y = aP * aQ * dctYSum;
                     dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Cb = aP * aQ * dctCbSum;
                     dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Cr = aP * aQ * dctCrSum;
@@ -921,7 +949,7 @@ int DCTToBuffers(enum RESMODE resMode) {
 /*
  * Function: QuantBuffers
  * Purpose: Apply quantization table to DCT buffers in 8x8 blocks
- * Input: Mode (0 = bigres, 1 = midres), pixel amount
+ * Input: Resolution mode
  * Output: Error code
 */
 int QuantBuffers(enum RESMODE resMode) {
@@ -932,14 +960,17 @@ int QuantBuffers(enum RESMODE resMode) {
     /* Return -1 if an error occurs */
     if(xRes == 0 || yRes == 0) return -1;
 
+    // This nested for loop goes by 8x8 blocks
     for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
+            // This goes through each position in the 8x8 block
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
-
+                    // Index edited with block*8 to be able to go through whole image
                     int xIndex = x + (xBlock * 8);
                     int yIndex = y + (yBlock * 8);
 
+                    // Indexing for lumiQuantTable and chromiQuantTable (1-dimensional arrays)
                     int indexInTable = x + (y * 8);
 
                     dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y / lumiQuantTable[indexInTable];
@@ -953,6 +984,12 @@ int QuantBuffers(enum RESMODE resMode) {
     return 0;
 }
 
+/*
+ * Function: DiffDCBuffers
+ * Purpose: Perform Differential DC on DC values of the blocks
+ * Input: Resolution mode
+ * Output: Error code
+*/
 int DiffDCBuffers(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
@@ -961,6 +998,8 @@ int DiffDCBuffers(enum RESMODE resMode) {
     /* Return -1 if an error occurs */
     if(xRes == 0 || yRes == 0) return -1;
 
+    // "old" values holds the value of the previous DC value
+    // "new" values holds the value of the current DC value before DiffDC
     int oldYValue = 0;
     int newYValue = 0;
     int oldCbValue = 0;
@@ -968,17 +1007,16 @@ int DiffDCBuffers(enum RESMODE resMode) {
     int oldCrValue = 0;
     int newCrValue = 0;
 
-    int yDC = 0;
-    int xDC = 0;
-
-    for(yDC = 0; yDC < yRes/8; yDC++) {
-        for(xDC = 0; xDC < xRes/8; xDC++) {
+    // This nested for loop goes through each DC value
+    for(int yDC = 0; yDC < yRes/8; yDC++) {
+        for(int xDC = 0; xDC < xRes/8; xDC++) {
+            // Index based on DC*8 since it is first value in each 8x8 block
             int xIndex = (xDC * 8);
             int yIndex = (yDC * 8);
 
-            newYValue = dctBuffer[xIndex][yIndex].Y; 
-            dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y - oldYValue; 
-            oldYValue = newYValue; 
+            newYValue = dctBuffer[xIndex][yIndex].Y; // The current value is saved
+            dctBuffer[xIndex][yIndex].Y = dctBuffer[xIndex][yIndex].Y - oldYValue; // Value is subtracted with previous DC value
+            oldYValue = newYValue; // Current value becomes old value
 
             newCbValue = dctBuffer[xIndex][yIndex].Cb; 
             dctBuffer[xIndex][yIndex].Cb = dctBuffer[xIndex][yIndex].Cb - oldCbValue; 
@@ -988,12 +1026,17 @@ int DiffDCBuffers(enum RESMODE resMode) {
             dctBuffer[xIndex][yIndex].Cr = dctBuffer[xIndex][yIndex].Cr - oldCrValue; 
             oldCrValue = newCrValue; 
         }
-        
     }
 
     return 0;
 }
 
+/*
+ * Function: ZigzagBuffers
+ * Purpose: Reorder buffer in zigzag pattern
+ * Input: Resolution mode
+ * Output: Error code
+*/
 int ZigzagBuffers(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
@@ -1002,15 +1045,16 @@ int ZigzagBuffers(enum RESMODE resMode) {
     /* Return -1 if an error occurs */
     if(xRes == 0 || yRes == 0) return -1;
 
-    // Go by 8*8 blocks
+    // This nested for loop goes by 8x8 blocks
     for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             
             // First with Y buffer
-            DCT zzBuffer[8][8];
+            DCT zzBuffer[8][8]; // This temporary buffer is used to move values
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
+                    // Indices based on block index arrays and the block that is being worked on
                     int dctXIndex = blockXIndex[x + y * 8] + (8*xBlock);
                     int dctYIndex = blockYIndex[x + y * 8] + (8*yBlock);
 
@@ -1028,7 +1072,7 @@ int ZigzagBuffers(enum RESMODE resMode) {
             }
 
             // Then with Cb buffer
-            memset(zzBuffer, 0, 8*8*sizeof(DCT));
+            memset(zzBuffer, 0, 8*8*sizeof(DCT)); // Reset the zzBuffer
             // Put the data from the DCT buffer in the right order
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
@@ -1070,7 +1114,7 @@ int ZigzagBuffers(enum RESMODE resMode) {
             }
 
 
-            // Old shit KEPT FOR PROSPERITY AND POTENTIALLY BETTER IMPLEMENTATION EVENTUALLY
+            // Old pseudocode KEPT FOR PROSPERITY AND POTENTIALLY BETTER IMPLEMENTATION EVENTUALLY
                 // if x != 0 and flag not set OR x,y==0 { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
                 // if y != 0 and flag not set { yIndex+1, put in buffer, and run in zag (put in buffers during loop)
                 // if x != 7 and flag is set { xIndex+1, put in buffer, and run in zig (put in buffers during loop)
@@ -1086,8 +1130,8 @@ int ZigzagBuffers(enum RESMODE resMode) {
 
 /*
  * Function: HuffmanBuffer
- * Purpose: Apply Huffman coding to buffers
- * Input: 
+ * Purpose: Apply Huffman coding to buffers, put in huffOutput buffer
+ * Input: Resolution mode
  * Output: Error code
 */
 int HuffmanEncode(enum RESMODE resMode) {
@@ -1098,68 +1142,81 @@ int HuffmanEncode(enum RESMODE resMode) {
     /* Return -1 if an error occurs */
     if(xRes == 0 || yRes == 0) return -1;
 
+    // Reset the buffer in case it is necessary
     memset(huffOutput, 0, BUFFERLEN);
 
     // Initializing variable
     bitPosInOutString = 0;
 
     // Various variables
-    int catAmount = 12; // The amount of categories
+    int catAmount = 12; // The total amount of categories
     int zeroCtr = 0; // Keeps track of how many zeroes have been found on run
     int bigZeroCtr = 0; // Keeps track of how many times to write F/0 if applicable
     int cat = -1; // Keeps track of the category of value
     int tableIndex; // Holds whichever index is needed for the table
 
+    // NOTE: Functions will only be commented on in detail once, in Y. Cb and Cr will not be commented
+    // The only difference between Y and Cb/Cr is the use of lumi tables instead of chromi tables
+
+    // This nested for loop goes by 8x8 blocks
+    /*
+     * All three colour channels are done per block, 
+     * aka the output will have the Huffman coded output from an 8x8 block of Y values, 
+     * the Huffman coded output from an 8x8 block of Cb values, and so on, in that order 
+    */
     for(int yBlock = 0; yBlock < yRes/8; yBlock++) {
         for(int xBlock = 0; xBlock < xRes/8; xBlock++) {
             /*---------------------------------------------------------------*/
             // Y
             for(int y = 0; y < 8; y++) {
                 for(int x = 0; x < 8; x++) {
+                    // Index edited with block*8 to be able to go through whole image
                     int xIndex = x + (xBlock * 8);
                     int yIndex = y + (yBlock * 8);
 
-                    // Find category
+                    // Find category by comparing value with category boundaries
                     cat = -1;
+                    // This for loop checks each category
                     for(int i = 0; i < catAmount; i++) {
                         if((huffCatTable[i][0] <= dctBuffer[xIndex][yIndex].Y && huffCatTable[i][1] >= dctBuffer[xIndex][yIndex].Y) 
                             || (-huffCatTable[i][0] >= dctBuffer[xIndex][yIndex].Y && -huffCatTable[i][1] <= dctBuffer[xIndex][yIndex].Y)) {
                             
-                            cat = i;
-                            i = catAmount+1;
+                            cat = i; // The category is saved
+                            i = catAmount+1; // This exits the for loop
                         }
                     }
                     if(cat == -1) return -1; // Sanity check, exits if problem arises
                     
-                    // If it is a DC value, do thing like this. Otherwise do it normally
+                    // If value to encode is a DC value, do this
                     if(x == 0 && y == 0) {
                         // Add the base code
                         if(!AddToBitString(dcLumiCodeTable[cat][0], dcLumiCodeTable[cat][1], 0)) {
                             return -1;
                         }
 
+                        // If the value is less than 0, invoke AddToBitString with isNegative == 1
                         if(dctBuffer[xIndex][yIndex].Y < 0) {
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
                                 return -1;
                             }
                         }
-                        else{
+                        else { // Otherwise, invoked AddToBitString with isNegative == 0
                             if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
                                 return -1;
                             }
                         }
 
                     }
-                    else {
-                        if(dctBuffer[xIndex][yIndex].Y == 0){
+                    else { // If value to encode is not a DC value, do this
+                        if(dctBuffer[xIndex][yIndex].Y == 0){ // If the value is 0, increment a counter and do no more
                           zeroCtr++;
-                          if(zeroCtr > 15) {
+                          if(zeroCtr > 15) { // A special huffman code is added if there's more than 15 zeroes in a row
                               zeroCtr = 0;
                               bigZeroCtr++;
                           }
                         }
-                        else{
-                            // So long as there are 15 zeros in a row
+                        else { // If the value is not 0
+                            // So long as there are 15 zeros in a row, add a special huffman code
                             while(bigZeroCtr != 0) {
                                 if(!AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1], 0)) {
                                     return -1;
@@ -1168,6 +1225,11 @@ int HuffmanEncode(enum RESMODE resMode) {
                                 bigZeroCtr--;
                             }
                             
+                            /* 
+                             * The table index is based on run and category in the form run/category
+                             * Run is determined by the amount of zeroes preceding the value to encode
+                             * There exist only 10 AC categories, and as such zeroCtr is multiplied by 10
+                            */
                             tableIndex = zeroCtr*10 + cat;
 				
                             // Add in base code
@@ -1175,24 +1237,26 @@ int HuffmanEncode(enum RESMODE resMode) {
                                 return -1;
                             }
 
+                            // If the value is less than 0, invoke AddToBitString with isNegative == 1
                             if(dctBuffer[xIndex][yIndex].Y < 0) {
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
                                     return -1;
                                 }
                             }
-                            else{
+                            else{ // Otherwise, invoked AddToBitString with isNegative == 0
                                 if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
                                     return -1;
                                 }
                             }
 
+                            // If this part of the code was entered, zeroes have been used
                             zeroCtr = 0;
                         }
                     }
                 }
             }
 
-            // Add EOB
+            // Add EOB code if the last value was not a non-zero value
             if (zeroCtr != 0 || bigZeroCtr != 0) {
                 AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1], 0);
             }
@@ -1380,6 +1444,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 }
 
 /*
+ * OutputYCbCr
  * bufMode: 0 is ycc buffer, 1 is dct buffer
  * fileMode: 0=read, 1=dct, 2=quant, 3=diff, 4=zigzag, 5=huff
  * ONLY MEANT FOR INTERNAL TESTING USE
@@ -1512,6 +1577,8 @@ int printDCTCr(int printX, int printY, int xIndex, int yIndex) {
 
     return 0;    
 }
+
+
 
 /*
  * Function: WriteToJPEG

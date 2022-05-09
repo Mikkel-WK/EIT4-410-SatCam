@@ -130,7 +130,8 @@ int BuildJFIFHeader(JFIFHEADER* headerptr, BYTE unit, BYTE xDensity[2], BYTE yDe
 int DestroyJFIFHeader(JFIFHEADER* headerptr);
 // int DestroyEXIFHeader();
 
-/* Function for getting resolutions 
+/* 
+ * Function for getting resolutions 
  * Return is resolutions, not error
 */
 int getXRes(enum RESMODE resMode);
@@ -142,7 +143,7 @@ int AddToBitString(int len, signed short bitsToAdd, int isNegative);
 /* Functions specifically for testing purposes */
 int TestInput();
 
-/* Functions are written with ints to return potential errors */
+/* Pipeline functions */
 int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode);
 int DCTToBuffers(enum RESMODE resMode);
 int QuantBuffers(enum RESMODE resMode);
@@ -150,10 +151,13 @@ int DiffDCBuffers(enum RESMODE resMode);
 int ZigzagBuffers(enum RESMODE resMode);
 int HuffmanEncode(enum RESMODE resMode);
 
+/* Debugging functions */
 int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode);
 int printDCTY(int printX, int printY, int xIndex, int yIndex);
 int printDCTCb(int printX, int printY, int xIndex, int yIndex);
 int printDCTCr(int printX, int printY, int xIndex, int yIndex);
+
+/* Ease-of-use functions */
 int WriteToJPEG();
 
 #endif
