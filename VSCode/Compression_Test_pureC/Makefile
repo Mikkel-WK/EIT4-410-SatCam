@@ -7,7 +7,11 @@
 CC = gcc
 
 # define any compile-time flags
+<<<<<<< HEAD
 CFLAGS	:= -Wall -Wextra -g -o3
+=======
+CFLAGS	:= -Wall -lm -Wextra -g
+>>>>>>> dc61d2b3faf26126e89e1a7f2a2223aca61f7817
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify

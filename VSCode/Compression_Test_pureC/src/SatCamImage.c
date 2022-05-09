@@ -12,9 +12,19 @@ BYTE SOI[2] = {0xff, 0xd8}; /* Start of Image Marker */
 BYTE SOS[2] = {0xff, 0xda}; /* Start of Scan Marker */
 BYTE EOI[2] = {0xff, 0xd9}; /* End of Image Marker */
 
+<<<<<<< HEAD
 // BitPos variables
 int maxBitPos;
 int bitPosInOutString;
+=======
+/* Defining extern variables */
+size_t bitPosInOutString = 0;
+size_t maxBitPos = sizeof(huffOutput) * 8;
+
+YCBCR yccBuffer[BUFFERX][BUFFERY];
+DCTPIXEL dctBuffer[BUFFERX][BUFFERY];
+unsigned char huffOutput[BUFFERLEN];
+>>>>>>> dc61d2b3faf26126e89e1a7f2a2223aca61f7817
 
 /*
  * Function: BuildJFIFHeader
@@ -166,7 +176,11 @@ int TestInput() {
 
     // FILE* fInput = fopen("memdump_comp_buf_fhd", "r");
     // FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\memdump_comp_buf_fhd", "r");
+<<<<<<< HEAD
     FILE* fInput = fopen("C:\\Users\\sande\\Documents\\Git\\EIT4-410-SatCam\\VSCode\\Compression_Test_pureC\\output\\21MP-Garbage.bin", "r");
+=======
+    FILE* fInput = fopen("/home/mark_el/Documents/Programming/Python_BACKUP/Compression/EIT4-410-SatCam/VSCode/Compression_Test_pureC/output/memdump_comp_buf_fhd", "r");
+>>>>>>> dc61d2b3faf26126e89e1a7f2a2223aca61f7817
 
     if(fInput == NULL){
 		printf("\nError opening file in fInput.\n");
@@ -1125,8 +1139,7 @@ int HuffmanEncode(enum RESMODE resMode) {
 
     memset(huffOutput, 0, BUFFERLEN);
 
-    // Variables
-    maxBitPos = sizeof(huffOutput) * 8;
+    // Initializing variable
     bitPosInOutString = 0;
 
     /* Tables for categories */
@@ -1597,9 +1610,11 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acLumiCodeTable[0][0], acLumiCodeTable[0][1], 0);
 
             /*---------------------------------------------------------------*/
             // Cb
@@ -1692,9 +1707,12 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            
 
             /*---------------------------------------------------------------*/
             // Cr
@@ -1787,10 +1805,12 @@ int HuffmanEncode(enum RESMODE resMode) {
             }
 
             // Add EOB
+            if (zeroCtr != 0 || bigZeroCtr != 0) {
+                AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
+            }
             zeroCtr = 0;
             bigZeroCtr = 0;
-            AddToBitString(acChromiCodeTable[0][0], acChromiCodeTable[0][1], 0);
-
+            
             // printf("Out of block %d %d\n", xBlock, yBlock);
         }
     }
