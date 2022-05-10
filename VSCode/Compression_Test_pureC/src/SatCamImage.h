@@ -145,10 +145,10 @@ int TestInput();
 
 /* Pipeline functions */
 int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode);
-int DCTToBuffers(enum RESMODE resMode);
-int QuantBuffers(enum RESMODE resMode);
-int DiffDCBuffers(enum RESMODE resMode);
-int ZigzagBuffers(enum RESMODE resMode);
+int DCTToBuffer(enum RESMODE resMode);
+int QuantBuffer(enum RESMODE resMode);
+int DiffDCBuffer(enum RESMODE resMode);
+int ZigzagBuffer(enum RESMODE resMode);
 int HuffmanEncode(enum RESMODE resMode);
 
 /* Debugging functions */

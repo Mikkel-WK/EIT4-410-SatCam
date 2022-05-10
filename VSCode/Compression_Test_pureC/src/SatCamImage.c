@@ -864,7 +864,7 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
  * Input: Resolution mode
  * Output: Error code
 */
-int DCTToBuffers(enum RESMODE resMode) {
+int DCTToBuffer(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
     int yRes = getYRes(resMode);
@@ -952,7 +952,7 @@ int DCTToBuffers(enum RESMODE resMode) {
  * Input: Resolution mode
  * Output: Error code
 */
-int QuantBuffers(enum RESMODE resMode) {
+int QuantBuffer(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
     int yRes = getYRes(resMode);
@@ -990,7 +990,7 @@ int QuantBuffers(enum RESMODE resMode) {
  * Input: Resolution mode
  * Output: Error code
 */
-int DiffDCBuffers(enum RESMODE resMode) {
+int DiffDCBuffer(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
     int yRes = getYRes(resMode);
@@ -1037,7 +1037,7 @@ int DiffDCBuffers(enum RESMODE resMode) {
  * Input: Resolution mode
  * Output: Error code
 */
-int ZigzagBuffers(enum RESMODE resMode) {
+int ZigzagBuffer(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
     int yRes = getYRes(resMode);
@@ -1620,22 +1620,22 @@ int RawFileToHuffman(FILE* rawFile, char* huffPtr, int* huffPtrLen, enum RESMODE
 
     free(buffer);
 
-    if(DCTToBuffers(resMode) == -1) {
+    if(DCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
 
-    if(QuantBuffers(resMode) == -1) {
+    if(QuantBuffer(resMode) == -1) {
         printf("\nError occurred in QuantBuffers.\n");
         return -1;
     }
 
-    if(DiffDCBuffers(resMode) == -1) {
+    if(DiffDCBuffer(resMode) == -1) {
         printf("\nError occurred in DiffDCBuffers.\n");
         return -1;
     }
 
-    if(ZigzagBuffers(resMode) == -1) {
+    if(ZigzagBuffer(resMode) == -1) {
         printf("\nError occurred in ZigzagBuffers.\n");
         return -1;
     }
@@ -1696,22 +1696,22 @@ int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode) {
 
     free(buffer);
 
-    if(DCTToBuffers(resMode) == -1) {
+    if(DCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
 
-    if(QuantBuffers(resMode) == -1) {
+    if(QuantBuffer(resMode) == -1) {
         printf("\nError occurred in QuantBuffers.\n");
         return -1;
     }
 
-    if(DiffDCBuffers(resMode) == -1) {
+    if(DiffDCBuffer(resMode) == -1) {
         printf("\nError occurred in DiffDCBuffers.\n");
         return -1;
     }
 
-    if(ZigzagBuffers(resMode) == -1) {
+    if(ZigzagBuffer(resMode) == -1) {
         printf("\nError occurred in ZigzagBuffers.\n");
         return -1;
     }
@@ -1749,22 +1749,22 @@ int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE re
         return -1;
     }
 
-    if(DCTToBuffers(resMode) == -1) {
+    if(DCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
 
-    if(QuantBuffers(resMode) == -1) {
+    if(QuantBuffer(resMode) == -1) {
         printf("\nError occurred in QuantBuffers.\n");
         return -1;
     }
 
-    if(DiffDCBuffers(resMode) == -1) {
+    if(DiffDCBuffer(resMode) == -1) {
         printf("\nError occurred in DiffDCBuffers.\n");
         return -1;
     }
 
-    if(ZigzagBuffers(resMode) == -1) {
+    if(ZigzagBuffer(resMode) == -1) {
         printf("\nError occurred in ZigzagBuffers.\n");
         return -1;
     }
@@ -1801,22 +1801,22 @@ int RAMToJPEG(char* dataAddr, FILE* jpegFile, enum RESMODE resMode) {
         return -1;
     }
 
-    if(DCTToBuffers(resMode) == -1) {
+    if(DCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
 
-    if(QuantBuffers(resMode) == -1) {
+    if(QuantBuffer(resMode) == -1) {
         printf("\nError occurred in QuantBuffers.\n");
         return -1;
     }
 
-    if(DiffDCBuffers(resMode) == -1) {
+    if(DiffDCBuffer(resMode) == -1) {
         printf("\nError occurred in DiffDCBuffers.\n");
         return -1;
     }
 
-    if(ZigzagBuffers(resMode) == -1) {
+    if(ZigzagBuffer(resMode) == -1) {
         printf("\nError occurred in ZigzagBuffers.\n");
         return -1;
     }
