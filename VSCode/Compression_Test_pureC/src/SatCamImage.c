@@ -1777,7 +1777,7 @@ int RawFileToHuffman(FILE* rawFile, unsigned char** huffPtr, int* huffPtrLen, en
 
     free(buffer);
 
-    if(DCTToBuffer(resMode) == -1) {
+    if(FastDCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
@@ -1855,7 +1855,7 @@ int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode) {
 
     free(buffer);
 
-    if(DCTToBuffer(resMode) == -1) {
+    if(FastDCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
@@ -1908,7 +1908,7 @@ int RAMToHuffman(char* dataAddr, unsigned char** huffPtr, int* huffPtrLen, enum 
         return -1;
     }
 
-    if(DCTToBuffer(resMode) == -1) {
+    if(FastDCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
@@ -1960,7 +1960,7 @@ int RAMToJPEG(char* dataAddr, FILE* jpegFile, enum RESMODE resMode) {
         return -1;
     }
 
-    if(DCTToBuffer(resMode) == -1) {
+    if(FastDCTToBuffer(resMode) == -1) {
         printf("\nError occurred in DCTToBuffers.\n");
         return -1;
     }
