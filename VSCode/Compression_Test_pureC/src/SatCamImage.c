@@ -97,6 +97,17 @@ int blockYIndex[] =
     7,
 };
 
+float trans[8][8] = {
+    {0.3536, 0.3536, 0.3536, 0.3536, 0.3536, 0.3536, 0.3536, 0.3536},
+    {0.4904, 0.4157, 0.2778, 0.0975, -0.0975, -0.2778, -0.4157, -0.4904},
+    {0.4619, 0.1913, -0.1913, -0.4619, -0.4619, -0.1913, 0.1913, 0.4619},
+    {0.4157, -0.0975, -0.4904, -0.2778,  0.2778,  0.4904,  0.0975, -0.4157},
+    {0.3536, -0.3536, -0.3536,  0.3536,  0.3536, -0.3536, - 0.3536,  0.3536},
+    {0.2778, -0.4904,  0.0975,  0.4157, -0.4157, -0.0975,  0.4904, -0.2778},
+    {0.1913, -0.4619,  0.4619, -0.1913, -0.1913,  0.4619, -0.4619, 0.1913},
+    {0.0975, -0.2778, 0.4157, -0.4904, 0.4904, -0.4157, 0.2778, -0.0975}
+};
+
 /* Tables for Huffman codes */
 static const unsigned short dcLumiCodeTable[12][2] = {
     {2, 0b00},
@@ -625,7 +636,7 @@ int TestInput() {
 
 	printf("We are past feof.\n");
 
-    if(ReadDataToBuffer(buffer, res)) {
+    if(ReadDataToBuffer(buffer, res) == 0) {
         printf("ReadDataToBuffer returned fine.\n");
         // FILE* yccOutput = fopen("YCC_buf", "w");
         //
@@ -730,7 +741,7 @@ int TestInput() {
     // int printy = 16;
     // printDCTY(8, 8, 1912, 1072);
 
-    if(DCTToBuffers(res)) {
+    if(FastDCTToBuffer(res) == 0) {
         printf("DCT returned fine.\n");
 
         // printDCTY(printx, printy);
@@ -743,10 +754,10 @@ int TestInput() {
         return -1;
     }
 
-    // printDCTY(8, 8, 1904, 1072);
-    // printDCTY(8, 8, 1912, 1072);
+    printDCTY(16, 16, 0, 0);
 
-    if(QuantBuffers(res)) {
+
+    if(QuantBuffer(res) == 0) {
         printf("Quant returned fine.\n");
 
         // printDCTY(printx, printy);
@@ -762,7 +773,7 @@ int TestInput() {
     // printDCTY(8, 8, 1904, 1072);
     // printDCTY(8, 8, 1912, 1072);
 
-    if(DiffDCBuffers(res)) {
+    if(DiffDCBuffer(res) == 0) {
         printf("DiffDC returned fine.\n");
 
         // printDCTY(printx, printy);
@@ -775,7 +786,7 @@ int TestInput() {
         return -1;
     }
 
-    if(ZigzagBuffers(res)) {
+    if(ZigzagBuffer(res) == 0) {
         printf("Zigzag returned fine.\n");
 
         // printDCTY(printx, printy);
@@ -788,7 +799,7 @@ int TestInput() {
         return -1;
     }
 
-    if(HuffmanEncode(res)) {
+    if(HuffmanEncode(res) == 0) {
         printf("Huff returned fine.\n");
         // OutputYCbCr(res, 1, 5);
         // OutputYCbCr(TEST, 1, 5);
@@ -817,6 +828,58 @@ int TestInput() {
     return 0;
 }
 
+// This tests new DCT
+// int TestInput() {
+//     float inputDataY[8][8] =  {
+//         {-7, -16, 73, 69, 71, 67, 70, 65},
+//         {-6, -20, 67, 66, 75, 67, 71, 65},
+//         {-5, -7, 87, 89, 91, 86, 88, 73},
+//         {-6, -16, 77, 72, 78, 70, 77, 68},
+//         {1,-2, 90, 91, 90, 93, 93, 91},
+//         {-4, -7, 88, 92, 93, 89, 89, 77},
+//         {1, -6, 88, 90, 89, 92, 91, 83},
+//         {0, -2, 87, 90, 87, 93, 93, 93}
+//     };
+//
+//     float inputDataCb[8][8] = {
+//         {2, -64, 11, 5, 13, 1, 15, 3},
+//         {0, -61, -2, 2, 2, 4, -2, 1},
+//         {-1, -69, 1, -11, 1, -7, 3, -3},
+//         {4, -64, 7, 19, 9, 15, 11, 13},
+//         {0, -72, 1, 8, 1, 2, 3, 0},
+//         {2, -69, 0, 4, 0, 8, 2, 14},
+//         {0, -70, 5, 6, 3, 6, 1, 10},
+//         {-1, -72, 2, 4, 2, 4, 3, 5}
+//     };
+//
+//     float inputDataCr[8][8] = {
+//         {-1, -80, -6, -7, -8, -7, -9, -7},
+//         {-1, -78, 8, -9, 2, -6, 3, -7},
+//         {0, -87, -7, -8, -10, -8, -10, 0},
+//         {-1, -80, 7, -9, 4, -9, 3, -8},
+//         {-1, -91, -2, -5, -4, -8, -8, -9},
+//         {-1, -87, -6, -10, -7, -10, -8, -3},
+//         {0, -88, -6, -5, -4, -10, -9, -2},
+//         {0, -91, -7, -4, -8, -8, -9, -10}
+//     };
+//
+//     for (int yPos = 0; yPos < 8; yPos++) {
+//         for (int xPos = 0; xPos < 8; xPos++) {
+//             yccBuffer[xPos][yPos].Y = inputDataY[xPos][yPos];
+//             yccBuffer[xPos][yPos].Cb = inputDataCb[xPos][yPos];
+//             yccBuffer[xPos][yPos].Cr = inputDataCr[xPos][yPos];
+//         }
+//     }
+//
+//     FastDCTToBuffer(TEST);
+//
+//     printDCTY(8, 8, 0, 0);
+//     printDCTCb(8, 8, 0, 0);
+//     printDCTCr(8, 8, 0, 0);
+//
+//     return 0;
+// }
+
 /*
  * Function: ReadDataToBuffer
  * Purpose: Read data from RAM, sanitise (remove alpha data)
@@ -829,8 +892,10 @@ int ReadDataToBuffer(char* dataAddr, enum RESMODE resMode) {
     int yRes = getYRes(resMode);
 
     /* Return -1 if an error occurs */
-    if(xRes == 0 || yRes == 0) return -1;
-
+    if(xRes == 0 || yRes == 0) {
+        printf("Resolution fucky\n");
+        return -1;
+    }
     // Variables to hold rgb values in
     BYTE r, g, b;
 
@@ -943,6 +1008,69 @@ int DCTToBuffer(enum RESMODE resMode) {
         }
     }
 
+    return 0;
+}
+
+int FastDCTToBuffer(enum RESMODE resMode) {
+    /* Get the resolution from the given mode */
+    int xRes = getXRes(resMode);
+    int yRes = getYRes(resMode);
+
+    /* Return -1 if an error occurs */
+    if(xRes == 0 || yRes == 0) return -1;
+
+    // Sums for DCT, used to avoid rounding errors
+    float sumY = 0;
+    float sumCb = 0;
+    float sumCr = 0;
+    
+    // Help matrices
+    float helpMatrixY[8][8];    
+    float helpMatrixCb[8][8];
+    float helpMatrixCr[8][8];
+    
+    // This nested for loop goes by 8x8 blocks
+    for (int yBlock = 0; yBlock < yRes / 8; yBlock++) {
+        for (int xBlock = 0; xBlock < xRes / 8; xBlock++) {
+
+            // For each value in the 8x8 block
+            for (int y = 0; y < 8; y++) {
+                for (int x = 0; x < 8; x++) {
+                    // Reset given help matrix index
+                    helpMatrixY[x][y] = 0;
+                    helpMatrixCb[x][y] = 0;
+                    helpMatrixCr[x][y] = 0;
+
+                    // This for loop allows matrix multiplication
+                    for (int k = 0; k < 8; k++) {
+                        helpMatrixY[x][y] += yccBuffer[x + (xBlock * 8)][k + (yBlock * 8)].Y * trans[y][k];
+                        helpMatrixCb[x][y] += yccBuffer[x + (xBlock * 8)][k + (yBlock * 8)].Cb * trans[y][k];
+                        helpMatrixCr[x][y] += yccBuffer[x + (xBlock * 8)][k + (yBlock * 8)].Cr * trans[y][k];
+                    }
+                }
+            }
+
+            // For each value in the 8x8 block (again)
+            for (int yStart = 0; yStart < 8; yStart++) {
+                for (int xStart = 0; xStart < 8; xStart++) {
+                    // This for loop allows matrix multiplication (again)
+                    for (int k = 0; k < 8; k++) {
+                        sumY += trans[xStart][k] * helpMatrixY[k][yStart];
+                        sumCb += trans[xStart][k] * helpMatrixCb[k][yStart];
+                        sumCr += trans[xStart][k] * helpMatrixCr[k][yStart];
+                    }
+
+                    // Add values to DCT buffer
+                    dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Y = sumY;
+                    dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Cb = sumCb;
+                    dctBuffer[xStart + (xBlock * 8)][yStart + (yBlock * 8)].Cr = sumCr;
+                    sumY = 0;
+                    sumCb = 0;
+                    sumCr = 0;
+                }
+            }
+        }
+    }
     return 0;
 }
 
@@ -1190,18 +1318,18 @@ int HuffmanEncode(enum RESMODE resMode) {
                     // If value to encode is a DC value, do this
                     if(x == 0 && y == 0) {
                         // Add the base code
-                        if(!AddToBitString(dcLumiCodeTable[cat][0], dcLumiCodeTable[cat][1], 0)) {
+                        if(AddToBitString(dcLumiCodeTable[cat][0], dcLumiCodeTable[cat][1], 0) != 0) {
                             return -1;
                         }
 
                         // If the value is less than 0, invoke AddToBitString with isNegative == 1
                         if(dctBuffer[xIndex][yIndex].Y < 0) {
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1) != 0) {
                                 return -1;
                             }
                         }
                         else { // Otherwise, invoked AddToBitString with isNegative == 0
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0) != 0) {
                                 return -1;
                             }
                         }
@@ -1218,7 +1346,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                         else { // If the value is not 0
                             // So long as there are 15 zeros in a row, add a special huffman code
                             while(bigZeroCtr != 0) {
-                                if(!AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1], 0)) {
+                                if(AddToBitString(acLumiCodeTable[161][0], acLumiCodeTable[161][1], 0) != 0) {
                                     return -1;
                                 }
                                 
@@ -1233,18 +1361,18 @@ int HuffmanEncode(enum RESMODE resMode) {
                             tableIndex = zeroCtr*10 + cat;
 				
                             // Add in base code
-                            if(!AddToBitString(acLumiCodeTable[tableIndex][0], acLumiCodeTable[tableIndex][1], 0)) {
+                            if(AddToBitString(acLumiCodeTable[tableIndex][0], acLumiCodeTable[tableIndex][1], 0) != 0) {
                                 return -1;
                             }
 
                             // If the value is less than 0, invoke AddToBitString with isNegative == 1
                             if(dctBuffer[xIndex][yIndex].Y < 0) {
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 1) != 0) {
                                     return -1;
                                 }
                             }
                             else{ // Otherwise, invoked AddToBitString with isNegative == 0
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Y, 0) != 0) {
                                     return -1;
                                 }
                             }
@@ -1285,17 +1413,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                     // If it is a DC value, do thing like this. Otherwise do it normally
                     if(x == 0 && y == 0) {
                         // Add the base code
-                        if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0)) {
+                        if(AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0) != 0) {
                             return -1;
                         }
 
                         if(dctBuffer[xIndex][yIndex].Cb < 0) {
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1) != 0) {
                                 return -1;
                             }
                         }
                         else{
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0) != 0) {
                                 return -1;
                             }
                         }
@@ -1312,7 +1440,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                         else{
                             // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
-                                if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0)) {
+                                if(AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0) != 0) {
                                     return -1;
                                 }
                                 
@@ -1322,17 +1450,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                             tableIndex = zeroCtr*10 + cat;
 				
                             // Add in base code
-                            if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0)) {
+                            if(AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0) != 0) {
                                 return -1;
                             }
 
                             if(dctBuffer[xIndex][yIndex].Cb < 0) {
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 1) != 0) {
                                     return -1;
                                 }
                             }
                             else{
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cb, 0) != 0) {
                                     return -1;
                                 }
                             }
@@ -1373,17 +1501,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                     // If it is a DC value, do thing like this. Otherwise do it normally
                     if(x == 0 && y == 0) {
                         // Add the base code
-                        if(!AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0)) {
+                        if(AddToBitString(dcChromiCodeTable[cat][0], dcChromiCodeTable[cat][1], 0) != 0) {
                             return -1;
                         }
 
                         if(dctBuffer[xIndex][yIndex].Cr < 0) {
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1) != 0) {
                                 return -1;
                             }
                         }
                         else{
-                            if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
+                            if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0) != 0) {
                                 return -1;
                             }
                         }
@@ -1400,7 +1528,7 @@ int HuffmanEncode(enum RESMODE resMode) {
                         else{
                             // So long as there are 15 zeros in a row
                             while(bigZeroCtr != 0) {
-                                if(!AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0)) {
+                                if(AddToBitString(acChromiCodeTable[161][0], acChromiCodeTable[161][1], 0) != 0) {
                                     return -1;
                                 }
                                 
@@ -1410,17 +1538,17 @@ int HuffmanEncode(enum RESMODE resMode) {
                             tableIndex = zeroCtr*10 + cat;
 				
                             // Add in base code
-                            if(!AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0)) {
+                            if(AddToBitString(acChromiCodeTable[tableIndex][0], acChromiCodeTable[tableIndex][1], 0) != 0) {
                                 return -1;
                             }
 
                             if(dctBuffer[xIndex][yIndex].Cr < 0) {
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 1) != 0) {
                                     return -1;
                                 }
                             }
                             else{
-                                if(!AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0)) {
+                                if(AddToBitString(cat, dctBuffer[xIndex][yIndex].Cr, 0) != 0) {
                                     return -1;
                                 }
                             }

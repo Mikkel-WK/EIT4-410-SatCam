@@ -163,4 +163,7 @@ int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode);// File t
 int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE resMode); // RAM to Huffman
 int RAMToJPEG(char* dataAddr, FILE* jpegFile, enum RESMODE resMode); // RAM to JPEG
 
+/* New function being tested */
+FastDCTToBuffer(enum RESMODE resMode);
+
 #endif
