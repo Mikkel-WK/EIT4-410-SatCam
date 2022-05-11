@@ -1011,6 +1011,12 @@ int DCTToBuffer(enum RESMODE resMode) {
     return 0;
 }
 
+/*
+ * Function: FastDCTToBuffer
+ * Purpose: Perform DCT on YCbCr data faster than the first function, put in new DCT buffer
+ * Input: Resolution mode
+ * Output: Error code
+*/
 int FastDCTToBuffer(enum RESMODE resMode) {
     /* Get the resolution from the given mode */
     int xRes = getXRes(resMode);
@@ -1716,7 +1722,7 @@ int printDCTCr(int printX, int printY, int xIndex, int yIndex) {
  * - Resolution mode
  * Output: Error code
 */
-int RawFileToHuffman(FILE* rawFile, char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
+int RawFileToHuffman(FILE* rawFile, unsigned char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
     // If the rawFile is not initialized correctly, exit
     if(rawFile == NULL) {
         printf("\nError opening file in RawFileToHuffman.");
@@ -1775,8 +1781,8 @@ int RawFileToHuffman(FILE* rawFile, char* huffPtr, int* huffPtrLen, enum RESMODE
 
     // Put the correct values in the necessary pointers
     huffPtr = huffOutput;
-    huffPtrLen = bitPosInOutString;
-
+    *huffPtrLen = bitPosInOutString;
+    
     return 0;
 }
 
@@ -1871,7 +1877,7 @@ int RawFileToJPEG(FILE* rawFile, FILE* jpegFile, enum RESMODE resMode) {
  * - Resolution mode
  * Output: Error code
 */
-int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
+int RAMToHuffman(char* dataAddr, unsigned char* huffPtr, int* huffPtrLen, enum RESMODE resMode) {
     if(ReadDataToBuffer(dataAddr, resMode) == -1) {
         printf("\nError occurred in ReadDataToBuffer.\n");
         return -1;
@@ -1904,7 +1910,7 @@ int RAMToHuffman(char* dataAddr, char* huffPtr, int* huffPtrLen, enum RESMODE re
 
     // Put the correct values in the necessary pointers
     huffPtr = huffOutput;
-    huffPtrLen = bitPosInOutString;
+    *huffPtrLen = bitPosInOutString;
 
     return 0;
 }
