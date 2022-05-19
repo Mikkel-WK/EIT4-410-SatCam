@@ -22,11 +22,18 @@ size_t maxBitPos = sizeof(huffOutput) * 8;
 /* Transformation matrix for RGB -> YCbCr */
 // Source: https://ebookcentral.proquest.com/lib/aalborguniv-ebooks/reader.action?docID=867675
 // Using BT.709 standard
-int transMatrix[] = 
+/*int transMatrix[] = 
 {
     47, 157, 16,
     -26, -87, 112,
     112, -102, -10
+};*/
+
+int transMatrix[] = 
+{
+    66, 129, 25,
+    -38, -74, 112,
+    112, -94, -18
 };
 
 /* Tables for categories */
@@ -1674,6 +1681,63 @@ int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode) {
 
     fwrite(buffer, 1, resTotal*3, fTestOutput);
     fclose(fTestOutput);
+
+    return 0;
+}
+
+int printYCC(int printX, int printY, int xIndex, int yIndex) {
+    printf("YCC Y buffer:\n(\n");
+    for(int y = 0; y < printY; y++) {
+        if(y%8 == 0) {
+            printf("\n");
+        }
+        for(int x = 0; x < printX; x++) {
+            if(x%8 == 0) {
+                printf("   ");
+            }
+            printf("%d, ", yccBuffer[x+xIndex][y+yIndex].Y);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    printf("YCC Cb buffer:\n(\n");
+    for(int y = 0; y < printY; y++) {
+        if(y%8 == 0) {
+            printf("\n");
+        }
+        for(int x = 0; x < printX; x++) {
+            if(x%8 == 0) {
+                printf("   ");
+            }
+            printf("%d, ", yccBuffer[x+xIndex][y+yIndex].Cb);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    printf("YCC Cr buffer:\n(\n");
+    for(int y = 0; y < printY; y++) {
+        if(y%8 == 0) {
+            printf("\n");
+        }
+        for(int x = 0; x < printX; x++) {
+            if(x%8 == 0) {
+                printf("   ");
+            }
+            printf("%d, ", yccBuffer[x+xIndex][y+yIndex].Cr);
+        }
+        printf("\n");
+    }
+    printf(")\n");
+
+    return 0;
+}
+
+int printDCTAll(int printX, int printY, int xIndex, int yIndex) {
+    printDCTY(printX, printY, xIndex, yIndex);
+    printDCTCb(printX, printY, xIndex, yIndex);
+    printDCTCr(printX, printY, xIndex, yIndex);
 
     return 0;
 }

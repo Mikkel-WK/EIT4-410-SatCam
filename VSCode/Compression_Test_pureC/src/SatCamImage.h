@@ -153,6 +153,8 @@ int HuffmanEncode(enum RESMODE resMode);
 
 /* Debugging functions */
 int OutputYCbCr(enum RESMODE resMode, int bufMode, int fileMode);
+int printYCC(int printX, int printY, int xIndex, int yIndex);
+int printDCTAll(int printX, int printY, int xIndex, int yIndex);
 int printDCTY(int printX, int printY, int xIndex, int yIndex);
 int printDCTCb(int printX, int printY, int xIndex, int yIndex);
 int printDCTCr(int printX, int printY, int xIndex, int yIndex);
